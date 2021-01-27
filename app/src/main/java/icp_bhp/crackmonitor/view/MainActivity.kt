@@ -1,7 +1,8 @@
-package icp_bhp.crackmonitor
+package icp_bhp.crackmonitor.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import icp_bhp.crackmonitor.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
