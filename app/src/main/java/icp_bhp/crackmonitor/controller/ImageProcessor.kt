@@ -73,7 +73,7 @@ class ImageProcessor(
                 source.size().width + borderX * 2,
                 source.size().height + borderY * 2
             ),
-            TYPE
+            CV_TYPE
         ).also { dest ->
             Core.copyMakeBorder(
                 source,
@@ -85,7 +85,7 @@ class ImageProcessor(
         }
 
         // Resize to desired size
-        return Mat(newSize, TYPE).also { dest ->
+        return Mat(newSize, CV_TYPE).also { dest ->
             Imgproc.resize(bordered, dest, dest.size())
         }
     }
@@ -173,8 +173,8 @@ class ImageProcessor(
      * OpenCV's camera is disoriented by 90 degrees, this fixes it and warps the image if required.
      */
     private fun fixOrientation(img: Mat): Mat {
-        fun portraitMat() = Mat(img.height(), img.width(), TYPE)
-        fun landscapeMat() = Mat(img.width(), img.height(), TYPE)
+        fun portraitMat() = Mat(img.height(), img.width(), CV_TYPE)
+        fun landscapeMat() = Mat(img.width(), img.height(), CV_TYPE)
 
         // Warp correctly if required
         if (this.settings.cameraPreProcessing.warp) {
@@ -200,7 +200,7 @@ class ImageProcessor(
      * Applies a find edges effect to the image
      */
     private fun findEdges(img: Mat): Mat {
-        val edges = Mat(img.size(), TYPE)
+        val edges = Mat(img.size(), CV_TYPE)
         val (cannyThreshold1, cannyThreshold2) = this.settings.targetFinding.let {
             it.cannyThreshold1 to it.cannyThreshold2
         }
@@ -269,7 +269,7 @@ class ImageProcessor(
 
     companion object {
         /** OpenCV data type used */
-        private val TYPE = CvType.CV_8UC4
+        val CV_TYPE = CvType.CV_8UC4
     }
 }
 
