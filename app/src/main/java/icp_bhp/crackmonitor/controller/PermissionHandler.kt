@@ -2,7 +2,6 @@ package icp_bhp.crackmonitor.controller
 
 import android.Manifest
 import android.app.Activity
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -11,66 +10,40 @@ import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import icp_bhp.crackmonitor.controller.PermissionHandler.RequestCode.*
+import icp_bhp.crackmonitor.controller.PermissionHandler.Permission.CAMERA
+import icp_bhp.crackmonitor.controller.PermissionHandler.Permission.SETTINGS
+import java.util.*
 
 class PermissionHandler(private val activity: Activity) {
 
-    fun getSettingsPermission() {
-        val hasPerm = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                Settings.System.canWrite(this.activity)
-            }
-            else -> {
-                val perm = Manifest.permission.WRITE_SETTINGS
-                val state = ContextCompat.checkSelfPermission(this.activity, perm)
-                state == PackageManager.PERMISSION_DENIED
-            }
-        }
+    // Public entry points -------------------------------------------------------------------------
 
-        if (!hasPerm) {
-            AlertDialog.Builder(this.activity).create().also { dialog ->
-                dialog.setTitle("Settings Edit Permission Required")
-                dialog.setButton(
-                    DialogInterface.BUTTON_NEUTRAL,
-                    "Grant Permission"
-                ) { dialogInterface, _ ->
-                    dialogInterface.dismiss()
-                    when {
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                            Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).also { intent ->
-                                intent.data = Uri.parse("package:${this.activity.packageName}")
-                                this.activity.startActivityForResult(intent, SETTINGS.int)
-                            }
-                        }
-                        else -> {
-                            ActivityCompat.requestPermissions(
-                                this.activity,
-                                arrayOf(Manifest.permission.WRITE_SETTINGS),
-                                SETTINGS.int
-                            )
-                        }
-                    }
-                }
-                dialog.show()
-            }
-        }
+    fun hasPermission(permission: Permission): Boolean = when (permission) {
+        SETTINGS -> hasSettingsPermission()
+        CAMERA -> hasCameraPermission()
     }
 
-    fun getCameraPermission() {
-        val cameraPerm = Manifest.permission.CAMERA
-        when (ContextCompat.checkSelfPermission(this.activity, cameraPerm)) {
-            PackageManager.PERMISSION_DENIED -> {
-                // Ask for camera perm
-                ActivityCompat.requestPermissions(this.activity, arrayOf(cameraPerm), CAMERA.int)
-            }
-        }
+    fun requestPermission(permission: Permission) = when (permission) {
+        SETTINGS -> requestSettingsPermission()
+        CAMERA -> requestCameraPermission()
     }
 
-    fun activityResult(
-        requestCode: RequestCode,
-        resultCode: Int,
-        data: Intent?
-    ) = when (requestCode) {
+    /*fun requestPermissionDialog(permission: Permission) = AlertDialog.Builder(this.activity).also {
+        it.setTitle("$permission Permission Required")
+        it.setNeutralButton("Grant Permission") { dialogInterface, _ ->
+            dialogInterface.dismiss()
+            requestPermission(permission)
+        }
+        it.setCancelable(false)
+    }.create()*/
+
+    // Activity delegates --------------------------------------------------------------------------
+
+    fun resultActivity(
+            permission: Permission,
+            resultCode: Int,
+            data: Intent?
+    ) = when (permission) {
         SETTINGS -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 check(Settings.System.canWrite(this.activity)) { "Permissions were not granted" }
@@ -79,16 +52,16 @@ class PermissionHandler(private val activity: Activity) {
         CAMERA -> error("Internal error")
     }
 
-    fun requestPermissionsResult(
-        requestCode: RequestCode,
-        permissions: Array<out String>,
-        grantResults: IntArray
+    fun resultRequestPermission(
+            permission: Permission,
+            permissions: Array<out String>,
+            grantResults: IntArray
     ) {
         fun checkGranted(perm: String) = permissions.indexOf(perm).takeIf { it != -1 }?.let { idx ->
             grantResults[idx] == PackageManager.PERMISSION_GRANTED
         } ?: false
 
-        when (requestCode) {
+        when (permission) {
             SETTINGS -> {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                     check(checkGranted(Manifest.permission.WRITE_SETTINGS)) {
@@ -104,14 +77,53 @@ class PermissionHandler(private val activity: Activity) {
         }
     }
 
-    enum class RequestCode {
-        SETTINGS,
-        CAMERA;
+    // Private permission handling logic -----------------------------------------------------------
 
-        val int = this.ordinal
+    private fun hasSettingsPermission(): Boolean = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+            Settings.System.canWrite(this.activity)
+        }
+        else -> {
+            val state = ContextCompat.checkSelfPermission(this.activity, SETTINGS.permString)
+            state == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    private fun hasCameraPermission(): Boolean {
+        val state = ContextCompat.checkSelfPermission(this.activity, CAMERA.permString)
+        return state == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestSettingsPermission() = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+            Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).also { intent ->
+                intent.data = Uri.parse("package:${this.activity.packageName}")
+                this.activity.startActivityForResult(intent, SETTINGS.requestCode)
+            }
+            Unit
+        }
+        else -> SETTINGS.request(this.activity)
+    }
+
+    private fun requestCameraPermission() = CAMERA.request(this.activity)
+
+    enum class Permission(val permString: String) {
+        SETTINGS(Manifest.permission.WRITE_SETTINGS),
+        CAMERA(Manifest.permission.CAMERA);
+
+        val requestCode = this.ordinal
+
+        fun request(activity: Activity) = ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(this.permString),
+                this.requestCode
+        )
+
+        override fun toString() = super.toString().toLowerCase(Locale.ROOT).capitalize(Locale.ROOT)
+                .replace("_", " ")
 
         companion object {
-            fun fromInt(codeInt: Int) = values().getOrNull(codeInt)
+            fun fromRequestCode(codeInt: Int) = values().getOrNull(codeInt)
         }
     }
 }
