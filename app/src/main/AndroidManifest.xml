@@ -19,9 +19,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions" />
-    <!--<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />-->
-
+        tools:ignore="ProtectedPermissions" /> <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> -->
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -36,7 +34,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CrackMonitor">
-        <activity android:name=".view.PermissionHandlerActivity"></activity>
+        <activity android:name=".view.SettingsFragment$SettingsActivity" />
+        <activity android:name=".view.PermissionHandlerActivity" />
         <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

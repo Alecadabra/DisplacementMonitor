@@ -9,17 +9,18 @@ import java.util.*
  */
 class Settings(private val preferences: SharedPreferences) {
 
-    val target = Target()
+    val calibration = Calibration()
 
     val cameraPreProcessing = CameraPreProcessing()
 
     val targetFinding = TargetFinding()
 
-    inner class Target {
-        /**
-         * Target size in metres. Width or height, as the target is square.
-         */
-        val targetSize: Double = this@Settings.preferences.getString("target_targetSize", null)
+    inner class Calibration {
+        val targetSize: Double = this@Settings.preferences.getString("calibration_targetSize", null)
+            ?.toDoubleOrNull()?.takeIf { it > 0 }
+            ?: error("Target size must be a number greater than 0")
+
+        val initialDistance: Double = this@Settings.preferences.getString("calibration_initialDistance", null)
             ?.toDoubleOrNull()?.takeIf { it > 0 }
             ?: error("Target size must be a number greater than 0")
     }
@@ -74,21 +75,4 @@ class Settings(private val preferences: SharedPreferences) {
             ?.toDoubleOrNull()
             ?: error("Minimum target solidity must be a number")
     }
-
-    /*
-    inner class TargetMeasurement {
-        val measurementTechnique: MeasurementTechnique = this@Settings.preferences.getString("targetMeasurement_measurementTechnique", null)
-            ?.let { MeasurementTechnique.valueOf(it) }
-            ?: error("Internal error parsing MeasurementTechnique enum")
-    }
-
-    enum class MeasurementTechnique {
-        MINIMUM_RECTANGLE,
-        CONTOUR_PERIMETER;
-
-        fun toHumanReadableString() = super.toString().split("_").joinToString(" ") {
-            it.toLowerCase(Locale.ROOT).capitalize(Locale.ROOT)
-        }
-    }
-     */
 }

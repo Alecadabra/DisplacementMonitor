@@ -11,20 +11,40 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginVertical="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/mainActivityShutterButton"
+        app:layout_constraintBottom_toTopOf="@+id/mainActivityLinearLayout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/mainActivityShutterButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/mainActivityLinearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="16dp"
-        android:text="Take Measurement"
+        android:orientation="vertical"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/mainActivityMeasurement"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" >
+
+        <Button
+            android:id="@+id/mainActivityMeasureButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take Measurement"/>
+
+        <Button
+            android:id="@+id/mainActivityCalibrateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calibrate" />
+
+        <Button
+            android:id="@+id/mainActivitySettingsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/mainActivityMeasurement"
