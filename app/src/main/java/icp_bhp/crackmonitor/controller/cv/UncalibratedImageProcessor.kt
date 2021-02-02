@@ -13,23 +13,27 @@ open class UncalibratedImageProcessor(
 
     // Public entry points -------------------------------------------------------------------------
 
+    /**
+     * Measures the target in the image and uses it to generate and return a calibrated image
+     * processor.
+     * @param image Image with the target in view
+     * @param previewDest Optional destination matrix for user-understandable image
+     * @return The generated [CalibratedImageProcessor]
+     * @throws CalibratedImageProcessor If the target is not found or cannot be measured
+     */
     fun calibrated(image: Mat, previewDest: Mat? = null): CalibratedImageProcessor {
         check(!image.empty()) { "Image is empty" }
 
         // Orient image properly
         val imageOriented: Mat = fixOrientation(image)
-        previewDest?.also {
-            resizeWithBorder(imageOriented, image.size()).assignTo(it, CV_TYPE)
-        }
+        previewDest?.values = resizeWithBorder(imageOriented, image.size())
 
         // Find possible target
-        val initialTarget: Contour = this.targetFinder.findTarget(imageOriented)
-        previewDest?.also {
-            resizeWithBorder(drawTarget(imageOriented, initialTarget), image.size()).assignTo(it, CV_TYPE)
-        }
+        val target: Contour = this.targetFinder.findTarget(imageOriented)
+        previewDest?.values = resizeWithBorder(drawTarget(imageOriented, target), image.size())
 
         // Construct the TargetMeasurement object
-        val targetMeasurement = TargetMeasurement(initialTarget, this.settings)
+        val targetMeasurement = TargetMeasurement(target, this.settings)
 
         // Wrap this class in the CalibratedImageProcessor interface
         return CalibratedImageProcessor(this.settings, this.targetFinder, targetMeasurement)
@@ -66,6 +70,9 @@ open class UncalibratedImageProcessor(
         }
     }
 
+    /**
+     * Draws the given target onto the image and returns the result.
+     */
     protected fun drawTarget(image: Mat, target: Contour): Mat {
         val drawnImage = image.clone()
 
@@ -89,6 +96,10 @@ open class UncalibratedImageProcessor(
         return drawnImage
     }
 
+    /**
+     * Resizes the source image to the given size without distortion, adding a black border, and
+     * returns the result.
+     */
     protected fun resizeWithBorder(source: Mat, newSize: Size): Mat {
         val oldSize = source.size()
 
@@ -132,9 +143,14 @@ open class UncalibratedImageProcessor(
         }
     }
 
+    // Helper extension property
+    protected var Mat.values
+        get() = this
+        set(value) = value.assignTo(this)
+
+
     companion object {
         /** OpenCV data type used */
         val CV_TYPE = CvType.CV_8UC4
     }
 }
-

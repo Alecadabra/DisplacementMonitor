@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import icp_bhp.crackmonitor.R
+import icp_bhp.crackmonitor.controller.PermissionHandler
 import icp_bhp.crackmonitor.controller.cv.CalibratedImageProcessor
 import icp_bhp.crackmonitor.controller.cv.UncalibratedImageProcessor
 import icp_bhp.crackmonitor.model.Settings
@@ -17,8 +18,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.opencv.android.*
 import org.opencv.core.Mat
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
 class MainActivity : AppCompatActivity() {
+
+    private val views by lazy { Views() }
 
     private val uncalibratedImageProcessor by lazy {
         UncalibratedImageProcessor(Settings(PreferenceManager.getDefaultSharedPreferences(this)))
@@ -26,7 +31,24 @@ class MainActivity : AppCompatActivity() {
 
     private var calibratedImageProcessor: CalibratedImageProcessor? = null
 
-    private val views by lazy { Views() }
+    private var cameraState = CameraState.DISABLED
+        set(value) {
+            field = value
+            val camera = this.views.cameraBridgeViewBase
+            when (value) {
+                CameraState.CALIBRATING -> {
+                    camera.setCvCameraViewListener(this.calibrationCamera)
+                    camera.enableView()
+                }
+                CameraState.MEASURING -> {
+                    camera.setCvCameraViewListener(this.measurementCamera)
+                    camera.enableView()
+                }
+                CameraState.DISABLED -> {
+                    camera.disableView()
+                }
+            }
+        }
 
     private val measurementCamera = CameraFrameCallback { image ->
         val calibrated = this@MainActivity.calibratedImageProcessor
@@ -36,7 +58,6 @@ class MainActivity : AppCompatActivity() {
 
         try {
             val measurement = calibrated.measure(image, preview)
-            // TODO Look into withContext()
             CoroutineScope(Dispatchers.Main).launch {
                 this@MainActivity.onNewMeasurement(measurement)
             }
@@ -74,16 +95,22 @@ class MainActivity : AppCompatActivity() {
         // Keep the screen on
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        startActivity(PermissionHandlerActivity.getIntent(this))
-
-        initialiseOpenCV()
-
-        this.views.cameraBridgeViewBase.also { camera ->
-            camera.disableView()
+        // Check if any permissions are needed
+        run {
+            val permissionHandler = PermissionHandler(this)
+            val requiredPerms = PermissionHandler.Permission.values().filterNot { perm ->
+                permissionHandler.hasPermission(perm)
+            }
+            if (requiredPerms.isNotEmpty()) {
+                startActivity(PermissionHandlerActivity.getIntent(this))
+            }
         }
+
+        // Set up views
 
         this.views.measureButton.also { btn ->
             btn.setOnClickListener {
+                this.cameraState = CameraState.MEASURING
                 this.views.cameraBridgeViewBase.setCvCameraViewListener(this.measurementCamera)
                 this.views.cameraBridgeViewBase.enableView()
             }
@@ -92,6 +119,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         this.views.calibrateButton.setOnClickListener {
+            this.cameraState = CameraState.CALIBRATING
             this.views.cameraBridgeViewBase.setCvCameraViewListener(this.calibrationCamera)
             this.views.cameraBridgeViewBase.enableView()
         }
@@ -108,18 +136,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onCalibration(calibrated: CalibratedImageProcessor) {
-        this.calibratedImageProcessor = calibrated
-        this.views.measureButton.also { btn ->
-            btn.isClickable = this.calibratedImageProcessor != null
-            btn.isEnabled = this.calibratedImageProcessor != null
+        if (this.cameraState == CameraState.CALIBRATING) {
+            this.cameraState = CameraState.DISABLED
+            this.calibratedImageProcessor = calibrated
+            this.views.measureButton.also { btn ->
+                btn.isClickable = this.calibratedImageProcessor != null
+                btn.isEnabled = this.calibratedImageProcessor != null
+            }
         }
-        this.views.cameraBridgeViewBase.disableView()
     }
 
     private fun onNewMeasurement(measurement: Double) {
-        @SuppressLint("SetTextI18n")
-        this.views.measurement.text = "Measurement: ${"%.4f".format(measurement)}m"
-        this.views.cameraBridgeViewBase.disableView()
+        if (this.cameraState == CameraState.MEASURING) {
+            this.cameraState = CameraState.DISABLED
+            @SuppressLint("SetTextI18n")
+            this.views.measurement.text = "Measurement: ${"%.4f".format(measurement)}m"
+        }
     }
 
     private fun initialiseOpenCV() {
@@ -154,6 +186,12 @@ class MainActivity : AppCompatActivity() {
         val settingsButton: Button = findViewById(R.id.mainActivitySettingsButton),
         val measurement: TextView = findViewById(R.id.mainActivityMeasurement),
     )
+
+    private enum class CameraState {
+        CALIBRATING,
+        MEASURING,
+        DISABLED
+    }
 
     companion object {
         const val TAG = "MainActivity"

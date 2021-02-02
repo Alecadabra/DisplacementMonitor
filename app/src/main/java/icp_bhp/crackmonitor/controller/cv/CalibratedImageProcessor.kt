@@ -15,6 +15,7 @@ class CalibratedImageProcessor(
     /**
      * Measures the distance to the target in the image.
      * @param image Image with the target in view
+     * @param previewDest Optional destination matrix for user-understandable image
      * @return The real measurement
      * @throws IllegalStateException If the target is not found or cannot be measured
      */
@@ -23,11 +24,11 @@ class CalibratedImageProcessor(
 
         // Orient image properly
         val imageOriented: Mat = fixOrientation(image)
-        previewDest?.setTo(resizeWithBorder(imageOriented, image.size()))
+        previewDest?.values = resizeWithBorder(imageOriented, image.size())
 
         // Find possible target
         val target: Contour = this.targetFinder.findTarget(imageOriented)
-        previewDest?.setTo(resizeWithBorder(drawTarget(imageOriented, target), image.size()))
+        previewDest?.values = resizeWithBorder(drawTarget(imageOriented, target), image.size())
 
         // Measure the distance
         return this.targetMeasurement.measureDistance(target)

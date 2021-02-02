@@ -36,7 +36,9 @@
         android:theme="@style/Theme.CrackMonitor">
         <activity android:name=".view.SettingsFragment$SettingsActivity" />
         <activity android:name=".view.PermissionHandlerActivity" />
-        <activity android:name=".view.MainActivity">
+        <activity android:name=".view.MainActivity"
+            android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

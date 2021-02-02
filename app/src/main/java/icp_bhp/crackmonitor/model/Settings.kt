@@ -1,6 +1,8 @@
 package icp_bhp.crackmonitor.model
 
+import android.content.Context
 import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import org.opencv.core.Size
 import java.util.*
 

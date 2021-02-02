@@ -2,8 +2,6 @@ package icp_bhp.crackmonitor.controller.cv
 
 import icp_bhp.crackmonitor.model.Contour
 import icp_bhp.crackmonitor.model.Settings
-import kotlin.math.abs
-import kotlin.math.hypot
 
 class TargetMeasurement(
     /** Measured focal length */
@@ -18,20 +16,20 @@ class TargetMeasurement(
         initialTarget: Contour,
         settings: Settings
     ) : this(
-        focalLengthReal = computeFocalLengthReal(
-            settings.calibration.initialDistance,
-            settings.calibration.targetSize,
-            initialTarget.edgeLength
+        focalLengthReal = focalLengthReal(
+            distanceReal = settings.calibration.initialDistance,
+            lengthReal = settings.calibration.targetSize,
+            lengthPx = initialTarget.edgeLength
         ),
         settings = settings
     )
 
     // Public entry points -------------------------------------------------------------------------
 
-    fun measureDistance(target: Contour): Double = computeDistanceReal(
+    fun measureDistance(target: Contour): Double = distanceReal(
         focalLengthReal = this.focalLengthReal,
-        widthReal = this.settings.calibration.targetSize,
-        widthPx = target.edgeLength
+        lengthReal = this.settings.calibration.targetSize,
+        lengthPx = target.edgeLength
     )
 
     companion object {
@@ -40,28 +38,24 @@ class TargetMeasurement(
 
         /**
          * Calculates the focal length of the camera using triangle similarity.
-         * @param distanceReal Distance between the camera and object in metres
-         * @param widthReal Measured width of the object in metres
-         * @param widthPx Perceived width of object in pixels
-         * @return Focal length in metres
+         * @param distanceReal Distance between the camera and target (Real)
+         * @param lengthReal Length of the target (Real)
+         * @param lengthPx Length of the target (Perceived)
+         * @return Computed focal length (Real)
          */
-        fun computeFocalLengthReal(
-            distanceReal: Double,
-            widthReal: Double,
-            widthPx: Double
-        ): Double = (widthPx * distanceReal) / widthReal
+        fun focalLengthReal(distanceReal: Double, lengthReal: Double, lengthPx: Double): Double {
+            return (lengthPx * distanceReal) / lengthReal
+        }
 
         /**
-         * Calculates the distance to the camera using triangle similarity.
-         * @param focalLengthReal Focal length of camera in metres
-         * @param widthReal Real width of object in metres
-         * @param widthPx Perceived width of object in pixels
-         * @return Calculated distance in metres
+         * Calculates the distance between the camera and target using triangle similarity.
+         * @param focalLengthReal Focal length of camera (Real)
+         * @param lengthReal Length of the target (Real)
+         * @param lengthPx Length of the target (Perceived)
+         * @return Calculated distance (Real)
          */
-        fun computeDistanceReal(
-            focalLengthReal: Double,
-            widthReal: Double,
-            widthPx: Double
-        ): Double = (widthReal * focalLengthReal) / widthPx
+        fun distanceReal(focalLengthReal: Double, lengthReal: Double, lengthPx: Double): Double {
+            return (lengthReal * focalLengthReal) / lengthPx
+        }
     }
 }
