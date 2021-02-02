@@ -9,11 +9,21 @@ import java.util.*
  */
 class Settings(private val preferences: SharedPreferences) {
 
-    val calibration = Calibration()
+    init {
+        // Test generate all settings holder classes
+        Calibration()
+        CameraPreProcessing()
+        TargetFinding()
+    }
 
-    val cameraPreProcessing = CameraPreProcessing()
+    val calibration: Calibration
+        get() = Calibration()
 
-    val targetFinding = TargetFinding()
+    val cameraPreProcessing: CameraPreProcessing
+        get() = CameraPreProcessing()
+
+    val targetFinding: TargetFinding
+        get() = TargetFinding()
 
     inner class Calibration {
         val targetSize: Double = this@Settings.preferences.getString("calibration_targetSize", null)

@@ -5,7 +5,8 @@ import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 
 /**
- * Wrapper class for different representations of a contour in OpenCV.
+ * Wrapper class for different representations of a contour in OpenCV. This class assumes the
+ * underlying representation is immutable.
  */
 sealed class Contour {
 
@@ -20,6 +21,8 @@ sealed class Contour {
     val convexHull: Contour by lazy { ContourOperations.convexHull(this) }
 
     val boundingRect: Rect by lazy { ContourOperations.boundingRect(this) }
+
+    val edgeLength: Double by lazy { ContourOperations.edgeLength(this) }
 
     fun getApproxCurve(epsilon: Double): Contour {
         if (epsilon !in this.approxCurveMap) {

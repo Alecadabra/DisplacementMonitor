@@ -10,8 +10,8 @@ import org.opencv.imgproc.Imgproc
 class TargetFinder(private val settings: Settings) {
 
     /**
-     * Finds all the target from an input of an image run through [ImageProcessor.findEdges]
-     * @param image Image Mat ran through [ImageProcessor.findEdges]
+     * Finds all the target from an input of an image run through [UncalibratedImageProcessor.findEdges]
+     * @param image Image Mat ran through [UncalibratedImageProcessor.findEdges]
      * @return Contour most likely to be the target
      * @throws IllegalStateException If target was not found
      */
@@ -26,7 +26,7 @@ class TargetFinder(private val settings: Settings) {
         val allContours: List<Contour> = mutableListOf<MatOfPoint>().also { matOfPointList ->
             // Find contours
             Imgproc.findContours(
-                image, // Source image
+                imageEdges, // Source image
                 matOfPointList, // Dest list of contours
                 Mat(), // Dest hierarchy matrix
                 Imgproc.RETR_LIST, // Hierarchy mode
@@ -44,7 +44,7 @@ class TargetFinder(private val settings: Settings) {
             // Filter out contours with low solidity
             .filter(this@TargetFinder::isSolidEnough)
 
-        // Return the approx curves, sorted by largest area first
+        // Return the approx curve of the largest area contour, assuming that is the target
         return filteredList.map { contour ->
             contour.approxCurve
         }.maxByOrNull { contour ->
@@ -56,7 +56,7 @@ class TargetFinder(private val settings: Settings) {
      * Applies a find edges effect to the image
      */
     private fun findEdges(image: Mat): Mat {
-        val imageEdges = Mat(image.size(), ImageProcessor.CV_TYPE)
+        val imageEdges = image.clone()
         val (cannyThreshold1, cannyThreshold2) = this.settings.targetFinding.let {
             it.cannyThreshold1 to it.cannyThreshold2
         }

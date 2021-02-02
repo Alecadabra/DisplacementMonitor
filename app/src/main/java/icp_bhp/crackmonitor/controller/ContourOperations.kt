@@ -6,6 +6,8 @@ import org.opencv.core.MatOfInt
 import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Rect
 import org.opencv.imgproc.Imgproc
+import kotlin.math.abs
+import kotlin.math.hypot
 
 object ContourOperations {
 
@@ -32,5 +34,31 @@ object ContourOperations {
 
             Imgproc.approxPolyDP(contour.matOfPoint2f, mat, fullEpsilon, true)
         }.toContour()
+    }
+
+    /**
+     * Calculates the perceived dimension of the presumed square contour.
+     */
+    fun edgeLength(contour: Contour): Double {
+        // Join points to edges cyclically
+        val edges = contour.pointArray.mapIndexed { i, point ->
+            if (i == contour.pointArray.lastIndex) {
+                // Join last to first
+                point to contour.pointArray[0]
+            } else {
+                // Join current to next
+                point to contour.pointArray[i + 1]
+            }
+        }
+
+        // Measure lengths with pythagoras
+        val lengths = edges.map { (pt1, pt2) ->
+            val a = abs(pt1.x - pt2.x)
+            val b = abs(pt1.y - pt2.y)
+            hypot(a, b)
+        }
+
+        // Use value of largest edge
+        return lengths.maxOrNull() ?: error("Target edges not found")
     }
 }
