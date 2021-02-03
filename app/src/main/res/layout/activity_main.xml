@@ -6,31 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".view.MainActivity">
 
-    <org.opencv.android.JavaCamera2View
-        android:id="@+id/mainActivityCameraView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginVertical="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/mainActivityLinearLayout"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         android:id="@+id/mainActivityLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/mainActivityMeasurement"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" >
-
-        <Button
-            android:id="@+id/mainActivityMeasureButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Take Measurement"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/mainActivityCalibrateButton"
@@ -44,16 +29,18 @@
             android:layout_height="wrap_content"
             android:text="Settings" />
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/mainActivityScheduleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Schedule" />
 
-    <TextView
-        android:id="@+id/mainActivityMeasurement"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="16dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <Button
+            android:id="@+id/mainActivityTestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test measurements" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

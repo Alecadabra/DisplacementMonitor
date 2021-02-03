@@ -6,7 +6,7 @@ import org.opencv.core.Mat
 
 class CalibratedImageProcessor(
     settings: Settings,
-    targetFinder: TargetFinder,
+    targetFinder: TargetFinder = TargetFinder(settings),
     private val targetMeasurement: TargetMeasurement
 ) : UncalibratedImageProcessor(settings, targetFinder) {
 
@@ -23,7 +23,7 @@ class CalibratedImageProcessor(
         check(!image.empty()) { "Image is empty" }
 
         // Orient image properly
-        val imageOriented: Mat = fixOrientation(image)
+        val imageOriented: Mat = fixOrientation(image, this.settings.cameraPreProcessing.warp)
         previewDest?.values = resizeWithBorder(imageOriented, image.size())
 
         // Find possible target

@@ -18,6 +18,12 @@
             android:defaultValue="0"
             android:summary="The initial distance (at calibration) between the phone and the target in metres" />
 
+        <EditTextPreference
+            android:key="calibration_focalLength"
+            android:title="Manual focal length value"
+            android:defaultValue="0"
+            android:summary="Value for focal length generated at calibration. You shouldn't need to adjust this" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

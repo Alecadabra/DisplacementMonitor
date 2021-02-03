@@ -16,6 +16,7 @@
         android:name="android.hardware.camera.front.autofocus"
         android:required="false" />
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
@@ -34,11 +35,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CrackMonitor">
-        <activity android:name=".view.SettingsFragment$SettingsActivity" />
-        <activity android:name=".view.PermissionHandlerActivity" />
-        <activity android:name=".view.MainActivity"
-            android:screenOrientation="portrait">
+        <activity android:name=".view.CalibrationActivity" />
+        <activity android:name=".view.RealTimeMeasureActivity" />
 
+        <receiver
+            android:name=".controller.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".view.ScheduledMeasurementActivity"
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true"
+            tools:ignore="UnusedAttribute" />
+        <activity android:name=".view.SettingsActivity" />
+        <activity android:name=".view.PermissionHandlerActivity" />
+        <activity
+            android:name=".view.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
