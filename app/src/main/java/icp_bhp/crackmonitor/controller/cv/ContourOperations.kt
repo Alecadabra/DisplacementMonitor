@@ -1,4 +1,4 @@
-package icp_bhp.crackmonitor.controller
+package icp_bhp.crackmonitor.controller.cv
 
 import icp_bhp.crackmonitor.model.Contour
 import icp_bhp.crackmonitor.model.toContour

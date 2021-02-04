@@ -7,17 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.preference.PreferenceManager
 import icp_bhp.crackmonitor.R
-import icp_bhp.crackmonitor.controller.CameraFrameCallback
+import icp_bhp.crackmonitor.controller.cv.CameraFrameCallback
 import icp_bhp.crackmonitor.controller.cv.*
 import icp_bhp.crackmonitor.model.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.opencv.android.CameraBridgeViewBase
 import org.opencv.core.Mat
 
@@ -45,7 +45,7 @@ class CalibrationActivity : AppCompatActivity() {
             val target = this.targetFinder.findTarget(oriented)
             preview = resizeWithBorder(drawTarget(oriented, target), image.size())
         } catch (e: IllegalStateException) {
-            Log.d(TAG, "Could not find target", e)
+            Log.i(TAG, "Image processing - Failed to find target (${e.message})")
         }
 
         preview
@@ -73,7 +73,7 @@ class CalibrationActivity : AppCompatActivity() {
                 }
             }
         } catch (e: IllegalStateException) {
-            Log.d(TAG, "Could not find target", e)
+            Log.i(TAG, "Image processing - Failed to measure focal length (${e.message}")
             CoroutineScope(Dispatchers.Main).launch {
                 if (!this@CalibrationActivity.measured) {
                     @SuppressLint("SetTextI18n")
@@ -90,6 +90,11 @@ class CalibrationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calibration)
+
+        this.title = "Calibration"
+
+        // Keep the screen on
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         this.views.cameraBridgeViewBase.setCvCameraViewListener(this.targetFinderCamera)
         this.views.cameraBridgeViewBase.enableView()
@@ -119,7 +124,7 @@ class CalibrationActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        initialiseOpenCV(this)
+        initialiseOpenCV(this, TAG)
     }
 
     // Focal length measurement callback -----------------------------------------------------------
@@ -154,7 +159,7 @@ class CalibrationActivity : AppCompatActivity() {
     )
 
     companion object {
-        const val TAG = "CalibrationActivity"
+        private const val TAG = "CalibrationActivity"
 
         fun getIntent(c: Context) = Intent(c, CalibrationActivity::class.java)
     }

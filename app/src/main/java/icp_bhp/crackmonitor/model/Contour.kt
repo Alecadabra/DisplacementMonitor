@@ -1,8 +1,7 @@
 package icp_bhp.crackmonitor.model
 
-import icp_bhp.crackmonitor.controller.ContourOperations
+import icp_bhp.crackmonitor.controller.cv.ContourOperations
 import org.opencv.core.*
-import org.opencv.imgproc.Imgproc
 
 /**
  * Wrapper class for different representations of a contour in OpenCV. This class assumes the

@@ -22,6 +22,8 @@ class PermissionHandlerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_permission_handler)
 
+        this.title = "Permissions"
+
         runPermRequest()
     }
 

@@ -8,9 +8,8 @@ import android.util.Log
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.PreferenceManager
 import icp_bhp.crackmonitor.R
-import icp_bhp.crackmonitor.controller.CameraFrameCallback
+import icp_bhp.crackmonitor.controller.cv.CameraFrameCallback
 import icp_bhp.crackmonitor.controller.cv.CalibratedImageProcessor
 import icp_bhp.crackmonitor.controller.cv.TargetMeasurement
 import icp_bhp.crackmonitor.controller.cv.initialiseOpenCV
@@ -18,7 +17,6 @@ import icp_bhp.crackmonitor.model.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.opencv.android.CameraBridgeViewBase
 
 class RealTimeMeasureActivity : AppCompatActivity() {
@@ -49,7 +47,6 @@ class RealTimeMeasureActivity : AppCompatActivity() {
                 this@RealTimeMeasureActivity.views.measurement.text = text
             }
         } catch (e: IllegalStateException) {
-            Log.d(TAG, "Failed to measure image", e)
             CoroutineScope(Dispatchers.Main).launch {
                 @SuppressLint("SetTextI18n")
                 this@RealTimeMeasureActivity.views.measurement.text = "Looking for target..."
@@ -65,6 +62,8 @@ class RealTimeMeasureActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_real_time_measure)
 
+        this.title = "Real-Time Measurement"
+
         // Keep the screen on
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
@@ -74,7 +73,7 @@ class RealTimeMeasureActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        initialiseOpenCV(this)
+        initialiseOpenCV(this, TAG)
         this.views.cameraBridgeViewBase.enableView()
     }
 
@@ -92,7 +91,7 @@ class RealTimeMeasureActivity : AppCompatActivity() {
     )
 
     companion object {
-        const val TAG = "RealTimeMeasureActivity"
+        private const val TAG = "RealTimeMeasureActivity"
 
         fun getIntent(context: Context) = Intent(context, RealTimeMeasureActivity::class.java)
     }

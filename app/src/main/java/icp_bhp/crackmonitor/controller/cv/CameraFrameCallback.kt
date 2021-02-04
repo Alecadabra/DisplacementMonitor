@@ -1,4 +1,4 @@
-package icp_bhp.crackmonitor.controller
+package icp_bhp.crackmonitor.controller.cv
 
 import org.opencv.android.CameraBridgeViewBase
 import org.opencv.core.Mat

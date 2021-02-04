@@ -18,16 +18,30 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
+            android:id="@+id/mainActivitySettingsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="32dp" />
+
+        <Button
             android:id="@+id/mainActivityCalibrateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Calibrate" />
 
         <Button
-            android:id="@+id/mainActivitySettingsButton"
+            android:id="@+id/mainActivityTestButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings" />
+            android:text="Test measurements" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="32dp" />
 
         <Button
             android:id="@+id/mainActivityScheduleButton"
@@ -36,10 +50,10 @@
             android:text="Schedule" />
 
         <Button
-            android:id="@+id/mainActivityTestButton"
+            android:id="@+id/mainActivityCancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Test measurements" />
+            android:text="Cancel scheduling" />
 
     </LinearLayout>
 

@@ -9,8 +9,8 @@ import org.opencv.android.OpenCVLoader
 
 private const val TAG = "OpenCVInitialisation"
 
-fun initialiseOpenCV(context: Context) {
-    Log.d(TAG, "Context ${context.packageName} is initialising OpenCV")
+fun initialiseOpenCV(context: Context, tag: String) {
+    Log.d(TAG, "Context $tag is initialising OpenCV")
 
     val loaderCallback = object : BaseLoaderCallback(context) {
         override fun onManagerConnected(status: Int) {

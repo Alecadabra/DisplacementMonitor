@@ -39,7 +39,7 @@
         <activity android:name=".view.RealTimeMeasureActivity" />
 
         <receiver
-            android:name=".controller.AlarmReceiver"
+            android:name=".controller.SchedulingManager$AlarmReceiver"
             android:enabled="true"
             android:exported="true" />
 

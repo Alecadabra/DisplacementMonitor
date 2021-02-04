@@ -5,10 +5,10 @@ import icp_bhp.crackmonitor.model.Settings
 import org.opencv.core.Mat
 
 class CalibratedImageProcessor(
-    settings: Settings,
-    targetFinder: TargetFinder = TargetFinder(settings),
-    private val targetMeasurement: TargetMeasurement
-) : UncalibratedImageProcessor(settings, targetFinder) {
+    private val settings: Settings,
+    private val targetMeasurement: TargetMeasurement,
+    private val targetFinder: TargetFinder = TargetFinder(settings),
+) {
 
     // Public entry points -------------------------------------------------------------------------
 
