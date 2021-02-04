@@ -55,6 +55,26 @@
             android:layout_height="wrap_content"
             android:text="Cancel scheduling" />
 
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="32dp" />
+
+        <TextView
+            android:id="@+id/mainActivityData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="32dp" />
+
+        <Button
+            android:id="@+id/mainActivityClearDataButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete all data" />
+
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

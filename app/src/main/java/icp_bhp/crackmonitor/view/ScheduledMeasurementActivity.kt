@@ -1,27 +1,24 @@
 package icp_bhp.crackmonitor.view
 
 import android.annotation.SuppressLint
-import android.app.KeyguardManager
-import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
 import android.util.Log
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.getSystemService
 import icp_bhp.crackmonitor.R
 import icp_bhp.crackmonitor.controller.cv.CalibratedImageProcessor
 import icp_bhp.crackmonitor.controller.cv.CameraFrameCallback
 import icp_bhp.crackmonitor.controller.cv.TargetMeasurement
 import icp_bhp.crackmonitor.controller.cv.initialiseOpenCV
+import icp_bhp.crackmonitor.controller.database.Measurement
+import icp_bhp.crackmonitor.controller.database.MeasurementDatabase
 import icp_bhp.crackmonitor.model.Settings
 import kotlinx.coroutines.*
 import org.opencv.android.CameraBridgeViewBase
-import org.opencv.core.Mat
 
 class ScheduledMeasurementActivity : AppCompatActivity() {
 
@@ -51,9 +48,10 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
         try {
             val measurement = this.calibratedImageProcessor.measure(image, preview)
+            val unixTimestamp = System.currentTimeMillis() / 1000L
             CoroutineScope(Dispatchers.Main).launch {
                 if (!this@ScheduledMeasurementActivity.measured) {
-                    this@ScheduledMeasurementActivity.onDistanceMeasured(measurement)
+                    this@ScheduledMeasurementActivity.onDistanceMeasured(unixTimestamp, measurement)
                 }
             }
         } catch (e: IllegalStateException) {
@@ -116,7 +114,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
         }
     }
 
-    private fun onDistanceMeasured(distance: Double) {
+    private fun onDistanceMeasured(unixTimestamp: Long, distance: Double) {
         this.views.cameraBridgeViewBase.disableView()
 
         if (!this.measured) {
@@ -126,6 +124,12 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
             this.views.readout.text = "Measured value of ${"%.2f".format(distance)}m"
 
             Log.i(TAG, "Measured value of ${"%.2f".format(distance)}m")
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val db = MeasurementDatabase.instance
+                val measurement = Measurement(unixTimestamp, distance)
+                db.measurementDao().insert(measurement)
+            }
 
             // Finish up and close
             window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)

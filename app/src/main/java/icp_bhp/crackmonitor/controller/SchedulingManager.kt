@@ -8,6 +8,8 @@ import android.content.Intent
 import android.os.SystemClock
 import android.util.Log
 import icp_bhp.crackmonitor.model.Settings
+import kotlin.time.ExperimentalTime
+import kotlin.time.minutes
 
 class SchedulingManager(
     private val context: Context,
@@ -30,9 +32,13 @@ class SchedulingManager(
 
     fun start() {
         val periodMinutes = this.settings.periodicMeasurement.period
-        val periodMillis = periodMinutes * 1000L
+        val periodMillis = periodMinutes * 60000L
 
         Log.d(TAG, "Scheduling started at $periodMinutes minutes period")
+
+        if (this.isScheduled) {
+            cancel()
+        }
 
         this.alarmManager.setRepeating(
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
@@ -46,7 +52,6 @@ class SchedulingManager(
         Log.d(TAG, "Scheduling cancelled")
 
         this.alarmManager.cancel(this.getAlarmIntent())
-        this.alarmManager
     }
 
     class AlarmReceiver : BroadcastReceiver() {
