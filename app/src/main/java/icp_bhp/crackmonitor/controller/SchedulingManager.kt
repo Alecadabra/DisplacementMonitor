@@ -36,10 +36,6 @@ class SchedulingManager(
 
         Log.d(TAG, "Scheduling started at $periodMinutes minutes period")
 
-        if (this.isScheduled) {
-            cancel()
-        }
-
         this.alarmManager.setRepeating(
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
             SystemClock.elapsedRealtime() + periodMillis,
