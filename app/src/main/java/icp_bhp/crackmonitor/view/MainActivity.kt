@@ -5,7 +5,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import icp_bhp.crackmonitor.R
-import icp_bhp.crackmonitor.controller.PermissionHandler
+import icp_bhp.crackmonitor.controller.Permission
 import icp_bhp.crackmonitor.controller.SchedulingManager
 import icp_bhp.crackmonitor.controller.database.MeasurementDatabase
 import icp_bhp.crackmonitor.model.Settings
@@ -38,11 +38,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Check if any permissions are needed
-        val permissionHandler = PermissionHandler(this)
-        val requiredPerms = PermissionHandler.Permission.values().none { perm ->
-            permissionHandler.hasPermission(perm)
-        }
-        if (requiredPerms) {
+        if (Permission.allPerms.none { it.isGrantedTo(this) }) {
             startActivity(PermissionHandlerActivity.getIntent(this))
         }
 
@@ -57,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         this.views.testButton.setOnClickListener {
-            startActivity(RealTimeMeasureActivity.getIntent(this))
+            startActivity(RealTimeMeasurementActivity.getIntent(this))
         }
 
         this.views.scheduleButton.setOnClickListener {

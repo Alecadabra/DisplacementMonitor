@@ -6,17 +6,16 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import icp_bhp.crackmonitor.R
-import icp_bhp.crackmonitor.controller.PermissionHandler
+import icp_bhp.crackmonitor.controller.Permission
+import icp_bhp.crackmonitor.controller.PermissionDelegate
 
 class PermissionHandlerActivity : AppCompatActivity() {
 
     /** Handles permission logic and delegates result calls */
-    private val permissionHandler = PermissionHandler(this)
+    private val permissionHandler = PermissionDelegate(this)
 
-    private val requiredPermissions: Collection<PermissionHandler.Permission>
-        get() = PermissionHandler.Permission.values().filterNot {
-            this.permissionHandler.hasPermission(it)
-        }
+    private val requiredPermissions: Collection<Permission>
+        get() = Permission.allPerms.filterNot { it.isGrantedTo(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +29,7 @@ class PermissionHandlerActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        PermissionHandler.Permission.fromRequestCode(requestCode)?.also { perm ->
+        Permission.fromRequestCode(requestCode)?.also { perm ->
             this.permissionHandler.resultActivity(perm, resultCode, data)
             runPermRequest()
         }
@@ -39,7 +38,7 @@ class PermissionHandlerActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        PermissionHandler.Permission.fromRequestCode(requestCode)?.also { perm ->
+        Permission.fromRequestCode(requestCode)?.also { perm ->
             this.permissionHandler.resultRequestPermission(perm, permissions, grantResults)
             runPermRequest()
         }
@@ -54,11 +53,9 @@ class PermissionHandlerActivity : AppCompatActivity() {
     }
 
     private fun runPermRequest() {
-        this.requiredPermissions.firstOrNull()?.also { perm ->
-            this.permissionHandler.requestPermission(perm)
-        } ?: run {
+        this.requiredPermissions.firstOrNull()?.requestWith(this) ?: run {
             Toast.makeText(this, "All permissions granted", Toast.LENGTH_SHORT).show()
-            this.onBackPressed()
+            finish()
         }
     }
 

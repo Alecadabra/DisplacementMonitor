@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.opencv.android.CameraBridgeViewBase
 
-class RealTimeMeasureActivity : AppCompatActivity() {
+class RealTimeMeasurementActivity : AppCompatActivity() {
 
     // Members -------------------------------------------------------------------------------------
 
@@ -41,12 +40,12 @@ class RealTimeMeasureActivity : AppCompatActivity() {
             val measurement = this.calibratedImageProcessor.measure(image, preview)
             val text = "Measured value: ${"%.4f".format(measurement)}m"
             CoroutineScope(Dispatchers.Main).launch {
-                this@RealTimeMeasureActivity.views.measurement.text = text
+                this@RealTimeMeasurementActivity.views.measurement.text = text
             }
         } catch (e: IllegalStateException) {
             CoroutineScope(Dispatchers.Main).launch {
                 @SuppressLint("SetTextI18n")
-                this@RealTimeMeasureActivity.views.measurement.text = "Looking for target..."
+                this@RealTimeMeasurementActivity.views.measurement.text = "Looking for target..."
             }
         }
 
@@ -88,8 +87,8 @@ class RealTimeMeasureActivity : AppCompatActivity() {
     )
 
     companion object {
-        private const val TAG = "RealTimeMeasureActivity"
+        private const val TAG = "RealTimeMeasurementActivity"
 
-        fun getIntent(context: Context) = Intent(context, RealTimeMeasureActivity::class.java)
+        fun getIntent(context: Context) = Intent(context, RealTimeMeasurementActivity::class.java)
     }
 }

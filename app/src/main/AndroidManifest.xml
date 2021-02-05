@@ -36,7 +36,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CrackMonitor">
         <activity android:name=".view.CalibrationActivity" />
-        <activity android:name=".view.RealTimeMeasureActivity" />
+        <activity android:name=".view.RealTimeMeasurementActivity" />
 
         <receiver
             android:name=".controller.SchedulingManager$AlarmReceiver"
