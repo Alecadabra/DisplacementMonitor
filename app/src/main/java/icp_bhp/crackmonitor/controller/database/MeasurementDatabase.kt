@@ -10,12 +10,18 @@ abstract class MeasurementDatabase : RoomDatabase() {
     abstract fun measurementDao(): MeasurementDao
 
     companion object {
-        lateinit var instance: MeasurementDatabase
+        private var instance: MeasurementDatabase? = null
 
-        fun get(applicationContext: Context) = Room.databaseBuilder(
-            applicationContext,
-            MeasurementDatabase::class.java,
-            "MeasurementDatabase"
-        ).build()
+        fun get() = this.instance ?: error("Could not get MeasurementDatabase instance")
+
+        fun get(lazyApplicationContext: () -> Context) = this.instance ?: run {
+            val localInstance = Room.databaseBuilder(
+                lazyApplicationContext(),
+                MeasurementDatabase::class.java,
+                "MeasurementDatabase"
+            ).build()
+            this.instance = localInstance
+            return@run localInstance
+        }
     }
 }

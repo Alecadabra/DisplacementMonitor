@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         // Initialise database
         CoroutineScope(Dispatchers.IO).launch {
-            MeasurementDatabase.instance = MeasurementDatabase.get(applicationContext)
+            MeasurementDatabase.get { applicationContext }
         }
 
         // Check if any permissions are needed
@@ -69,7 +70,8 @@ class MainActivity : AppCompatActivity() {
 
         this.views.clearDataButton.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                MeasurementDatabase.instance.measurementDao().clear()
+                val db = MeasurementDatabase.get { applicationContext }
+                db.measurementDao().clear()
                 withContext(Dispatchers.Main) {
                     onResume()
                 }
@@ -81,9 +83,14 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         CoroutineScope(Dispatchers.IO).launch {
-            val data = MeasurementDatabase.instance.measurementDao().getAll()
-            val text = data.joinToString(separator = "\n") { (timestampSeconds, distance) ->
-                val format = java.text.SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.ROOT)
+            val db = MeasurementDatabase.get { applicationContext }
+            val data = db.measurementDao().getAll()
+            val text = data.joinToString(
+                separator = "\n",
+                limit = 10,
+                truncated = "(${data.size - 10} more)"
+            ) { (timestampSeconds, distance) ->
+                val format = SimpleDateFormat("dd/MM/yyyy hh:mm:ss a", Locale.ROOT)
                 val dateTime = Date(timestampSeconds * 1000)
 
                 "${format.format(dateTime)} - ${"%.2f".format(distance)}m"
@@ -92,7 +99,6 @@ class MainActivity : AppCompatActivity() {
                 this@MainActivity.views.data.text = text
             }
         }
-
     }
 
     override fun onDestroy() {

@@ -47,12 +47,11 @@
             android:name=".view.ScheduledMeasurementActivity"
             android:showOnLockScreen="true"
             android:turnScreenOn="true"
-            tools:ignore="UnusedAttribute" />
+            tools:ignore="UnusedAttribute"/>
         <activity android:name=".view.SettingsActivity" />
         <activity android:name=".view.PermissionHandlerActivity" />
         <activity
-            android:name=".view.MainActivity"
-            android:screenOrientation="portrait">
+            android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

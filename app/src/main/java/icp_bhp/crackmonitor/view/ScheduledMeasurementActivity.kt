@@ -2,11 +2,14 @@ package icp_bhp.crackmonitor.view
 
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
+import android.app.admin.DevicePolicyManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -56,7 +59,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
                 }
             }
         } catch (e: IllegalStateException) {
-            Log.i(TAG, "Image processing - Failed to measure distance (${e.message}")
+            Log.i(TAG, "Image processing - Failed to measure distance (${e.message})")
             CoroutineScope(Dispatchers.Main).launch {
                 if (!this@ScheduledMeasurementActivity.measured) {
                     val failuresText = this@ScheduledMeasurementActivity.failedAttempts.let {
@@ -82,7 +85,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scheduled_measurement)
 
-        setFlags()
+        startUp()
 
         this.title = "Measuring Distance"
 
@@ -100,13 +103,37 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
     // Local helper functions ----------------------------------------------------------------------
 
-    private fun setFlags() {
+    private fun startUp() {
+        // Dim screen
+        this.window.attributes = this.window.attributes.also {
+            it.screenBrightness = 0f
+        }
+
+        window.addFlags(
+            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+        )
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
-            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-            keyguardManager.requestDismissKeyguard(this, null)
+            keyguardManager.requestDismissKeyguard(
+                this,
+                object : KeyguardManager.KeyguardDismissCallback() {
+                    override fun onDismissCancelled() {
+                        Log.d(TAG, "Keyguard - Dismiss cancelled")
+                    }
+
+                    override fun onDismissError() {
+                        Log.d(TAG, "Keyguard - Dismiss cancelled")
+                    }
+
+                    override fun onDismissSucceeded() {
+                        Log.d(TAG, "Keyguard - Dismiss success")
+                    }
+                }
+            )
         } else {
             window.addFlags(
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
@@ -118,8 +145,27 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
         }
     }
 
+    private fun finishUp() {
+        // Finish up and close
+        window.clearFlags(
+            WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+        )
+
+        /*
+        try {
+            val policyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+            policyManager.lockNow()
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Could not turn off screen", e)
+        }
+         */
+
+        finish()
+    }
+
     private fun onDistanceMeasured(unixTimestamp: Long, distance: Double) {
         this.views.cameraBridgeViewBase.disableView()
+        this.views.cameraBridgeViewBase.visibility = View.GONE
 
         if (!this.measured) {
             this.measured = true
@@ -130,14 +176,12 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
             Log.i(TAG, "Measured value of ${"%.2f".format(distance)}m")
 
             CoroutineScope(Dispatchers.IO).launch {
-                val db = MeasurementDatabase.instance
+                val db = MeasurementDatabase.get { applicationContext }
                 val measurement = Measurement(unixTimestamp, distance)
                 db.measurementDao().insert(measurement)
             }
 
-            // Finish up and close
-            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            finish()
+            finishUp()
         }
     }
 

@@ -10,20 +10,6 @@ class TargetMeasurement(
     private val settings: Settings
 ) {
 
-    // Secondary constructor -----------------------------------------------------------------------
-
-    constructor(
-        initialTarget: Contour,
-        settings: Settings
-    ) : this(
-        focalLengthReal = focalLengthReal(
-            distanceReal = settings.calibration.initialDistance,
-            lengthReal = settings.calibration.targetSize,
-            lengthPx = initialTarget.edgeLength
-        ),
-        settings = settings
-    )
-
     // Public entry points -------------------------------------------------------------------------
 
     fun measureDistance(target: Contour): Double = distanceReal(
