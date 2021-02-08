@@ -1,19 +1,14 @@
 package icp_bhp.crackmonitor.view
 
-import android.annotation.SuppressLint
-import android.app.KeyguardManager
-import android.app.admin.DevicePolicyManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import icp_bhp.crackmonitor.R
+import icp_bhp.crackmonitor.controller.CameraViewWithFlash
 import icp_bhp.crackmonitor.controller.DeviceStateController
 import icp_bhp.crackmonitor.controller.cv.CalibratedImageProcessor
 import icp_bhp.crackmonitor.controller.cv.CameraFrameCallback
@@ -23,7 +18,6 @@ import icp_bhp.crackmonitor.controller.database.Measurement
 import icp_bhp.crackmonitor.controller.database.MeasurementDatabase
 import icp_bhp.crackmonitor.model.Settings
 import kotlinx.coroutines.*
-import org.opencv.android.CameraBridgeViewBase
 
 class ScheduledMeasurementActivity : AppCompatActivity() {
 
@@ -56,6 +50,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
         try {
             val measurement = this.calibratedImageProcessor.measure(image, preview)
+            image.release()
             val unixTimestamp = System.currentTimeMillis() / 1000L
             CoroutineScope(Dispatchers.Main).launch {
                 if (!this@ScheduledMeasurementActivity.measured) {
@@ -65,8 +60,17 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
         } catch (e: IllegalStateException) {
             Log.i(TAG, "Image processing - Failed to measure distance (${e.message})")
             CoroutineScope(Dispatchers.Main).launch {
-                if (!this@ScheduledMeasurementActivity.measured) {
-                    val failuresText = this@ScheduledMeasurementActivity.failedAttempts.let {
+                val activity = this@ScheduledMeasurementActivity
+
+                if (!activity.measured) {
+
+                    // Turn on the flash if it's needed
+                    if (activity.failedAttempts > MAX_FAILS) {
+                        launch { activity.views.cameraView.flashOn() }
+                    }
+
+                    // Set text readout
+                    val failuresText = activity.failedAttempts.let {
                         if (it < 10) {
                             ".".repeat(it / 2)
                         } else {
@@ -74,8 +78,8 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
                         }
                     }
                     val text = "Looking for target$failuresText"
-                    this@ScheduledMeasurementActivity.views.readout.text = text
-                    this@ScheduledMeasurementActivity.failedAttempts++
+                    activity.views.readout.text = text
+                    activity.failedAttempts++
                 }
             }
         }
@@ -95,8 +99,8 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
         Log.d("ScheduledMeasurement", "Activity started")
 
-        this.views.cameraBridgeViewBase.setCvCameraViewListener(this.cameraFrameCallback)
-        this.views.cameraBridgeViewBase.enableView()
+        this.views.cameraView.setCvCameraViewListener(this.cameraFrameCallback)
+        this.views.cameraView.enableView()
     }
 
     override fun onResume() {
@@ -108,19 +112,21 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
     // Local helper functions ----------------------------------------------------------------------
 
     private fun onDistanceMeasured(unixTimestamp: Long, distance: Double) {
-        this.views.cameraBridgeViewBase.disableView()
-        this.views.cameraBridgeViewBase.visibility = View.GONE
+        // Disable camera
+        this.views.cameraView.also { camera ->
+            camera.flashOff()
+            camera.disableView()
+            camera.visibility = View.GONE
+        }
 
         if (!this.measured) {
             this.measured = true
 
-            @SuppressLint("SetTextI18n")
-            this.views.readout.text = "Measured value of ${"%.2f".format(distance)}m"
-
             Log.i(TAG, "Measured value of ${"%.2f".format(distance)}m")
 
+            // Log measurement to database
             CoroutineScope(Dispatchers.IO).launch {
-                val db = MeasurementDatabase.get { applicationContext }
+                val db = MeasurementDatabase { applicationContext }
                 val measurement = Measurement(unixTimestamp, distance)
                 db.measurementDao().insert(measurement)
             }
@@ -132,12 +138,14 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
     // Local constructs ----------------------------------------------------------------------------
 
     private inner class Views(
-        val cameraBridgeViewBase: CameraBridgeViewBase = findViewById(R.id.scheduledMeasurementActivityCameraView),
+        val cameraView: CameraViewWithFlash = findViewById(R.id.scheduledMeasurementActivityCameraView),
         val readout: TextView = findViewById(R.id.scheduledMeasurementActivityReadout)
     )
 
     companion object {
         private const val TAG = "ScheduledMeasurement"
+
+        private const val MAX_FAILS = 20
 
         fun getIntent(c: Context) = Intent(c, ScheduledMeasurementActivity::class.java)
     }

@@ -5,7 +5,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import icp_bhp.crackmonitor.R
-import icp_bhp.crackmonitor.controller.Permission
+import icp_bhp.crackmonitor.controller.permissions.Permission
 import icp_bhp.crackmonitor.controller.SchedulingManager
 import icp_bhp.crackmonitor.controller.database.MeasurementDatabase
 import icp_bhp.crackmonitor.model.Settings
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         // Initialise database
         CoroutineScope(Dispatchers.IO).launch {
-            MeasurementDatabase.get { applicationContext }
+            MeasurementDatabase { applicationContext }
         }
 
         // Check if any permissions are needed
@@ -64,11 +64,15 @@ class MainActivity : AppCompatActivity() {
             this.scheduleManager.cancel()
         }
 
+        this.views.measurementButton.setOnClickListener {
+            startActivity(ScheduledMeasurementActivity.getIntent(this))
+        }
+
         this.views.clearDataButton.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
-                val db = MeasurementDatabase.get { applicationContext }
+                val db = MeasurementDatabase { applicationContext }
                 db.measurementDao().clear()
-                withContext(Dispatchers.Main) {
+                launch(Dispatchers.Main) {
                     onResume()
                 }
             }
@@ -79,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         CoroutineScope(Dispatchers.IO).launch {
-            val db = MeasurementDatabase.get { applicationContext }
+            val db = MeasurementDatabase { applicationContext }
             val data = db.measurementDao().getAll()
             val text = data.joinToString(
                 separator = "\n",
@@ -97,10 +101,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
+    override fun finish() {
         this.scheduleManager.cancel()
+
+        super.finish()
     }
 
     // Local constructs ----------------------------------------------------------------------------
@@ -111,6 +115,7 @@ class MainActivity : AppCompatActivity() {
         val testButton: Button = findViewById(R.id.mainActivityTestButton),
         val scheduleButton: Button = findViewById(R.id.mainActivityScheduleButton),
         val cancelButton: Button = findViewById(R.id.mainActivityCancelButton),
+        val measurementButton: Button = findViewById(R.id.mainActivityMeasurementButton),
         val data: TextView = findViewById(R.id.mainActivityData),
         val clearDataButton: Button = findViewById(R.id.mainActivityClearDataButton),
     )

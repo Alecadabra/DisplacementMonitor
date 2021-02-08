@@ -53,7 +53,13 @@
             android:id="@+id/mainActivityCancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel scheduling" />
+            android:text="Stop scheduling" />
+
+        <Button
+            android:id="@+id/mainActivityMeasurementButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take single measurement" />
 
         <Space
             android:layout_width="wrap_content"

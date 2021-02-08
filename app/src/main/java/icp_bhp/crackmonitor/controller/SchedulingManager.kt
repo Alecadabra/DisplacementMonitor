@@ -14,31 +14,28 @@ class SchedulingManager(
     private val settings: Settings,
     private val scheduledIntent: Intent,
 ) {
-
-    val isScheduled: Boolean
-        get() = getAlarmIntent(PendingIntent.FLAG_NO_CREATE) != null
-
     private val alarmManager: AlarmManager
         get() = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    private fun getAlarmIntent(flags: Int = 0): PendingIntent? = PendingIntent.getBroadcast(
-        this.context,
-        0,
-        AlarmReceiver.getIntent(this.context, this.scheduledIntent),
-        flags
-    )
+    private val alarmIntent: PendingIntent
+        get() = PendingIntent.getBroadcast(
+            this.context,
+            0,
+            AlarmReceiver.getIntent(this.context, this.scheduledIntent),
+            0
+        )
 
     fun start() {
         val periodMinutes = this.settings.periodicMeasurement.period
         val periodMillis = periodMinutes * 60000L
 
-        this.alarmManager.cancel(this.getAlarmIntent())
+        this.alarmManager.cancel(this.alarmIntent)
 
         this.alarmManager.setRepeating(
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
             SystemClock.elapsedRealtime() + periodMillis,
             periodMillis,
-            getAlarmIntent()
+            this.alarmIntent
         )
 
         Log.d(TAG, "Scheduling started at $periodMinutes minutes period")
@@ -47,24 +44,20 @@ class SchedulingManager(
     fun cancel() {
         Log.d(TAG, "Scheduling cancelled")
 
-        this.alarmManager.cancel(this.getAlarmIntent())
+        this.alarmManager.cancel(this.alarmIntent)
     }
 
     class AlarmReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
             // Resolve scheduled intent
-            val scheduledIntent =
-                intent.getParcelableExtra<Intent>(BUNDLE_SCHEDULED_INTENT)?.addFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
-                )
-
-            if (scheduledIntent == null) {
-                Log.e(TAG, "Received broadcast, could not resolve scheduled intent")
-            } else {
+            intent.getParcelableExtra<Intent>(BUNDLE_SCHEDULED_INTENT)?.addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+            )?.also { scheduledIntent ->
+                // Scheduled intent resolved, start activity
                 Log.d(TAG, "Received broadcast, starting scheduled intent")
                 context.startActivity(scheduledIntent)
-            }
+            } ?: Log.e(TAG, "Received broadcast, could not resolve scheduled intent")
         }
 
         companion object {
