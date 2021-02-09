@@ -9,7 +9,7 @@ android {
     buildToolsVersion "30.0.1"
 
     defaultConfig {
-        applicationId "icp_bhp.crackmonitor"
+        applicationId "icp_bhp.displacementmonitor"
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 1

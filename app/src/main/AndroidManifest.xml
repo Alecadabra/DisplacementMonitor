@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="icp_bhp.crackmonitor">
+    package="icp_bhp.displacementmonitor">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -32,15 +32,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CrackMonitor">
-        <activity android:name=".view.CalibrationActivity" />
-        <activity android:name=".view.RealTimeMeasurementActivity" />
+        <activity android:name="icp_bhp.displacementmonitor.view.CalibrationActivity" />
+        <activity android:name="icp_bhp.displacementmonitor.view.RealTimeMeasurementActivity" />
 
         <receiver
-            android:name=".controller.SchedulingManager$AlarmReceiver"
+            android:name="icp_bhp.displacementmonitor.controller.SchedulingManager$AlarmReceiver"
             android:enabled="true"
             android:exported="false"/>
 
-        <receiver android:name=".controller.permissions.Permission$ADMIN$AdminReceiver"
+        <receiver android:name="icp_bhp.displacementmonitor.controller.permissions.Permission$ADMIN$AdminReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
@@ -52,14 +52,14 @@
         </receiver>
 
         <activity
-            android:name=".view.ScheduledMeasurementActivity"
+            android:name="icp_bhp.displacementmonitor.view.ScheduledMeasurementActivity"
             android:showOnLockScreen="true"
             android:turnScreenOn="true"
             tools:ignore="UnusedAttribute"/>
-        <activity android:name=".view.SettingsActivity" />
-        <activity android:name=".view.PermissionHandlerActivity" />
+        <activity android:name="icp_bhp.displacementmonitor.view.SettingsActivity" />
+        <activity android:name="icp_bhp.displacementmonitor.view.PermissionHandlerActivity" />
         <activity
-            android:name=".view.MainActivity">
+            android:name="icp_bhp.displacementmonitor.view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
