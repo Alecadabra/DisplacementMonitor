@@ -1,3 +1,3 @@
-# CrackMonitor
+# Displacement Monitor
 
-A crack displacement measurement and monitoring Android app.
+A displacement measurement and monitoring Android app.
