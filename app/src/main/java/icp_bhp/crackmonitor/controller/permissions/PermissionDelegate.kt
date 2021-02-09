@@ -7,15 +7,6 @@ import icp_bhp.crackmonitor.controller.permissions.Permission.*
 
 class PermissionDelegate(private val activity: Activity) {
 
-    /*fun requestPermissionDialog(permission: Permission) = AlertDialog.Builder(this.activity).also {
-        it.setTitle("$permission Permission Required")
-        it.setNeutralButton("Grant Permission") { dialogInterface, _ ->
-            dialogInterface.dismiss()
-            requestPermission(permission)
-        }
-        it.setCancelable(false)
-    }.create()*/
-
     // Activity delegates --------------------------------------------------------------------------
 
     fun resultActivity(permission: Permission, resultCode: Int, data: Intent?) {

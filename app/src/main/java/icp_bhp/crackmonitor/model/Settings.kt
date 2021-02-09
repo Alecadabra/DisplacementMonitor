@@ -20,7 +20,7 @@ class Settings(private val preferences: SharedPreferences) {
     init {
         // Test generate all settings holder classes so exceptions are thrown eagerly
         Calibration()
-        CameraPreProcessing()
+        Camera()
         PeriodicMeasurement()
         TargetFinding()
     }
@@ -30,8 +30,8 @@ class Settings(private val preferences: SharedPreferences) {
     val calibration: Calibration
         get() = Calibration()
 
-    val cameraPreProcessing: CameraPreProcessing
-        get() = CameraPreProcessing()
+    val camera: Camera
+        get() = Camera()
 
     val periodicMeasurement: PeriodicMeasurement
         get() = PeriodicMeasurement()
@@ -68,9 +68,12 @@ class Settings(private val preferences: SharedPreferences) {
             ?: error("Focal length must be a number greater than or equal to zero")
     }
 
-    inner class CameraPreProcessing {
-        val warp = getBoolean("cameraPreProcessing_warp")
+    inner class Camera {
+        val warp = getBoolean("camera_warp")
             ?: error("Internal error getting camera pre-processing warp flag")
+
+        val camIdx = getInt("camera_camIdx")
+            ?: error("Internal error getting camera index")
     }
 
     inner class PeriodicMeasurement {

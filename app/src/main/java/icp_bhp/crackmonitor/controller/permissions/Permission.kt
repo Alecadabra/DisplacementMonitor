@@ -22,13 +22,15 @@ sealed class Permission {
 
     abstract val requestCode: Int
 
+    abstract val name: String
+
     abstract fun isGrantedTo(activity: Activity): Boolean
 
     abstract fun requestWith(activity: Activity)
 
     // Overrides -----------------------------------------------------------------------------------
 
-    override fun toString() = super.toString().toLowerCase(Locale.ROOT).capitalize(Locale.ROOT)
+    override fun toString() = this.name
 
     // Independent utilities -----------------------------------------------------------------------
 
@@ -41,6 +43,8 @@ sealed class Permission {
     // Implementations -----------------------------------------------------------------------------
 
     object SETTINGS : Permission() {
+        override val name = "Settings"
+
         override val requestCode: Int by lazy { allPerms.indexOf(this) }
 
         const val permString = Manifest.permission.WRITE_SETTINGS
@@ -74,6 +78,8 @@ sealed class Permission {
     }
 
     object CAMERA : Permission() {
+        override val name = "Camera"
+
         override val requestCode: Int by lazy { allPerms.indexOf(this) }
 
         const val permString = Manifest.permission.CAMERA
@@ -93,6 +99,8 @@ sealed class Permission {
     }
 
     object ADMIN : Permission() {
+        override val name = "Admin"
+
         override val requestCode: Int by lazy { allPerms.indexOf(this) }
 
         override fun isGrantedTo(activity: Activity): Boolean {

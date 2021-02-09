@@ -27,14 +27,19 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="cameraPreProcessing"
-        android:title="Camera Pre-Processing">
+        android:key="camera"
+        android:title="Camera">
 
         <CheckBoxPreference
-            android:key="cameraPreProcessing_warp"
+            android:key="camera_warp"
             android:title="Warp Camera"
             android:defaultValue="true"
             android:summary="Change this if the camera view is warped" />
+
+        <ListPreference
+            android:key="camera_camIdx"
+            android:title="Select Camera"
+            android:summary="Select the camera device to use" />
 
     </PreferenceCategory>
 

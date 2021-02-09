@@ -23,7 +23,7 @@ class CalibratedImageProcessor(
         check(!image.empty()) { "Image is empty" }
 
         // Orient image properly
-        val imageOriented: Mat = fixOrientation(image, this.settings.cameraPreProcessing.warp)
+        val imageOriented: Mat = fixOrientation(image, this.settings.camera.warp)
         previewDest?.values = resizeWithBorder(imageOriented, image.size())
 
         // Find possible target

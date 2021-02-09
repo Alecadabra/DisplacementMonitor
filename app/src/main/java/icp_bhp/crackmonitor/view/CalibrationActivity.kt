@@ -12,13 +12,13 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.preference.PreferenceManager
 import icp_bhp.crackmonitor.R
+import icp_bhp.crackmonitor.controller.CustomCameraView
 import icp_bhp.crackmonitor.controller.cv.CameraFrameCallback
 import icp_bhp.crackmonitor.controller.cv.*
 import icp_bhp.crackmonitor.model.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.opencv.android.CameraBridgeViewBase
 import org.opencv.core.Mat
 
 class CalibrationActivity : AppCompatActivity() {
@@ -38,7 +38,7 @@ class CalibrationActivity : AppCompatActivity() {
     private val targetFinderCamera = CameraFrameCallback { image ->
         var preview: Mat
 
-        val oriented = fixOrientation(image, this.settings.cameraPreProcessing.warp)
+        val oriented = fixOrientation(image, this.settings.camera.warp)
         preview = resizeWithBorder(oriented, image.size())
 
         try {
@@ -55,7 +55,7 @@ class CalibrationActivity : AppCompatActivity() {
     private val focalLengthMeasureCamera = CameraFrameCallback { image ->
         var preview: Mat
 
-        val oriented = fixOrientation(image, this.settings.cameraPreProcessing.warp)
+        val oriented = fixOrientation(image, this.settings.camera.warp)
         preview = resizeWithBorder(oriented, image.size())
 
         try {
@@ -96,9 +96,6 @@ class CalibrationActivity : AppCompatActivity() {
         // Keep the screen on
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        this.views.cameraBridgeViewBase.setCvCameraViewListener(this.targetFinderCamera)
-        this.views.cameraBridgeViewBase.enableView()
-
         val calibrationSettings = this.settings.calibration
         @SuppressLint("SetTextI18n")
         this.views.readout.text = """
@@ -113,11 +110,11 @@ class CalibrationActivity : AppCompatActivity() {
         }
 
         this.views.calibrateButton.setOnClickListener {
-            this.views.cameraBridgeViewBase.setCvCameraViewListener(this.focalLengthMeasureCamera)
+            this.views.cameraView.start(this.settings, this.focalLengthMeasureCamera)
         }
 
         this.views.returnButton.setOnClickListener {
-            onBackPressed()
+            finish()
         }
     }
 
@@ -125,12 +122,19 @@ class CalibrationActivity : AppCompatActivity() {
         super.onResume()
 
         initialiseOpenCV(this, TAG)
+        this.views.cameraView.start(this.settings, this.targetFinderCamera)
+    }
+
+    override fun onPause() {
+        this.views.cameraView.stop()
+
+        super.onPause()
     }
 
     // Focal length measurement callback -----------------------------------------------------------
 
     private fun onMeasureFocalLength(focalLength: Double) {
-        this.views.cameraBridgeViewBase.disableView()
+        this.views.cameraView.disableView()
 
         if (!this.measured) {
             this.measured = true
@@ -151,7 +155,7 @@ class CalibrationActivity : AppCompatActivity() {
     // Local constructs ----------------------------------------------------------------------------
 
     private inner class Views(
-        val cameraBridgeViewBase: CameraBridgeViewBase = findViewById(R.id.calibrationActivityCameraView),
+        val cameraView: CustomCameraView = findViewById(R.id.calibrationActivityCameraView),
         val readout: TextView = findViewById(R.id.calibrationActivityReadout),
         val settingsButton: Button = findViewById(R.id.calibrationActivitySettingsButton),
         val calibrateButton: Button = findViewById(R.id.calibrationActivityCalibrateButton),

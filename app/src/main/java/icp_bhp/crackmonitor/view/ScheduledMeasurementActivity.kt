@@ -4,11 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import icp_bhp.crackmonitor.R
-import icp_bhp.crackmonitor.controller.CameraViewWithFlash
+import icp_bhp.crackmonitor.controller.CustomCameraView
 import icp_bhp.crackmonitor.controller.DeviceStateController
 import icp_bhp.crackmonitor.controller.cv.CalibratedImageProcessor
 import icp_bhp.crackmonitor.controller.cv.CameraFrameCallback
@@ -99,8 +98,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
         Log.d("ScheduledMeasurement", "Activity started")
 
-        this.views.cameraView.setCvCameraViewListener(this.cameraFrameCallback)
-        this.views.cameraView.enableView()
+        this.views.cameraView.start(this.settings, this.cameraFrameCallback)
     }
 
     override fun onResume() {
@@ -113,11 +111,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
     private fun onDistanceMeasured(unixTimestamp: Long, distance: Double) {
         // Disable camera
-        this.views.cameraView.also { camera ->
-            camera.flashOff()
-            camera.disableView()
-            camera.visibility = View.GONE
-        }
+        this.views.cameraView.stop()
 
         if (!this.measured) {
             this.measured = true
@@ -138,7 +132,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
     // Local constructs ----------------------------------------------------------------------------
 
     private inner class Views(
-        val cameraView: CameraViewWithFlash = findViewById(R.id.scheduledMeasurementActivityCameraView),
+        val cameraView: CustomCameraView = findViewById(R.id.scheduledMeasurementActivityCameraView),
         val readout: TextView = findViewById(R.id.scheduledMeasurementActivityReadout)
     )
 

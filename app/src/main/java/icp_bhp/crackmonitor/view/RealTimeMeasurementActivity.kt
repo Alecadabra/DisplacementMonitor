@@ -8,12 +8,12 @@ import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import icp_bhp.crackmonitor.R
+import icp_bhp.crackmonitor.controller.CustomCameraView
 import icp_bhp.crackmonitor.controller.cv.*
 import icp_bhp.crackmonitor.model.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.opencv.android.CameraBridgeViewBase
 
 class RealTimeMeasurementActivity : AppCompatActivity() {
 
@@ -62,27 +62,25 @@ class RealTimeMeasurementActivity : AppCompatActivity() {
 
         // Keep the screen on
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-        this.views.cameraBridgeViewBase.setCvCameraViewListener(this.cameraFrameCallback)
     }
 
     override fun onResume() {
         super.onResume()
 
         initialiseOpenCV(this, TAG)
-        this.views.cameraBridgeViewBase.enableView()
+        this.views.cameraView.start(this.settings, this.cameraFrameCallback)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        this.views.cameraView.stop()
 
-        this.views.cameraBridgeViewBase.disableView()
+        super.onPause()
     }
 
     // Local constructs ----------------------------------------------------------------------------
 
     private inner class Views(
-        val cameraBridgeViewBase: CameraBridgeViewBase = findViewById(R.id.realTimeActivityCameraView),
+        val cameraView: CustomCameraView = findViewById(R.id.realTimeActivityCameraView),
         val measurement: TextView = findViewById(R.id.realTimeActivityMeasurement)
     )
 

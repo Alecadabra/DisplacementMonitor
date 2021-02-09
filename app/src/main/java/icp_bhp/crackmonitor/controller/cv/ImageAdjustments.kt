@@ -19,20 +19,20 @@ fun fixOrientation(image: Mat, warp: Boolean): Mat {
     if (warp) {
         val original = image.clone()
         val transposed = blankImageTransposed()
+        val flipped = blankImageTransposed()
+
+        Core.transpose(original, transposed)
+        Core.flip(transposed, flipped, 1)
+        return flipped
+    } else {
+        val original = image.clone()
+        val transposed = blankImageTransposed()
         val resized = blankImage()
         val flipped = blankImage()
 
         Core.transpose(original, transposed)
         Imgproc.resize(transposed, resized, resized.size(), 0.0, 0.0, 0)
         Core.flip(resized, flipped, 1)
-        return flipped
-    } else {
-        val original = image.clone()
-        val transposed = blankImageTransposed()
-        val flipped = blankImageTransposed()
-
-        Core.transpose(original, transposed)
-        Core.flip(transposed, flipped, 1)
         return flipped
     }
 }

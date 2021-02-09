@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import icp_bhp.crackmonitor.R
 import icp_bhp.crackmonitor.controller.permissions.Permission
@@ -71,9 +72,20 @@ class PermissionHandlerActivity : AppCompatActivity() {
     }
 
     private fun runPermRequest() {
-        this.requiredPermissions.firstOrNull()?.requestWith(this) ?: run {
+        val nextPerm = this.requiredPermissions.firstOrNull()
+
+        if (nextPerm == null) {
             Toast.makeText(this, "All permissions granted", Toast.LENGTH_SHORT).show()
             finish()
+        } else {
+            AlertDialog.Builder(this).also {
+                it.setTitle("$nextPerm permission required")
+                it.setPositiveButton("Grant Permission") { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                    nextPerm.requestWith(this)
+                }
+                it.setCancelable(false)
+            }.create().show()
         }
     }
 

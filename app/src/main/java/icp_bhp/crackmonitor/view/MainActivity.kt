@@ -23,7 +23,11 @@ class MainActivity : AppCompatActivity() {
     private val views by lazy { Views() }
 
     private val scheduleManager by lazy {
-        SchedulingManager(this, Settings(this), ScheduledMeasurementActivity.getIntent(this))
+        SchedulingManager(
+            context = this,
+            settings = Settings(this),
+            scheduledIntent = ScheduledMeasurementActivity.getIntent(this)
+        )
     }
 
     // Android entry points ------------------------------------------------------------------------
@@ -35,11 +39,6 @@ class MainActivity : AppCompatActivity() {
         // Initialise database
         CoroutineScope(Dispatchers.IO).launch {
             MeasurementDatabase { applicationContext }
-        }
-
-        // Check if any permissions are needed
-        if (Permission.allPerms.none { it.isGrantedTo(this) }) {
-            startActivity(PermissionHandlerActivity.getIntent(this))
         }
 
         // Set up views
@@ -82,6 +81,12 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        // Check if any permissions are needed
+        if (Permission.allPerms.any { !it.isGrantedTo(this) }) {
+            startActivity(PermissionHandlerActivity.getIntent(this))
+        }
+
+        // Update database readout
         CoroutineScope(Dispatchers.IO).launch {
             val db = MeasurementDatabase { applicationContext }
             val data = db.measurementDao().getAll()

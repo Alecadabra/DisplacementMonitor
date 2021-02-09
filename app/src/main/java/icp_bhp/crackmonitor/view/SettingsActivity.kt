@@ -1,20 +1,18 @@
 package icp_bhp.crackmonitor.view
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.EditTextPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
+import androidx.preference.*
 import icp_bhp.crackmonitor.R
 import icp_bhp.crackmonitor.model.Settings
-import java.lang.IllegalStateException
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,6 +91,48 @@ class SettingsActivity : AppCompatActivity() {
 
                 return@setOnPreferenceClickListener true
             }
+
+            findPreference<ListPreference>("camera_camIdx")?.also { pref ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    val cameraManager = context?.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+                    val cameras = cameraManager.cameraIdList
+
+                    // Set output values
+                    pref.entryValues = cameras.indices.toList().map { it.toString() }.toTypedArray()
+
+                    // Map camera facing characteristics to human readable description
+                    val facingMap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        mapOf(
+                            CameraCharacteristics.LENS_FACING_BACK to "Back",
+                            CameraCharacteristics.LENS_FACING_FRONT to "Front",
+                            CameraCharacteristics.LENS_FACING_EXTERNAL to "External",
+                        )
+                    } else {
+                        mapOf(
+                            CameraCharacteristics.LENS_FACING_BACK to "Back",
+                            CameraCharacteristics.LENS_FACING_FRONT to "Front",
+                        )
+                    }.withDefault { "Unknown" }
+
+                    // Set human readable values
+                    pref.entries = cameras.map { cameraIdx ->
+                        val characteristics = cameraManager.getCameraCharacteristics(cameraIdx)
+                        val facing = characteristics.get(CameraCharacteristics.LENS_FACING) ?: -1
+                        val flash = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) ?: false
+                        val flashString = if (flash) "has" else "no"
+
+                        "ID $cameraIdx - ${facingMap.getValue(facing)} camera, $flashString flash"
+                    }.toTypedArray()
+
+                    // Default value
+                    if (pref.value == null) {
+                        pref.setValueIndex(0)
+                    }
+                } else {
+                    // API level not high enough to select camera
+                    pref.isVisible = false
+                }
+            }
         }
     }
 
@@ -100,4 +140,3 @@ class SettingsActivity : AppCompatActivity() {
         fun getIntent(c: Context) = Intent(c, SettingsActivity::class.java)
     }
 }
-

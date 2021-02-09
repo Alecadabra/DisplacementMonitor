@@ -2,35 +2,63 @@ package icp_bhp.crackmonitor.controller
 
 import android.content.Context
 import android.hardware.Camera
-import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.CameraManager
-import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
-import androidx.annotation.RequiresApi
-import org.opencv.android.JavaCamera2View
+import icp_bhp.crackmonitor.model.Settings
 import org.opencv.android.JavaCameraView
+import java.lang.RuntimeException
 
-@Suppress("DEPRECATION")
-class CameraViewWithFlash(
+class CustomCameraView(
     context: Context,
     attributeSet: AttributeSet,
 ) : JavaCameraView(context, attributeSet) {
 
+    var cameraIdx: Int
+        get() = this.mCameraIndex
+        set(value) { this.mCameraIndex = value }
+
+    fun start(settings: Settings, callback: CvCameraViewListener2) {
+        cameraIdx = settings.camera.camIdx
+        setCvCameraViewListener(callback)
+        enableView()
+        this.visibility = VISIBLE
+    }
+
+    fun stop() {
+        disableView()
+        this.visibility = GONE
+        flashOff()
+    }
+
     fun flashOn() {
-        this.mCamera.parameters = this.mCamera.parameters.also {
-            it.flashMode = Camera.Parameters.FLASH_MODE_TORCH
+        try {
+            @Suppress("DEPRECATION")
+            this.mCamera.parameters = this.mCamera.parameters.also {
+                it.flashMode = Camera.Parameters.FLASH_MODE_TORCH
+            }
+        } catch (e: RuntimeException) {
+            Log.e(TAG, "Could not turn on flash", e)
         }
     }
 
     fun flashOff() {
-        this.mCamera.parameters = this.mCamera.parameters.also {
-            it.flashMode = Camera.Parameters.FLASH_MODE_OFF
+        try {
+            @Suppress("DEPRECATION")
+            this.mCamera.parameters = this.mCamera.parameters.also {
+                it.flashMode = Camera.Parameters.FLASH_MODE_OFF
+            }
+        } catch (e: RuntimeException) {
+            Log.e(TAG, "Could not turn off flash", e)
         }
+    }
+
+    companion object {
+        private const val TAG = "CustomCameraView"
     }
 }
 
-// New API version, never worked due to wrong camera user
+// New API version, never worked due to wrong camera user, can't be fixed without re-implementing
+// JavaCamera2View to expose private fields
 /*
 @RequiresApi(Build.VERSION_CODES.M)
 class CustomCameraView2(
@@ -65,5 +93,4 @@ class CustomCameraView2(
     companion object {
         private const val TAG = "FlashController"
     }
-}
- */
+}*/
