@@ -31,9 +31,29 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CrackMonitor">
+        android:theme="@style/Theme.DisplacementMonitor">
+
+        <activity
+            android:name="displacement.monitor.view.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity android:name="displacement.monitor.view.CalibrationActivity" />
+
         <activity android:name="displacement.monitor.view.RealTimeMeasurementActivity" />
+
+        <activity
+            android:name="displacement.monitor.view.ScheduledMeasurementActivity"
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true"
+            tools:ignore="UnusedAttribute"/>
+
+        <activity android:name="displacement.monitor.view.SettingsActivity" />
+
+        <activity android:name="displacement.monitor.view.PermissionHandlerActivity" />
 
         <receiver
             android:name="displacement.monitor.controller.SchedulingManager$AlarmReceiver"
@@ -51,21 +71,6 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name="displacement.monitor.view.ScheduledMeasurementActivity"
-            android:showOnLockScreen="true"
-            android:turnScreenOn="true"
-            tools:ignore="UnusedAttribute"/>
-        <activity android:name="displacement.monitor.view.SettingsActivity" />
-        <activity android:name="displacement.monitor.view.PermissionHandlerActivity" />
-        <activity
-            android:name="displacement.monitor.view.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
