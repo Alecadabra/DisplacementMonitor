@@ -16,7 +16,7 @@ import displacement.monitor.cv.controller.initialiseOpenCV
 import displacement.monitor.database.local.Measurement
 import displacement.monitor.database.local.MeasurementDatabase
 import displacement.monitor.database.remote.RemoteDBController
-import displacement.monitor.model.Settings
+import displacement.monitor.settings.Settings
 import kotlinx.coroutines.*
 
 class ScheduledMeasurementActivity : AppCompatActivity() {

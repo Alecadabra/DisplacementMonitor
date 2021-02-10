@@ -1,7 +1,7 @@
 package displacement.monitor.cv.controller
 
 import displacement.monitor.cv.model.Contour
-import displacement.monitor.model.Settings
+import displacement.monitor.settings.Settings
 import org.opencv.core.Mat
 
 class CalibratedImageProcessor(

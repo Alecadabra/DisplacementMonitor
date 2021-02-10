@@ -1,4 +1,4 @@
-package displacement.monitor.model
+package displacement.monitor.settings
 
 import android.content.Context
 import android.content.SharedPreferences

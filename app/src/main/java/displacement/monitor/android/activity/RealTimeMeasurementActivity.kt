@@ -14,7 +14,7 @@ import displacement.monitor.cv.controller.CalibratedImageProcessor
 import displacement.monitor.cv.controller.CameraFrameCallback
 import displacement.monitor.cv.controller.TargetMeasurement
 import displacement.monitor.cv.controller.initialiseOpenCV
-import displacement.monitor.model.Settings
+import displacement.monitor.settings.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

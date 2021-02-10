@@ -4,7 +4,7 @@ import android.content.Context
 import android.hardware.Camera
 import android.util.AttributeSet
 import android.util.Log
-import displacement.monitor.model.Settings
+import displacement.monitor.settings.Settings
 import org.opencv.android.JavaCameraView
 import java.lang.RuntimeException
 

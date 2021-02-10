@@ -15,7 +15,7 @@ import displacement.monitor.R
 import displacement.monitor.android.view.CustomCameraView
 import displacement.monitor.cv.*
 import displacement.monitor.cv.controller.*
-import displacement.monitor.model.Settings
+import displacement.monitor.settings.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

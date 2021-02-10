@@ -8,7 +8,7 @@ import displacement.monitor.R
 import displacement.monitor.android.controller.SchedulingManager
 import displacement.monitor.database.local.MeasurementDatabase
 import displacement.monitor.android.controller.permissions.Permission
-import displacement.monitor.model.Settings
+import displacement.monitor.settings.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

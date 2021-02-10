@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
 import android.util.Log
-import displacement.monitor.model.Settings
+import displacement.monitor.settings.Settings
 
 class SchedulingManager(
     private val context: Context,
