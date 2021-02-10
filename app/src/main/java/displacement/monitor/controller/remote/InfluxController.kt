@@ -23,32 +23,28 @@ class InfluxController {
      * INFLUX_DB_TOKEN="YOUR TOKEN HERE"
      */
 
-    private val influxOptions: InfluxDBClientOptions = InfluxDBClientOptions.builder().also {
-        it.connectionString(URL)
-        it.authenticateToken(BuildConfig.INFLUX_DB_TOKEN.toCharArray())
-        it.org("285149cba97a4105")
-        it.bucket("4fb58502069a630e")
-    }.build()
-
+    /**
+     * InfluxDB client, or null if not initialised. To suspend until it is initialised, use
+     * [getClient].
+     */
     private var nullableClient: InfluxDBClient? = null
-        set(value) {
-            if (value != null) {
-                field = value
-            }
-        }
 
+    /** Launches a coroutine to construct the InfluxDB client */
     private val clientInitJob = CoroutineScope(Dispatchers.IO).launch {
-        val client = InfluxDBClientFactory.create(this@InfluxController.influxOptions)
+        val client = InfluxDBClientFactory.create(INFLUX_OPTIONS)
         this@InfluxController.nullableClient = client
     }
 
+    /**
+     * Gets the InfluxDB client. If not yet initialised, this will suspend until it is initialised.
+     */
     private suspend fun getClient(): InfluxDBClient = this.nullableClient ?: run {
         this.clientInitJob.join()
         getClient()
     }
 
     suspend fun writeMeasurement(measurement: Measurement)  {
-        Log.i(TAG, "Writing measurement")
+        Log.d(TAG, "Writing measurement")
 
         val client = getClient()
 
@@ -61,6 +57,7 @@ class InfluxController {
             withContext(Dispatchers.IO) {
                 client.writeApiBlocking.writePoint(data)
             }
+            Log.i(TAG, "Wrote measurement successfully")
         } catch (e: InfluxException) {
             Log.e(TAG, "Could not write measurement", e)
         }
@@ -68,17 +65,23 @@ class InfluxController {
 
     suspend fun close() {
         this.clientInitJob.cancel(CancellationException("Client is being closed"))
-        withContext(Dispatchers.IO) {
-            this@InfluxController.nullableClient?.close()
+        this.nullableClient?.also { client ->
+            withContext(Dispatchers.IO) {
+                client.close()
+            }
         }
     }
 
     companion object {
-        private const val PROTOCOL = "https"
-        private const val DOMAIN = "10.0.12.36"
-        private const val PORT = "8080"
-        private const val URL = "$PROTOCOL://$DOMAIN:$PORT"
-
         private const val TAG = "InfluxController"
+
+        private const val URL = "https://intern-am-db.icentralau.com.au/"
+
+        private val INFLUX_OPTIONS: InfluxDBClientOptions = InfluxDBClientOptions.builder().also {
+            it.connectionString(URL)
+            it.authenticateToken(BuildConfig.INFLUX_DB_TOKEN.toCharArray())
+            it.org("285149cba97a4105")
+            it.bucket("4fb58502069a630e")
+        }.build()
     }
 }
