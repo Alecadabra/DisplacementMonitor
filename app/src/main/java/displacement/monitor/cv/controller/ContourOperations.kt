@@ -37,7 +37,8 @@ object ContourOperations {
     }
 
     /**
-     * Calculates the perceived dimension of the presumed square contour.
+     * Calculates the perceived dimension of the contour. Assumes the contour is square and
+     * it's points are ordered in a consecutive fashion, eg. clockwise.
      */
     fun edgeLength(contour: Contour): Double {
         // Join points to edges cyclically

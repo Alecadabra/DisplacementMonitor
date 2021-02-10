@@ -1,6 +1,7 @@
 package displacement.monitor.database.local
 
 import androidx.room.*
+import displacement.monitor.database.model.Measurement
 
 @Dao
 interface MeasurementDao {

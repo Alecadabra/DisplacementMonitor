@@ -13,7 +13,7 @@ import displacement.monitor.cv.controller.CalibratedImageProcessor
 import displacement.monitor.cv.controller.CameraFrameCallback
 import displacement.monitor.cv.controller.TargetMeasurement
 import displacement.monitor.cv.controller.initialiseOpenCV
-import displacement.monitor.database.local.Measurement
+import displacement.monitor.database.model.Measurement
 import displacement.monitor.database.local.MeasurementDatabase
 import displacement.monitor.database.remote.RemoteDBController
 import displacement.monitor.settings.Settings

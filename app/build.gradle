@@ -30,10 +30,6 @@ android {
         // InfluxDB Token
         buildConfigField("String", "INFLUX_DB_TOKEN", "\"${secretProperties['INFLUX_DB_TOKEN']}\"")
         resValue("string", "INFLUX_DB_TOKEN", secretProperties['INFLUX_DB_TOKEN'])
-
-        // InfluxDB Domain
-        buildConfigField("String", "INFLUX_DB_DOMAIN", "\"${secretProperties['INFLUX_DB_DOMAIN']}\"")
-        resValue("string", "INFLUX_DB_DOMAIN", secretProperties['INFLUX_DB_DOMAIN'])
     }
 
     buildTypes {
