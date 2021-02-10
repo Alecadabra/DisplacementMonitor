@@ -1,4 +1,4 @@
-package displacement.monitor.view
+package displacement.monitor.android.activity
 
 import android.content.Context
 import android.content.Intent

@@ -1,4 +1,4 @@
-package displacement.monitor.view
+package displacement.monitor.android.activity
 
 import android.content.Context
 import android.content.Intent
@@ -7,8 +7,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import displacement.monitor.R
-import displacement.monitor.controller.permissions.Permission
-import displacement.monitor.controller.permissions.PermissionDelegate
+import displacement.monitor.android.controller.permissions.Permission
+import displacement.monitor.android.controller.permissions.PermissionDelegate
 
 class PermissionHandlerActivity : AppCompatActivity() {
 

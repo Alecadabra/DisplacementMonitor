@@ -1,4 +1,4 @@
-package displacement.monitor.view
+package displacement.monitor.android.activity
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,8 +8,12 @@ import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import displacement.monitor.R
-import displacement.monitor.controller.CustomCameraView
-import displacement.monitor.controller.cv.*
+import displacement.monitor.android.view.CustomCameraView
+import displacement.monitor.cv.*
+import displacement.monitor.cv.controller.CalibratedImageProcessor
+import displacement.monitor.cv.controller.CameraFrameCallback
+import displacement.monitor.cv.controller.TargetMeasurement
+import displacement.monitor.cv.controller.initialiseOpenCV
 import displacement.monitor.model.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -1,15 +1,13 @@
-package displacement.monitor.view
+package displacement.monitor.android.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import displacement.monitor.BuildConfig
 import displacement.monitor.R
-import displacement.monitor.controller.SchedulingManager
-import displacement.monitor.controller.database.MeasurementDatabase
-import displacement.monitor.controller.permissions.Permission
+import displacement.monitor.android.controller.SchedulingManager
+import displacement.monitor.database.local.MeasurementDatabase
+import displacement.monitor.android.controller.permissions.Permission
 import displacement.monitor.model.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

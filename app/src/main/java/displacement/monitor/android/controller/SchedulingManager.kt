@@ -1,4 +1,4 @@
-package displacement.monitor.controller
+package displacement.monitor.android.controller
 
 import android.app.AlarmManager
 import android.app.PendingIntent

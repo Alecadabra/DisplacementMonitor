@@ -1,4 +1,4 @@
-package displacement.monitor.controller.cv
+package displacement.monitor.cv.controller
 
 import android.content.Context
 import android.util.Log

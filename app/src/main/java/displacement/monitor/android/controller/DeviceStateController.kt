@@ -1,4 +1,4 @@
-package displacement.monitor.controller
+package displacement.monitor.android.controller
 
 import android.app.Activity
 import android.app.KeyguardManager
@@ -8,7 +8,7 @@ import android.os.Build
 import android.util.Log
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
-import displacement.monitor.controller.permissions.Permission
+import displacement.monitor.android.controller.permissions.Permission
 
 class DeviceStateController(private val activity: Activity) {
 

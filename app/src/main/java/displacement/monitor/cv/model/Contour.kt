@@ -1,6 +1,6 @@
-package displacement.monitor.model
+package displacement.monitor.cv.model
 
-import displacement.monitor.controller.cv.ContourOperations
+import displacement.monitor.cv.controller.ContourOperations
 import org.opencv.core.*
 
 /**

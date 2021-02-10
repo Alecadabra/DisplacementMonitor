@@ -1,4 +1,4 @@
-package displacement.monitor.view
+package displacement.monitor.android.activity
 
 import android.content.Context
 import android.content.Intent
@@ -7,15 +7,15 @@ import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import displacement.monitor.R
-import displacement.monitor.controller.CustomCameraView
-import displacement.monitor.controller.DeviceStateController
-import displacement.monitor.controller.cv.CalibratedImageProcessor
-import displacement.monitor.controller.cv.CameraFrameCallback
-import displacement.monitor.controller.cv.TargetMeasurement
-import displacement.monitor.controller.cv.initialiseOpenCV
-import displacement.monitor.controller.database.Measurement
-import displacement.monitor.controller.database.MeasurementDatabase
-import displacement.monitor.controller.remote.InfluxController
+import displacement.monitor.android.controller.DeviceStateController
+import displacement.monitor.android.view.CustomCameraView
+import displacement.monitor.cv.controller.CalibratedImageProcessor
+import displacement.monitor.cv.controller.CameraFrameCallback
+import displacement.monitor.cv.controller.TargetMeasurement
+import displacement.monitor.cv.controller.initialiseOpenCV
+import displacement.monitor.database.local.Measurement
+import displacement.monitor.database.local.MeasurementDatabase
+import displacement.monitor.database.remote.RemoteDBController
 import displacement.monitor.model.Settings
 import kotlinx.coroutines.*
 
@@ -34,7 +34,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
     // Handles all the very specific ways you make android turn on/off the device
     private val deviceStateController by lazy { DeviceStateController(this) }
 
-    private val influxController = InfluxController()
+    private val influxController = RemoteDBController()
 
     /** Flag for if a value for distance has been measured */
     private var measured: Boolean = false

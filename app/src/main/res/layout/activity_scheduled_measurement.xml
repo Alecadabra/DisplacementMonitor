@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.ScheduledMeasurementActivity"
+    tools:context=".android.activity.ScheduledMeasurementActivity"
     android:background="@color/black">
 
-    <displacement.monitor.controller.CustomCameraView
+    <displacement.monitor.android.view.CustomCameraView
         android:id="@+id/scheduledMeasurementActivityCameraView"
         android:layout_width="0dp"
         android:layout_height="0dp"

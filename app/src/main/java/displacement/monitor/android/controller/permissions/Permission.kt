@@ -1,4 +1,4 @@
-package displacement.monitor.controller.permissions
+package displacement.monitor.android.controller.permissions
 
 import android.Manifest
 import android.app.Activity

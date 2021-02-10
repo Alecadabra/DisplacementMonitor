@@ -1,9 +1,9 @@
-package displacement.monitor.controller.permissions
+package displacement.monitor.android.controller.permissions
 
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import displacement.monitor.controller.permissions.Permission.*
+import displacement.monitor.android.controller.permissions.Permission.*
 
 class PermissionDelegate(private val activity: Activity) {
 
@@ -14,7 +14,6 @@ class PermissionDelegate(private val activity: Activity) {
             "$permission permission not granted"
         }
     }
-
     fun resultRequestPermission(
         permission: Permission,
         permStrings: Array<out String>,

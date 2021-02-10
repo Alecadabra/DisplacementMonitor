@@ -36,33 +36,33 @@
         android:theme="@style/Theme.DisplacementMonitor">
 
         <activity
-            android:name="displacement.monitor.view.MainActivity">
+            android:name="displacement.monitor.android.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name="displacement.monitor.view.CalibrationActivity" />
+        <activity android:name="displacement.monitor.android.activity.CalibrationActivity" />
 
-        <activity android:name="displacement.monitor.view.RealTimeMeasurementActivity" />
+        <activity android:name="displacement.monitor.android.activity.RealTimeMeasurementActivity" />
 
         <activity
-            android:name="displacement.monitor.view.ScheduledMeasurementActivity"
+            android:name="displacement.monitor.android.activity.ScheduledMeasurementActivity"
             android:showOnLockScreen="true"
             android:turnScreenOn="true"
             tools:ignore="UnusedAttribute"/>
 
-        <activity android:name="displacement.monitor.view.SettingsActivity" />
+        <activity android:name="displacement.monitor.android.activity.SettingsActivity" />
 
-        <activity android:name="displacement.monitor.view.PermissionHandlerActivity" />
+        <activity android:name="displacement.monitor.android.activity.PermissionHandlerActivity" />
 
         <receiver
-            android:name="displacement.monitor.controller.SchedulingManager$AlarmReceiver"
+            android:name="displacement.monitor.android.controller.SchedulingManager$AlarmReceiver"
             android:enabled="true"
             android:exported="false"/>
 
-        <receiver android:name="displacement.monitor.controller.permissions.Permission$ADMIN$AdminReceiver"
+        <receiver android:name="displacement.monitor.android.controller.permissions.Permission$ADMIN$AdminReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_DEVICE_ADMIN">

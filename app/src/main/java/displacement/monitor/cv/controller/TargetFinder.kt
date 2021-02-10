@@ -1,8 +1,8 @@
-package displacement.monitor.controller.cv
+package displacement.monitor.cv.controller
 
-import displacement.monitor.model.Contour
+import displacement.monitor.cv.model.Contour
+import displacement.monitor.cv.model.toContour
 import displacement.monitor.model.Settings
-import displacement.monitor.model.toContour
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.imgproc.Imgproc

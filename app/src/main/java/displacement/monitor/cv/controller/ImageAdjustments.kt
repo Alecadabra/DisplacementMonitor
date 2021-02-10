@@ -1,6 +1,6 @@
-package displacement.monitor.controller.cv
+package displacement.monitor.cv.controller
 
-import displacement.monitor.model.Contour
+import displacement.monitor.cv.model.Contour
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 import kotlin.math.roundToInt

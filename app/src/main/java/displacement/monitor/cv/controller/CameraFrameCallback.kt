@@ -1,4 +1,4 @@
-package displacement.monitor.controller.cv
+package displacement.monitor.cv.controller
 
 import org.opencv.android.CameraBridgeViewBase
 import org.opencv.core.Mat

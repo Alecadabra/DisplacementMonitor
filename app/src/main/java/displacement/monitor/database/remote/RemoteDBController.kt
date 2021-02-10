@@ -1,4 +1,4 @@
-package displacement.monitor.controller.remote
+package displacement.monitor.database.remote
 
 import android.util.Log
 import com.influxdb.client.InfluxDBClient
@@ -8,14 +8,14 @@ import com.influxdb.client.domain.WritePrecision
 import com.influxdb.client.write.Point
 import com.influxdb.exceptions.InfluxException
 import displacement.monitor.BuildConfig
-import displacement.monitor.controller.database.Measurement
+import displacement.monitor.database.local.Measurement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CancellationException
 
-class InfluxController {
+class RemoteDBController {
 
     /*
      * The InfluxDB access token and domain must have write access and be stored in a file called
@@ -32,7 +32,7 @@ class InfluxController {
     /** Launches a coroutine to construct the InfluxDB client */
     private val clientInitJob = CoroutineScope(Dispatchers.IO).launch {
         val client = InfluxDBClientFactory.create(INFLUX_OPTIONS)
-        this@InfluxController.nullableClient = client
+        this@RemoteDBController.nullableClient = client
     }
 
     /**
@@ -73,7 +73,7 @@ class InfluxController {
     }
 
     companion object {
-        private const val TAG = "InfluxController"
+        private const val TAG = "RemoteDBController"
 
         private const val URL = "https://intern-am-db.icentralau.com.au/"
 
