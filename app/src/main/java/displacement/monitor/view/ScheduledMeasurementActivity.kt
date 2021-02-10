@@ -15,6 +15,7 @@ import displacement.monitor.controller.cv.TargetMeasurement
 import displacement.monitor.controller.cv.initialiseOpenCV
 import displacement.monitor.controller.database.Measurement
 import displacement.monitor.controller.database.MeasurementDatabase
+import displacement.monitor.controller.remote.InfluxController
 import displacement.monitor.model.Settings
 import kotlinx.coroutines.*
 
@@ -27,17 +28,13 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
     private val settings by lazy { Settings(this) }
 
     private val calibratedImageProcessor by lazy {
-        CalibratedImageProcessor(
-            settings = this.settings,
-            targetMeasurement = TargetMeasurement(
-                focalLengthReal = this.settings.calibration.focalLength,
-                settings = this.settings
-            )
-        )
+        CalibratedImageProcessor(this.settings, TargetMeasurement(this.settings))
     }
 
     // Handles all the very specific ways you make android turn on/off the device
     private val deviceStateController by lazy { DeviceStateController(this) }
+
+    private val influxController = InfluxController()
 
     /** Flag for if a value for distance has been measured */
     private var measured: Boolean = false
@@ -118,11 +115,18 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
             Log.i(TAG, "Measured value of ${"%.2f".format(distance)}m")
 
+            val measurement = Measurement(unixTimestamp, distance)
+
             // Log measurement to database
             CoroutineScope(Dispatchers.IO).launch {
                 val db = MeasurementDatabase { applicationContext }
-                val measurement = Measurement(unixTimestamp, distance)
                 db.measurementDao().insert(measurement)
+            }
+
+            // Send measurement to Influx
+            CoroutineScope(Dispatchers.IO).launch {
+                this@ScheduledMeasurementActivity.influxController.writeMeasurement(measurement)
+                this@ScheduledMeasurementActivity.influxController.close()
             }
 
             this.deviceStateController.finish()

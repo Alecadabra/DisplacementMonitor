@@ -3,6 +3,7 @@ package displacement.monitor.controller.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.influxdb.annotations.Measurement
 
 @Entity
 data class Measurement(

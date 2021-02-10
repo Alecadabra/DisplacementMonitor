@@ -4,6 +4,15 @@ plugins {
     id "kotlin-kapt"
 }
 
+/**
+ * The InfluxDB access token must have write access and be stored in a file called
+ * secret.properties in the project root (Same level as gradle.properties) and must contain
+ * INFLUX_DB_TOKEN="YOUR TOKEN HERE"
+ */
+def secretPropertiesFile = rootProject.file("secret.properties")
+def secretProperties = new Properties()
+secretProperties.load(new FileInputStream(secretPropertiesFile))
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.1"
@@ -14,13 +23,33 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // InfluxDB Token
+        buildConfigField("String", "INFLUX_DB_TOKEN", "\"${secretProperties['INFLUX_DB_TOKEN']}\"")
+        resValue("string", "INFLUX_DB_TOKEN", secretProperties['INFLUX_DB_TOKEN'])
+
+        // InfluxDB Domain
+        buildConfigField("String", "INFLUX_DB_DOMAIN", "\"${secretProperties['INFLUX_DB_DOMAIN']}\"")
+        resValue("string", "INFLUX_DB_DOMAIN", secretProperties['INFLUX_DB_DOMAIN'])
     }
 
     buildTypes {
+
         release {
-            minifyEnabled false
+            // Enables code shrinking, obfuscation, and optimization for only
+            // your project's release build type.
+            minifyEnabled true
+
+            // Enables resource shrinking, which is performed by the
+            // Android Gradle plugin.
+            shrinkResources true
+
+            // Includes the default ProGuard rules files that are packaged with
+            // the Android Gradle plugin. To learn more, go to the section about
+            // R8 configuration files.
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -37,15 +66,15 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation project(path: ':openCVLibrary3412')
     implementation 'androidx.preference:preference-ktx:1.1.1'
-    testImplementation 'junit:junit:4.13.1'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
+    //testImplementation 'junit:junit:4.13.1'
+    //androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    //androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     // Room
     def room_version = "2.2.6"
@@ -54,5 +83,11 @@ dependencies {
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$room_version"
     // optional - Test helpers
-    testImplementation "androidx.room:room-testing:$room_version"
+    //testImplementation "androidx.room:room-testing:$room_version"
+
+    // InfluxDB
+    implementation "com.influxdb:influxdb-client-java:1.15.0"
+
+    // Multidex
+    implementation "androidx.multidex:multidex:2.0.1"
 }

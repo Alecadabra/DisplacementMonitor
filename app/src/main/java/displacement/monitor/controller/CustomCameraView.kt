@@ -25,9 +25,9 @@ class CustomCameraView(
     }
 
     fun stop() {
+        flashOff()
         disableView()
         this.visibility = GONE
-        flashOff()
     }
 
     fun flashOn() {
@@ -37,7 +37,7 @@ class CustomCameraView(
                 it.flashMode = Camera.Parameters.FLASH_MODE_TORCH
             }
         } catch (e: RuntimeException) {
-            Log.e(TAG, "Could not turn on flash", e)
+            Log.e(TAG, "Could not turn on flash (${e.message})")
         }
     }
 
@@ -48,7 +48,7 @@ class CustomCameraView(
                 it.flashMode = Camera.Parameters.FLASH_MODE_OFF
             }
         } catch (e: RuntimeException) {
-            Log.e(TAG, "Could not turn off flash", e)
+            Log.e(TAG, "Could not turn off flash (${e.message})")
         }
     }
 

@@ -3,17 +3,12 @@ package displacement.monitor.controller.cv
 import displacement.monitor.model.Contour
 import displacement.monitor.model.Settings
 
-class TargetMeasurement(
-    /** Measured focal length */
-    private val focalLengthReal: Double,
-    /** Settings reference */
-    private val settings: Settings
-) {
+class TargetMeasurement(private val settings: Settings) {
 
     // Public entry points -------------------------------------------------------------------------
 
     fun measureDistance(target: Contour): Double = distanceReal(
-        focalLengthReal = this.focalLengthReal,
+        focalLengthReal = this.settings.calibration.focalLength,
         lengthReal = this.settings.calibration.targetSize,
         lengthPx = target.edgeLength
     )
