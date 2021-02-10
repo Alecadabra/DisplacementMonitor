@@ -26,10 +26,7 @@ class RealTimeMeasurementActivity : AppCompatActivity() {
     private val calibratedImageProcessor by lazy {
         CalibratedImageProcessor(
             settings = this.settings,
-            targetMeasurement = TargetMeasurement(
-                focalLengthReal = this.settings.calibration.focalLength,
-                settings = this.settings
-            )
+            targetMeasurement = TargetMeasurement(this.settings)
         )
     }
 
