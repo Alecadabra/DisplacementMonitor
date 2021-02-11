@@ -8,10 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import displacement.monitor.R
 import displacement.monitor.android.controller.DeviceStateController
 import displacement.monitor.android.view.CustomCameraView
-import displacement.monitor.cv.controller.CalibratedImageProcessor
-import displacement.monitor.cv.controller.CameraFrameCallback
-import displacement.monitor.cv.controller.TargetMeasurement
-import displacement.monitor.cv.controller.initialiseOpenCV
+import displacement.monitor.cv.controller.*
 import displacement.monitor.database.model.Measurement
 import displacement.monitor.database.local.MeasurementDatabase
 import displacement.monitor.database.remote.RemoteDBController
@@ -57,13 +54,13 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
         } catch (e: IllegalStateException) {
             Log.i(TAG, "Image processing - Failed to measure distance (${e.message})")
             CoroutineScope(Dispatchers.Main).launch {
-                val activity = this@ScheduledMeasurementActivity
-
-                if (!activity.measured) {
-
+                this@ScheduledMeasurementActivity.takeUnless { it.measured }?.also { activity ->
                     // Turn on the flash if it's needed
-                    if (activity.failedAttempts > MAX_FAILS) {
-                        launch { activity.views.cameraView.flashOn() }
+                    if (activity.views.cameraView.flashMode != CustomCameraView.FlashMode.ON) {
+                        val brightness = ImageOperations.measureCentroidBrightness(image)
+                        if (brightness < activity.settings.camera.brightnessThreshold || activity.failedAttempts > 10) {
+                            activity.views.cameraView.flashMode = CustomCameraView.FlashMode.ON
+                        }
                     }
 
                     activity.failedAttempts++
@@ -90,6 +87,19 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
         super.onResume()
 
         initialiseOpenCV(this, TAG)
+        this.views.cameraView.start(this.settings, this.cameraFrameCallback)
+    }
+
+    override fun onPause() {
+        this.views.cameraView.stop()
+
+        super.onPause()
+    }
+
+    override fun finish() {
+        this.views.cameraView.stop()
+
+        super.finish()
     }
 
     // Local helper functions ----------------------------------------------------------------------
@@ -123,8 +133,6 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "ScheduledMeasurement"
-
-        private const val MAX_FAILS = 20
 
         fun getIntent(c: Context) = Intent(c, ScheduledMeasurementActivity::class.java)
     }

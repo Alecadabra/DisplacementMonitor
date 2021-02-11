@@ -7,15 +7,32 @@ import android.util.Log
 import displacement.monitor.settings.Settings
 import org.opencv.android.JavaCameraView
 import java.lang.RuntimeException
+import java.util.*
 
 class CustomCameraView(
     context: Context,
     attributeSet: AttributeSet,
 ) : JavaCameraView(context, attributeSet) {
 
-    var cameraIdx: Int
-        get() = this.mCameraIndex
-        set(value) { this.mCameraIndex = value }
+    var cameraIdx: Int by this::mCameraIndex
+
+    @Suppress("DEPRECATION")
+    var flashMode = FlashMode.AUTO
+        set(value) {
+            if (field != value) {
+                this.mCamera.parameters = this.mCamera.parameters.also {
+                    it.flashMode = value.parameterName
+                }
+                Log.i(TAG, "Changed flash mode to ${value.name.toLowerCase(Locale.ROOT)}")
+                field = value
+            }
+        }
+
+    override fun initializeCamera(width: Int, height: Int): Boolean {
+        val result = super.initializeCamera(width, height)
+        this.flashMode = FlashMode.AUTO
+        return result
+    }
 
     fun start(settings: Settings, callback: CvCameraViewListener2) {
         cameraIdx = settings.camera.camIdx
@@ -25,31 +42,16 @@ class CustomCameraView(
     }
 
     fun stop() {
-        flashOff()
+        this.flashMode = FlashMode.OFF
         disableView()
         this.visibility = GONE
     }
 
-    fun flashOn() {
-        try {
-            @Suppress("DEPRECATION")
-            this.mCamera.parameters = this.mCamera.parameters.also {
-                it.flashMode = Camera.Parameters.FLASH_MODE_TORCH
-            }
-        } catch (e: RuntimeException) {
-            Log.e(TAG, "Could not turn on flash (${e.message})")
-        }
-    }
-
-    fun flashOff() {
-        try {
-            @Suppress("DEPRECATION")
-            this.mCamera.parameters = this.mCamera.parameters.also {
-                it.flashMode = Camera.Parameters.FLASH_MODE_OFF
-            }
-        } catch (e: RuntimeException) {
-            Log.e(TAG, "Could not turn off flash (${e.message})")
-        }
+    @Suppress("DEPRECATION")
+    enum class FlashMode(val parameterName: String) {
+        OFF(Camera.Parameters.FLASH_MODE_OFF),
+        ON(Camera.Parameters.FLASH_MODE_TORCH),
+        AUTO(Camera.Parameters.FLASH_MODE_AUTO)
     }
 
     companion object {

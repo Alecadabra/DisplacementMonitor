@@ -58,6 +58,7 @@ class SettingsActivity : AppCompatActivity() {
                 "calibration_initialDistance" to inputDecimal,
                 "calibration_focalLength" to inputDecimal,
                 "periodicMeasurement_period" to inputInt,
+                "camera_flashThreshold" to inputDecimal,
                 "targetFinding_cannyThreshold1" to inputDecimal,
                 "targetFinding_cannyThreshold2" to inputDecimal,
                 "targetFinding_curveApproximationEpsilon" to inputDecimal,

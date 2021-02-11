@@ -57,6 +57,12 @@
             android:title="Select Camera"
             android:summary="Select the camera device to use" />
 
+        <EditTextPreference
+            android:key="camera_flashThreshold"
+            android:title="Flash brightness threshold"
+            android:defaultValue="20"
+            android:summary="Maximum brightness value (0-100) where the flash is turned on to aid in target finding" />
+
     </PreferenceCategory>
 
     </PreferenceCategory>

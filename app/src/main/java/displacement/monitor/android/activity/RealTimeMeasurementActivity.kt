@@ -10,10 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import displacement.monitor.R
 import displacement.monitor.android.view.CustomCameraView
 import displacement.monitor.cv.*
-import displacement.monitor.cv.controller.CalibratedImageProcessor
-import displacement.monitor.cv.controller.CameraFrameCallback
-import displacement.monitor.cv.controller.TargetMeasurement
-import displacement.monitor.cv.controller.initialiseOpenCV
+import displacement.monitor.cv.controller.*
 import displacement.monitor.settings.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -76,6 +73,12 @@ class RealTimeMeasurementActivity : AppCompatActivity() {
         this.views.cameraView.stop()
 
         super.onPause()
+    }
+
+    override fun finish() {
+        this.views.cameraView.stop()
+
+        super.finish()
     }
 
     // Local constructs ----------------------------------------------------------------------------

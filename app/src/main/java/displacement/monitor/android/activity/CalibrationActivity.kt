@@ -15,6 +15,9 @@ import displacement.monitor.R
 import displacement.monitor.android.view.CustomCameraView
 import displacement.monitor.cv.*
 import displacement.monitor.cv.controller.*
+import displacement.monitor.cv.controller.ImageOperations.drawTarget
+import displacement.monitor.cv.controller.ImageOperations.fixOrientation
+import displacement.monitor.cv.controller.ImageOperations.resizeWithBorder
 import displacement.monitor.settings.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -129,6 +132,12 @@ class CalibrationActivity : AppCompatActivity() {
         this.views.cameraView.stop()
 
         super.onPause()
+    }
+
+    override fun finish() {
+        this.views.cameraView.stop()
+
+        super.finish()
     }
 
     // Focal length measurement callback -----------------------------------------------------------

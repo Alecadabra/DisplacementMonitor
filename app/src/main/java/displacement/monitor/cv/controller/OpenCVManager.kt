@@ -5,8 +5,10 @@ import android.util.Log
 import org.opencv.android.BaseLoaderCallback
 import org.opencv.android.LoaderCallbackInterface
 import org.opencv.android.OpenCVLoader
+import org.opencv.core.CvType
 
-private const val TAG = "OpenCVInitialisation"
+/** OpenCV data type used */
+val CV_TYPE = CvType.CV_8UC4
 
 fun initialiseOpenCV(context: Context, tag: String) {
     Log.d(TAG, "Context $tag is initialising OpenCV")
@@ -32,3 +34,5 @@ fun initialiseOpenCV(context: Context, tag: String) {
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, context, loaderCallback)
     }
 }
+
+private const val TAG = "OpenCVInitialisation"

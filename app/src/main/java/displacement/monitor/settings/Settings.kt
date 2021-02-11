@@ -86,6 +86,9 @@ class Settings(private val preferences: SharedPreferences) {
 
         val camIdx = getInt("camera_camIdx")
             ?: error("Internal error getting camera index")
+
+        val brightnessThreshold = getDouble("camera_flashThreshold") { it in 0f..100f }
+            ?: error("Flash brightness threshold must be a number between 0 and 100")
     }
 
     inner class TargetFinding {
