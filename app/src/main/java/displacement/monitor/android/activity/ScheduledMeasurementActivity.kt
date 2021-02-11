@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import displacement.monitor.R
 import displacement.monitor.android.controller.DeviceStateController
@@ -107,11 +106,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
             CoroutineScope(Dispatchers.IO).launch {
                 val db = MeasurementDatabase { applicationContext }
                 db.measurementDao().insert(measurement)
-            }
-
-            // Send measurement to Influx
-            CoroutineScope(Dispatchers.IO).launch {
-                this@ScheduledMeasurementActivity.remoteDBController.writeMeasurement(measurement)
+                this@ScheduledMeasurementActivity.remoteDBController.send { applicationContext }
                 this@ScheduledMeasurementActivity.remoteDBController.close()
             }
 

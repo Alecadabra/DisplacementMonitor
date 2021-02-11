@@ -1,12 +1,13 @@
 package displacement.monitor.database.remote
 
+import android.content.Context
 import android.util.Log
 import com.influxdb.client.InfluxDBClient
 import com.influxdb.client.InfluxDBClientFactory
 import com.influxdb.client.InfluxDBClientOptions
 import com.influxdb.exceptions.InfluxException
 import displacement.monitor.BuildConfig
-import displacement.monitor.database.model.Measurement
+import displacement.monitor.database.local.MeasurementDatabase
 import displacement.monitor.database.model.toPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,18 +39,24 @@ class RemoteDBController {
         getClient()
     }
 
-    suspend fun writeMeasurement(measurement: Measurement) {
-        Log.d(TAG, "Writing measurement")
+    suspend fun send(lazyContext: () -> Context) {
+
+        val measurements = MeasurementDatabase(lazyContext).measurementDao().getAll()
+
+        Log.d(TAG, "Writing ${measurements.size} measurement(s)")
 
         val client = getClient()
 
         try {
             withContext(Dispatchers.IO) {
-                client.writeApiBlocking.writePoint(measurement.toPoint())
+                val points = measurements.map { it.toPoint() }
+                client.writeApiBlocking.writePoints(points)
             }
-            Log.i(TAG, "Wrote measurement successfully")
+            Log.i(TAG, "Wrote measurement(s) successfully")
+            val dao = MeasurementDatabase(lazyContext).measurementDao()
+            dao.delete(*measurements)
         } catch (e: InfluxException) {
-            Log.e(TAG, "Could not write measurement", e)
+            Log.e(TAG, "Could not write measurement(s)", e)
         }
     }
 
