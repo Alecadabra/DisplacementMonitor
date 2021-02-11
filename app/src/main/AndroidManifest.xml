@@ -17,7 +17,8 @@
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions" /> <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> -->
+        tools:ignore="ProtectedPermissions" />
+    <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> -->
 
     <supports-screens
         android:anyDensity="true"
@@ -43,12 +44,16 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="displacement.monitor.android.activity.CalibrationActivity" />
+        <activity android:name="displacement.monitor.android.activity.CalibrationActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name="displacement.monitor.android.activity.RealTimeMeasurementActivity" />
+        <activity android:name="displacement.monitor.android.activity.RealTimeMeasurementActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="displacement.monitor.android.activity.ScheduledMeasurementActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:screenOrientation="portrait"
             android:showOnLockScreen="true"
             android:turnScreenOn="true"
             tools:ignore="UnusedAttribute"/>
