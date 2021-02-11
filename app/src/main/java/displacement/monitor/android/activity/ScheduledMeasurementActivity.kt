@@ -45,12 +45,14 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
         val preview = image.clone()
 
         try {
-            val measurement = this.calibratedImageProcessor.measure(image, preview)
+            val distance = this.calibratedImageProcessor.measure(image, preview)
             image.release()
             val unixTimestamp = System.currentTimeMillis() / 1000L
             CoroutineScope(Dispatchers.Main).launch {
                 if (!this@ScheduledMeasurementActivity.measured) {
-                    this@ScheduledMeasurementActivity.onDistanceMeasured(unixTimestamp, measurement)
+                    val fails = this@ScheduledMeasurementActivity.failedAttempts
+                    val measurement = Measurement(unixTimestamp, distance, fails)
+                    this@ScheduledMeasurementActivity.onDistanceMeasured(measurement)
                 }
             }
         } catch (e: IllegalStateException) {
@@ -106,16 +108,14 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
     // Local helper functions ----------------------------------------------------------------------
 
-    private fun onDistanceMeasured(unixTimestamp: Long, distance: Double) {
+    private fun onDistanceMeasured(measurement: Measurement) {
         // Disable camera
         this.views.cameraView.stop()
 
         if (!this.measured) {
             this.measured = true
 
-            Log.i(TAG, "Measured value of ${"%.2f".format(distance)}m")
-
-            val measurement = Measurement(unixTimestamp, distance)
+            Log.i(TAG, "Measured value of ${"%.2f".format(measurement.distance)}m")
 
             // Log measurement to database
             CoroutineScope(Dispatchers.IO).launch {

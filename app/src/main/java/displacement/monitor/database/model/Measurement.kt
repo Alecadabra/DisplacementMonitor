@@ -15,9 +15,13 @@ data class Measurement(
     /** Measured distance (Metres) */
     @RoomColumnInfo(name = "distance")
     val distance: Double,
+
+    @RoomColumnInfo(name = "failedAttempts")
+    val failedAttempts: Int,
 )
 
 fun Measurement.toPoint() = Point("measurement").also {
-    it.addField("distance", this.distance)
     it.time(this.time, WritePrecision.S)
+    it.addField("distance", this.distance)
+    it.addField("failedAttempts", this.failedAttempts)
 }

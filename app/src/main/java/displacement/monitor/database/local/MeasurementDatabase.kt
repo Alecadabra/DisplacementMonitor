@@ -8,7 +8,7 @@ import displacement.monitor.database.model.Measurement
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
-@Database(entities = [Measurement::class], version = 1)
+@Database(entities = [Measurement::class], version = 2)
 abstract class MeasurementDatabase : RoomDatabase() {
     abstract fun measurementDao(): MeasurementDao
 
@@ -22,7 +22,9 @@ abstract class MeasurementDatabase : RoomDatabase() {
                 lazyApplicationContext(),
                 MeasurementDatabase::class.java,
                 "MeasurementDatabase"
-            ).build()
+            ).also { builder ->
+                builder.fallbackToDestructiveMigration()
+            }.build()
             instance = localInstance
             return@runBlocking localInstance
         }
