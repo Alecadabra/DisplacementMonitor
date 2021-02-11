@@ -5,7 +5,7 @@ import displacement.monitor.cv.controller.ImageOperations.fixOrientation
 import displacement.monitor.cv.controller.ImageOperations.resizeWithBorder
 import displacement.monitor.cv.controller.ImageOperations.values
 import displacement.monitor.cv.model.Contour
-import displacement.monitor.settings.Settings
+import displacement.monitor.settings.model.Settings
 import org.opencv.core.Mat
 
 class CalibratedImageProcessor(

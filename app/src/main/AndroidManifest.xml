@@ -37,37 +37,37 @@
         android:theme="@style/Theme.DisplacementMonitor">
 
         <activity
-            android:name="displacement.monitor.android.activity.MainActivity">
+            android:name="displacement.monitor.setup.android.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name="displacement.monitor.android.activity.CalibrationActivity"
+        <activity android:name="displacement.monitor.setup.android.activity.CalibrationActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name="displacement.monitor.android.activity.RealTimeMeasurementActivity"
+        <activity android:name="displacement.monitor.setup.android.activity.RealTimeMeasurementActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="displacement.monitor.android.activity.ScheduledMeasurementActivity"
+            android:name="displacement.monitor.scheduling.android.activity.ScheduledMeasurementActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:screenOrientation="portrait"
             android:showOnLockScreen="true"
             android:turnScreenOn="true"
             tools:ignore="UnusedAttribute"/>
 
-        <activity android:name="displacement.monitor.android.activity.SettingsActivity" />
+        <activity android:name="displacement.monitor.settings.android.activity.SettingsActivity" />
 
-        <activity android:name="displacement.monitor.android.activity.PermissionHandlerActivity" />
+        <activity android:name="displacement.monitor.permissions.android.activity.PermissionHandlerActivity" />
 
         <receiver
-            android:name="displacement.monitor.android.controller.SchedulingManager$AlarmReceiver"
+            android:name="displacement.monitor.scheduling.controller.SchedulingManager$AlarmReceiver"
             android:enabled="true"
             android:exported="false"/>
 
-        <receiver android:name="displacement.monitor.android.controller.permissions.Permission$ADMIN$AdminReceiver"
+        <receiver android:name="displacement.monitor.permissions.model.Permission$ADMIN$AdminReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_DEVICE_ADMIN">

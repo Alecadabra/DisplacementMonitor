@@ -1,9 +1,9 @@
-package displacement.monitor.android.controller.permissions
+package displacement.monitor.permissions.controller
 
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import displacement.monitor.android.controller.permissions.Permission.*
+import displacement.monitor.permissions.model.Permission
 
 class PermissionDelegate(private val activity: Activity) {
 
@@ -27,9 +27,9 @@ class PermissionDelegate(private val activity: Activity) {
         }
 
         when (permission) {
-            SETTINGS -> checkGranted(SETTINGS.permString, "Settings permission not granted")
-            CAMERA -> checkGranted(CAMERA.permString, "Camera permission not granted")
-            ADMIN -> error("Internal error")
+            Permission.SETTINGS -> checkGranted(Permission.SETTINGS.permString, "Settings permission not granted")
+            Permission.CAMERA -> checkGranted(Permission.CAMERA.permString, "Camera permission not granted")
+            Permission.ADMIN -> error("Internal error")
         }
 
         check(permission.isGrantedTo(this.activity)) {

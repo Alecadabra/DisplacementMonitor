@@ -2,7 +2,7 @@ package displacement.monitor.cv.controller
 
 import displacement.monitor.cv.model.Contour
 import displacement.monitor.cv.model.toContour
-import displacement.monitor.settings.Settings
+import displacement.monitor.settings.model.Settings
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.imgproc.Imgproc

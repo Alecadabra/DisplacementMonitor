@@ -1,7 +1,7 @@
 package displacement.monitor.cv.controller
 
 import displacement.monitor.cv.model.Contour
-import displacement.monitor.settings.Settings
+import displacement.monitor.settings.model.Settings
 
 class TargetMeasurement(private val settings: Settings) {
 

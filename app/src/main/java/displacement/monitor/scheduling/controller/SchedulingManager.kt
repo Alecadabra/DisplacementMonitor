@@ -1,4 +1,4 @@
-package displacement.monitor.android.controller
+package displacement.monitor.scheduling.controller
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
 import android.util.Log
-import displacement.monitor.settings.Settings
+import displacement.monitor.settings.model.Settings
 
 class SchedulingManager(
     private val context: Context,

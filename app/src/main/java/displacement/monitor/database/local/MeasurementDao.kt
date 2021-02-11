@@ -8,7 +8,7 @@ interface MeasurementDao {
     @Query("SELECT * FROM `measurement`")
     fun getAll(): Array<Measurement>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(measurement: Measurement)
 
     @Delete

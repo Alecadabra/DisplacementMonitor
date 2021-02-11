@@ -1,4 +1,4 @@
-package displacement.monitor.android.activity
+package displacement.monitor.scheduling.android.activity
 
 import android.content.Context
 import android.content.Intent
@@ -6,15 +6,17 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import displacement.monitor.R
-import displacement.monitor.android.controller.DeviceStateController
-import displacement.monitor.android.view.CustomCameraView
+import displacement.monitor.cv.android.view.CustomCameraView
 import displacement.monitor.cv.controller.*
 import displacement.monitor.cv.controller.ImageOperations.measureCentroidBrightness
 import displacement.monitor.database.local.MeasurementDatabase
 import displacement.monitor.database.model.Measurement
 import displacement.monitor.database.remote.RemoteDBController
-import displacement.monitor.settings.Settings
+import displacement.monitor.scheduling.controller.DeviceStateController
+import displacement.monitor.scheduling.controller.DistanceAggregator
+import displacement.monitor.settings.model.Settings
 import kotlinx.coroutines.*
+import org.opencv.core.Mat
 
 class ScheduledMeasurementActivity : AppCompatActivity() {
 
@@ -33,38 +35,17 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
     private val remoteDBController = RemoteDBController()
 
-    /** Flag for if a value for distance has been measured */
-    private var measured: Boolean = false
+    private val distanceAggregator = DistanceAggregator(MAX) { onDistanceMeasured(it) }
 
     private var failedAttempts = 0
 
     private val cameraFrameCallback = CameraFrameCallback { image ->
         try {
-            val distance = this.calibratedImageProcessor.measure(image)
-            if (!this.measured) {
-                val measurement = Measurement(
-                    time = System.currentTimeMillis() / 1000L,
-                    distance = distance,
-                    id = this.settings.periodicMeasurement.id,
-                    failedAttempts = this.failedAttempts
-                )
-                CoroutineScope(Dispatchers.Main).launch {
-                    this@ScheduledMeasurementActivity.onDistanceMeasured(measurement)
-                }
-            }
+            val distance = calibratedImageProcessor.measure(image)
+            this.distanceAggregator.addDistance(distance)
         } catch (e: IllegalStateException) {
-            Log.i(TAG, "Image processing - Failed to measure distance (${e.message})")
             CoroutineScope(Dispatchers.Main).launch {
-                this@ScheduledMeasurementActivity.takeUnless { it.measured }?.also { activity ->
-                    // Turn on the flash if it's needed
-                    if (activity.views.cameraView.flashMode != CustomCameraView.FlashMode.ON) {
-                        if (activity.failedAttempts > 10 || measureCentroidBrightness(image) < activity.settings.camera.brightnessThreshold) {
-                            activity.views.cameraView.flashMode = CustomCameraView.FlashMode.ON
-                        }
-                    }
-
-                    activity.failedAttempts++
-                }
+                this@ScheduledMeasurementActivity.onMeasurementFailed(e, image)
             }
         }
 
@@ -104,25 +85,44 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
     // Local helper functions ----------------------------------------------------------------------
 
-    private fun onDistanceMeasured(measurement: Measurement) {
+    private fun onDistanceMeasured(distance: Double) {
         // Disable camera
         this.views.cameraView.stop()
 
-        if (!this.measured) {
-            this.measured = true
+        val measurement = Measurement(
+            time = System.currentTimeMillis() / 1000,
+            distance = distance,
+            failedAttempts = this.failedAttempts,
+            id = this.settings.periodicMeasurement.id
+        )
 
-            Log.i(TAG, "Measured value of ${"%.2f".format(measurement.distance)}m")
+        Log.i(TAG, "Measured value of ${"%.2f".format(measurement.distance)}m")
 
-            // Log measurement to database
-            CoroutineScope(Dispatchers.IO).launch {
-                val db = MeasurementDatabase { applicationContext }
-                db.measurementDao().insert(measurement)
-                this@ScheduledMeasurementActivity.remoteDBController.send { applicationContext }
-                this@ScheduledMeasurementActivity.remoteDBController.close()
-            }
-
-            this.deviceStateController.finish()
+        // Log measurement to local database and send to remote database
+        CoroutineScope(Dispatchers.IO).launch {
+            val db = MeasurementDatabase { applicationContext }
+            db.measurementDao().insert(measurement)
+            this@ScheduledMeasurementActivity.remoteDBController.send { applicationContext }
+            this@ScheduledMeasurementActivity.remoteDBController.close()
         }
+
+        this.deviceStateController.finish()
+    }
+
+    private fun onMeasurementFailed(e: IllegalStateException, image: Mat) {
+        Log.i(TAG, "Image processing - Failed to measure distance (${e.message})")
+
+        // Turn on the flash if it's needed
+        if (this.views.cameraView.flashMode != CustomCameraView.FlashMode.ON) {
+            val threshold = this.settings.camera.brightnessThreshold
+            val lazyBrightness = { measureCentroidBrightness(image) }
+
+            if (this.failedAttempts > 10 || lazyBrightness() < threshold) {
+                this.views.cameraView.flashMode = CustomCameraView.FlashMode.ON
+            }
+        }
+
+        this.failedAttempts++
     }
 
     // Local constructs ----------------------------------------------------------------------------
@@ -133,6 +133,8 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "ScheduledMeasurement"
+
+        private const val MAX = 15
 
         fun getIntent(c: Context) = Intent(c, ScheduledMeasurementActivity::class.java)
     }

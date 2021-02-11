@@ -1,10 +1,9 @@
-package displacement.monitor.settings
+package displacement.monitor.settings.model
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import org.opencv.core.Size
-import java.util.*
 
 /**
  * Holds a snapshot of all settings values. If settings change, make a new instance of this object.
@@ -13,9 +12,7 @@ class Settings(private val preferences: SharedPreferences) {
 
     // Secondary constructor -----------------------------------------------------------------------
 
-    constructor(context: Context) : this(
-        PreferenceManager.getDefaultSharedPreferences(context)
-    )
+    constructor(context: Context) : this(PreferenceManager.getDefaultSharedPreferences(context))
 
     init {
         // Test generate all settings holder classes so exceptions are thrown eagerly
@@ -85,7 +82,7 @@ class Settings(private val preferences: SharedPreferences) {
             ?: error("Internal error getting camera pre-processing warp flag")
 
         val camIdx = getInt("camera_camIdx")
-            ?: error("Internal error getting camera index")
+            ?: 0
 
         val brightnessThreshold = getDouble("camera_flashThreshold") { it in 0f..100f }
             ?: error("Flash brightness threshold must be a number between 0 and 100")

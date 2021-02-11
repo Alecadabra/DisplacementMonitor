@@ -1,12 +1,12 @@
-package displacement.monitor.android.view
+package displacement.monitor.cv.android.view
 
 import android.content.Context
 import android.hardware.Camera
 import android.util.AttributeSet
 import android.util.Log
-import displacement.monitor.settings.Settings
+import displacement.monitor.settings.model.Settings
 import org.opencv.android.JavaCameraView
-import java.lang.RuntimeException
+import java.lang.Exception
 import java.util.*
 
 class CustomCameraView(
@@ -35,14 +35,20 @@ class CustomCameraView(
     }
 
     fun start(settings: Settings, callback: CvCameraViewListener2) {
-        cameraIdx = settings.camera.camIdx
+        try {
+            cameraIdx = settings.camera.camIdx
+        } catch (e: Exception) {
+            Log.e(TAG, "Could not set camera idx", e)
+        }
         setCvCameraViewListener(callback)
         enableView()
         this.visibility = VISIBLE
     }
 
     fun stop() {
-        this.flashMode = FlashMode.OFF
+        if (this.mCamera != null) {
+            this.flashMode = FlashMode.OFF
+        }
         disableView()
         this.visibility = GONE
     }

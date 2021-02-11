@@ -1,4 +1,4 @@
-package displacement.monitor.android.activity
+package displacement.monitor.setup.android.activity
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,13 +12,14 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.preference.PreferenceManager
 import displacement.monitor.R
-import displacement.monitor.android.view.CustomCameraView
+import displacement.monitor.cv.android.view.CustomCameraView
 import displacement.monitor.cv.*
 import displacement.monitor.cv.controller.*
 import displacement.monitor.cv.controller.ImageOperations.drawTarget
 import displacement.monitor.cv.controller.ImageOperations.fixOrientation
 import displacement.monitor.cv.controller.ImageOperations.resizeWithBorder
-import displacement.monitor.settings.Settings
+import displacement.monitor.settings.android.activity.SettingsActivity
+import displacement.monitor.settings.model.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -143,7 +144,7 @@ class CalibrationActivity : AppCompatActivity() {
     // Focal length measurement callback -----------------------------------------------------------
 
     private fun onMeasureFocalLength(focalLength: Double) {
-        this.views.cameraView.disableView()
+        this.views.cameraView.stop()
 
         if (!this.measured) {
             this.measured = true

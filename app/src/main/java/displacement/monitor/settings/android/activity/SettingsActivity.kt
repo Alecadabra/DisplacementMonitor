@@ -1,4 +1,4 @@
-package displacement.monitor.android.activity
+package displacement.monitor.settings.android.activity
 
 import android.content.Context
 import android.content.Intent
@@ -12,7 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
 import displacement.monitor.R
-import displacement.monitor.settings.Settings
+import displacement.monitor.settings.model.Settings
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,7 +95,7 @@ class SettingsActivity : AppCompatActivity() {
 
             findPreference<ListPreference>("camera_camIdx")?.also { pref ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    val cameraManager = context?.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+                    val cameraManager = context?.getSystemService(CAMERA_SERVICE) as CameraManager
                     val cameras = cameraManager.cameraIdList
 
                     // Set output values
