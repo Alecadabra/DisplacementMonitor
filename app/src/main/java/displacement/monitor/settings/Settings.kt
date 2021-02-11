@@ -19,22 +19,22 @@ class Settings(private val preferences: SharedPreferences) {
 
     init {
         // Test generate all settings holder classes so exceptions are thrown eagerly
+        PeriodicMeasurement()
         Calibration()
         Camera()
-        PeriodicMeasurement()
         TargetFinding()
     }
 
     // Settings holder class references ------------------------------------------------------------
+
+    val periodicMeasurement: PeriodicMeasurement
+        get() = PeriodicMeasurement()
 
     val calibration: Calibration
         get() = Calibration()
 
     val camera: Camera
         get() = Camera()
-
-    val periodicMeasurement: PeriodicMeasurement
-        get() = PeriodicMeasurement()
 
     val targetFinding: TargetFinding
         get() = TargetFinding()
@@ -45,17 +45,29 @@ class Settings(private val preferences: SharedPreferences) {
         return this.preferences.getString(key, null)?.toDoubleOrNull()?.takeIf(predicate)
     }
 
-    private fun getInt(key: String, predicate: (Int) -> Boolean  = { true }): Int? {
+    private fun getInt(key: String, predicate: (Int) -> Boolean = { true }): Int? {
         return this.preferences.getString(key, null)?.toIntOrNull()?.takeIf(predicate)
     }
 
-    private fun getBoolean(key: String, predicate: (Boolean) -> Boolean  = { true }): Boolean? {
+    private fun getBoolean(key: String, predicate: (Boolean) -> Boolean = { true }): Boolean? {
         return this.preferences.getBoolean(key, true).takeIf(predicate)?.takeIf {
             this.preferences.contains(key)
         }
     }
 
+    private fun getString(key: String, predicate: (String) -> Boolean = { true }): String? {
+        return this.preferences.getString(key, null)?.takeIf(predicate)
+    }
+
     // Settings holder classes ---------------------------------------------------------------------
+
+    inner class PeriodicMeasurement {
+        val id: String = getString("periodicMeasurement_id") { it.isNotBlank() }
+            ?: error("Device ID must not be blank")
+
+        val period: Int = getInt("periodicMeasurement_period") { it >= 1 }
+            ?: error("Period must be a whole number greater than or equal to one")
+    }
 
     inner class Calibration {
         val targetSize = getDouble("calibration_targetSize") { it > 0 }
@@ -74,11 +86,6 @@ class Settings(private val preferences: SharedPreferences) {
 
         val camIdx = getInt("camera_camIdx")
             ?: error("Internal error getting camera index")
-    }
-
-    inner class PeriodicMeasurement {
-        val period: Int = getInt("periodicMeasurement_period") { it >= 1 }
-            ?: error("Period must be a whole number greater than or equal to one")
     }
 
     inner class TargetFinding {

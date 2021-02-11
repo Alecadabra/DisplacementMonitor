@@ -6,22 +6,24 @@ import androidx.room.ColumnInfo as RoomColumnInfo
 import androidx.room.Entity as RoomEntity
 import androidx.room.PrimaryKey as RoomPrimaryKey
 
-@RoomEntity
+@RoomEntity(primaryKeys = ["time", "id"])
 data class Measurement(
     /** Unix timestamp when measurement taken (Seconds). */
-    @RoomPrimaryKey
     val time: Long,
 
     /** Measured distance (Metres) */
-    @RoomColumnInfo(name = "distance")
     val distance: Double,
 
-    @RoomColumnInfo(name = "failedAttempts")
+    /** Device ID */
+    val id: String,
+
+    /** Number of failed attempts before this measurement */
     val failedAttempts: Int,
 )
 
 fun Measurement.toPoint() = Point("measurement").also {
     it.time(this.time, WritePrecision.S)
     it.addField("distance", this.distance)
+    it.addTag("id", this.id)
     it.addField("failedAttempts", this.failedAttempts)
 }

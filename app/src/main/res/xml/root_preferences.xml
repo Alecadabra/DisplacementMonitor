@@ -3,6 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
+        android:key="periodicMeasurement"
+        android:title="Periodic Measurement">
+
+        <EditTextPreference
+            android:key="periodicMeasurement_id"
+            android:title="Device ID"
+            android:defaultValue=""
+            android:summary="Unique identifier for this device" />
+
+        <EditTextPreference
+            android:key="periodicMeasurement_period"
+            android:title="Period (minutes)"
+            android:defaultValue="1"
+            android:summary="Period between measurements. Minimum of 1 minute." />
+
+    <PreferenceCategory
         android:key="calibration"
         android:title="Calibration">
 
@@ -42,16 +58,6 @@
             android:summary="Select the camera device to use" />
 
     </PreferenceCategory>
-
-    <PreferenceCategory
-        android:key="periodicMeasurement"
-        android:title="Periodic Measurement">
-
-        <EditTextPreference
-            android:key="periodicMeasurement_period"
-            android:title="Period (minutes)"
-            android:defaultValue="1"
-            android:summary="Period between measurements. Minimum of 1 minute." />
 
     </PreferenceCategory>
 

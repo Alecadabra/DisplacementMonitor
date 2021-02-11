@@ -47,6 +47,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
                 val measurement = Measurement(
                     time = System.currentTimeMillis() / 1000L,
                     distance = distance,
+                    id = this.settings.periodicMeasurement.id,
                     failedAttempts = this.failedAttempts
                 )
                 CoroutineScope(Dispatchers.Main).launch {

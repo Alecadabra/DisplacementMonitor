@@ -8,7 +8,7 @@ import displacement.monitor.database.model.Measurement
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
-@Database(entities = [Measurement::class], version = 2)
+@Database(entities = [Measurement::class], version = 3)
 abstract class MeasurementDatabase : RoomDatabase() {
     abstract fun measurementDao(): MeasurementDao
 
