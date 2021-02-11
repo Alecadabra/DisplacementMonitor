@@ -9,8 +9,9 @@ import displacement.monitor.R
 import displacement.monitor.android.controller.DeviceStateController
 import displacement.monitor.android.view.CustomCameraView
 import displacement.monitor.cv.controller.*
-import displacement.monitor.database.model.Measurement
+import displacement.monitor.cv.controller.ImageOperations.measureCentroidBrightness
 import displacement.monitor.database.local.MeasurementDatabase
+import displacement.monitor.database.model.Measurement
 import displacement.monitor.database.remote.RemoteDBController
 import displacement.monitor.settings.Settings
 import kotlinx.coroutines.*
@@ -57,8 +58,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
                 this@ScheduledMeasurementActivity.takeUnless { it.measured }?.also { activity ->
                     // Turn on the flash if it's needed
                     if (activity.views.cameraView.flashMode != CustomCameraView.FlashMode.ON) {
-                        val brightness = ImageOperations.measureCentroidBrightness(image)
-                        if (activity.failedAttempts > 10 || brightness < activity.settings.camera.brightnessThreshold) {
+                        if (activity.failedAttempts > 10 || measureCentroidBrightness(image) < activity.settings.camera.brightnessThreshold) {
                             activity.views.cameraView.flashMode = CustomCameraView.FlashMode.ON
                         }
                     }
