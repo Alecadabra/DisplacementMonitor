@@ -9,17 +9,16 @@
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
-    <uses-feature android:name="android.hardware.camera.flash"
+    <uses-feature
+        android:name="android.hardware.camera.flash"
         android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions" />
-    <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> -->
-
+        tools:ignore="ProtectedPermissions" /> <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> -->
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -35,49 +34,47 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DisplacementMonitor">
-
-        <activity
-            android:name="displacement.monitor.setup.android.activity.MainActivity">
+        <activity android:name=".setup.android.activity.SetupSlidePagerActivity"></activity>
+        <activity android:name=".setup.android.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="displacement.monitor.setup.android.activity.CalibrationActivity"
-            android:screenOrientation="portrait" />
-
-        <activity android:name="displacement.monitor.setup.android.activity.RealTimeMeasurementActivity"
-            android:screenOrientation="portrait" />
-
         <activity
-            android:name="displacement.monitor.scheduling.android.activity.ScheduledMeasurementActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:name=".setup.android.activity.CalibrationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".setup.android.activity.RealTimeMeasurementActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".scheduling.android.activity.ScheduledMeasurementActivity"
             android:screenOrientation="portrait"
             android:showOnLockScreen="true"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:turnScreenOn="true"
-            tools:ignore="UnusedAttribute"/>
-
-        <activity android:name="displacement.monitor.settings.android.activity.SettingsActivity" />
-
-        <activity android:name="displacement.monitor.permissions.android.activity.PermissionHandlerActivity" />
+            tools:ignore="UnusedAttribute" />
+        <activity android:name=".settings.android.activity.SettingsActivity" />
+        <activity android:name=".permissions.android.activity.PermissionHandlerActivity" />
 
         <receiver
-            android:name="displacement.monitor.scheduling.controller.SchedulingManager$AlarmReceiver"
+            android:name=".scheduling.controller.SchedulingManager$AlarmReceiver"
             android:enabled="true"
-            android:exported="false"/>
-
-        <receiver android:name="displacement.monitor.permissions.model.Permission$ADMIN$AdminReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".permissions.model.Permission$ADMIN$AdminReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
-            <meta-data android:name="android.app.device_admin"
+            <meta-data
+                android:name="android.app.device_admin"
                 android:resource="@xml/policies" />
+
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>

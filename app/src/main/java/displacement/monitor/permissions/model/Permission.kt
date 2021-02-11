@@ -23,7 +23,7 @@ sealed class Permission {
 
     abstract val name: String
 
-    abstract fun isGrantedTo(activity: Activity): Boolean
+    abstract fun isGrantedTo(context: Context): Boolean
 
     abstract fun requestWith(activity: Activity)
 
@@ -48,12 +48,12 @@ sealed class Permission {
 
         const val permString = Manifest.permission.WRITE_SETTINGS
 
-        override fun isGrantedTo(activity: Activity): Boolean = when {
+        override fun isGrantedTo(context: Context): Boolean = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                Settings.System.canWrite(activity)
+                Settings.System.canWrite(context)
             }
             else -> {
-                val state = ContextCompat.checkSelfPermission(activity, permString)
+                val state = ContextCompat.checkSelfPermission(context, permString)
                 state == PackageManager.PERMISSION_GRANTED
             }
         }
@@ -83,8 +83,8 @@ sealed class Permission {
 
         const val permString = Manifest.permission.CAMERA
 
-        override fun isGrantedTo(activity: Activity): Boolean {
-            val state = ContextCompat.checkSelfPermission(activity, permString)
+        override fun isGrantedTo(context: Context): Boolean {
+            val state = ContextCompat.checkSelfPermission(context, permString)
             return state == PackageManager.PERMISSION_GRANTED
         }
 
@@ -102,10 +102,10 @@ sealed class Permission {
 
         override val requestCode: Int by lazy { allPerms.indexOf(this) }
 
-        override fun isGrantedTo(activity: Activity): Boolean {
+        override fun isGrantedTo(context: Context): Boolean {
             val policyKey = Context.DEVICE_POLICY_SERVICE
-            val policyManager = activity.getSystemService(policyKey) as DevicePolicyManager
-            val adminReceiverComp = ComponentName(activity, AdminReceiver::class.java)
+            val policyManager = context.getSystemService(policyKey) as DevicePolicyManager
+            val adminReceiverComp = ComponentName(context, AdminReceiver::class.java)
             return policyManager.isAdminActive(adminReceiverComp)
         }
 

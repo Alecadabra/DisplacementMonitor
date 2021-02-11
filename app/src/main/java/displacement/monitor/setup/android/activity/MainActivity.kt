@@ -46,6 +46,9 @@ class MainActivity : AppCompatActivity() {
 
         // Set up views
 
+        //TODO REMOVE
+        startActivity(SetupSlidePagerActivity.getIntent(this))
+
         this.views.settingsButton.setOnClickListener {
             startActivity(SettingsActivity.getIntent(this))
         }
