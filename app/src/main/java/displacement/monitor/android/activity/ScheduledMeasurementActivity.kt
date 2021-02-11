@@ -58,7 +58,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
                     // Turn on the flash if it's needed
                     if (activity.views.cameraView.flashMode != CustomCameraView.FlashMode.ON) {
                         val brightness = ImageOperations.measureCentroidBrightness(image)
-                        if (brightness < activity.settings.camera.brightnessThreshold || activity.failedAttempts > 10) {
+                        if (activity.failedAttempts > 10 || brightness < activity.settings.camera.brightnessThreshold) {
                             activity.views.cameraView.flashMode = CustomCameraView.FlashMode.ON
                         }
                     }
