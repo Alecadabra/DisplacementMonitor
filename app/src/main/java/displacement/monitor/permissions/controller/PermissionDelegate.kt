@@ -14,6 +14,7 @@ class PermissionDelegate(private val activity: Activity) {
             "$permission permission not granted"
         }
     }
+
     fun resultRequestPermission(
         permission: Permission,
         permStrings: Array<out String>,

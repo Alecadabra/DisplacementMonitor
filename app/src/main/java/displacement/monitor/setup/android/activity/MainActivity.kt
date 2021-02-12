@@ -88,9 +88,9 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         // Check if any permissions are needed
-        if (Permission.allPerms.any { !it.isGrantedTo(this) }) {
-            startActivity(PermissionHandlerActivity.getIntent(this))
-        }
+        //if (Permission.allPerms.any { !it.isGrantedTo(this) }) {
+        //    startActivity(PermissionHandlerActivity.getIntent(this))
+        //}
 
         // Update database readout
         CoroutineScope(Dispatchers.IO).launch {

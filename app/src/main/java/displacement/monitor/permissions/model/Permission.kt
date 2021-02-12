@@ -14,6 +14,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 
 sealed class Permission {
 
@@ -26,6 +27,8 @@ sealed class Permission {
     abstract fun isGrantedTo(context: Context): Boolean
 
     abstract fun requestWith(activity: Activity)
+
+    abstract fun requestWith(fragment: Fragment)
 
     // Overrides -----------------------------------------------------------------------------------
 
@@ -74,6 +77,21 @@ sealed class Permission {
             }
         }
 
+        override fun requestWith(fragment: Fragment) {
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                    Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).also { intent ->
+                        intent.data = Uri.parse("package:${fragment.requireActivity().packageName}")
+                        fragment.startActivityForResult(intent, requestCode)
+                    }
+                }
+                else -> fragment.requestPermissions(
+                    arrayOf(permString),
+                    requestCode
+                )
+            }
+        }
+
     }
 
     object CAMERA : Permission() {
@@ -91,6 +109,13 @@ sealed class Permission {
         override fun requestWith(activity: Activity) {
             ActivityCompat.requestPermissions(
                 activity,
+                arrayOf(permString),
+                requestCode
+            )
+        }
+
+        override fun requestWith(fragment: Fragment) {
+            fragment.requestPermissions(
                 arrayOf(permString),
                 requestCode
             )
@@ -115,6 +140,17 @@ sealed class Permission {
                 it.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminReceiverComp)
             }
             activity.startActivityForResult(intent, requestCode)
+        }
+
+        override fun requestWith(fragment: Fragment) {
+            val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).also {
+                val adminReceiverComp = ComponentName(
+                    fragment.requireContext(),
+                    AdminReceiver::class.java
+                )
+                it.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminReceiverComp)
+            }
+            fragment.startActivityForResult(intent, requestCode)
         }
 
         class AdminReceiver : DeviceAdminReceiver() {
