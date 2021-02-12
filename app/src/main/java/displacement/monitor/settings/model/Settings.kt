@@ -6,7 +6,7 @@ import androidx.preference.PreferenceManager
 import org.opencv.core.Size
 
 /**
- * Holds a snapshot of all settings values. If settings change, make a new instance of this object.
+ * Holds a all settings values.
  */
 class Settings(private val preferences: SharedPreferences) {
 

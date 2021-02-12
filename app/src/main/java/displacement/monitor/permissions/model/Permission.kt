@@ -14,6 +14,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 
 sealed class Permission {
 
@@ -23,9 +24,11 @@ sealed class Permission {
 
     abstract val name: String
 
-    abstract fun isGrantedTo(activity: Activity): Boolean
+    abstract fun isGrantedTo(context: Context): Boolean
 
     abstract fun requestWith(activity: Activity)
+
+    abstract fun requestWith(fragment: Fragment)
 
     // Overrides -----------------------------------------------------------------------------------
 
@@ -48,12 +51,12 @@ sealed class Permission {
 
         const val permString = Manifest.permission.WRITE_SETTINGS
 
-        override fun isGrantedTo(activity: Activity): Boolean = when {
+        override fun isGrantedTo(context: Context): Boolean = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
-                Settings.System.canWrite(activity)
+                Settings.System.canWrite(context)
             }
             else -> {
-                val state = ContextCompat.checkSelfPermission(activity, permString)
+                val state = ContextCompat.checkSelfPermission(context, permString)
                 state == PackageManager.PERMISSION_GRANTED
             }
         }
@@ -74,6 +77,21 @@ sealed class Permission {
             }
         }
 
+        override fun requestWith(fragment: Fragment) {
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                    Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).also { intent ->
+                        intent.data = Uri.parse("package:${fragment.requireActivity().packageName}")
+                        fragment.startActivityForResult(intent, requestCode)
+                    }
+                }
+                else -> fragment.requestPermissions(
+                    arrayOf(permString),
+                    requestCode
+                )
+            }
+        }
+
     }
 
     object CAMERA : Permission() {
@@ -83,14 +101,21 @@ sealed class Permission {
 
         const val permString = Manifest.permission.CAMERA
 
-        override fun isGrantedTo(activity: Activity): Boolean {
-            val state = ContextCompat.checkSelfPermission(activity, permString)
+        override fun isGrantedTo(context: Context): Boolean {
+            val state = ContextCompat.checkSelfPermission(context, permString)
             return state == PackageManager.PERMISSION_GRANTED
         }
 
         override fun requestWith(activity: Activity) {
             ActivityCompat.requestPermissions(
                 activity,
+                arrayOf(permString),
+                requestCode
+            )
+        }
+
+        override fun requestWith(fragment: Fragment) {
+            fragment.requestPermissions(
                 arrayOf(permString),
                 requestCode
             )
@@ -102,10 +127,10 @@ sealed class Permission {
 
         override val requestCode: Int by lazy { allPerms.indexOf(this) }
 
-        override fun isGrantedTo(activity: Activity): Boolean {
+        override fun isGrantedTo(context: Context): Boolean {
             val policyKey = Context.DEVICE_POLICY_SERVICE
-            val policyManager = activity.getSystemService(policyKey) as DevicePolicyManager
-            val adminReceiverComp = ComponentName(activity, AdminReceiver::class.java)
+            val policyManager = context.getSystemService(policyKey) as DevicePolicyManager
+            val adminReceiverComp = ComponentName(context, AdminReceiver::class.java)
             return policyManager.isAdminActive(adminReceiverComp)
         }
 
@@ -115,6 +140,17 @@ sealed class Permission {
                 it.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminReceiverComp)
             }
             activity.startActivityForResult(intent, requestCode)
+        }
+
+        override fun requestWith(fragment: Fragment) {
+            val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).also {
+                val adminReceiverComp = ComponentName(
+                    fragment.requireContext(),
+                    AdminReceiver::class.java
+                )
+                it.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminReceiverComp)
+            }
+            fragment.startActivityForResult(intent, requestCode)
         }
 
         class AdminReceiver : DeviceAdminReceiver() {

@@ -31,7 +31,11 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
     }
 
     // Handles all the very specific ways you make android turn on/off the device
-    private val deviceStateController by lazy { DeviceStateController(this) }
+    private val deviceStateController by lazy {
+        if (this.intent.getBooleanExtra(BUNDLE_USE_STATE_CONTROLLER, true)) {
+            DeviceStateController(this)
+        } else null
+    }
 
     private val remoteDBController = RemoteDBController()
 
@@ -57,7 +61,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        this.deviceStateController.start()
+        this.deviceStateController?.start()
 
         setContentView(R.layout.activity_scheduled_measurement)
 
@@ -106,7 +110,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
             this@ScheduledMeasurementActivity.remoteDBController.close()
         }
 
-        this.deviceStateController.finish()
+        this.deviceStateController?.finish() ?: finish()
     }
 
     private fun onMeasurementFailed(e: IllegalStateException, image: Mat) {
@@ -136,6 +140,13 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
         private const val MAX = 15
 
-        fun getIntent(c: Context) = Intent(c, ScheduledMeasurementActivity::class.java)
+        private const val BUNDLE_USE_STATE_CONTROLLER = "$TAG:useStateController"
+
+        fun getIntent(
+            c: Context,
+            useStateController: Boolean = true
+        ) = Intent(c, ScheduledMeasurementActivity::class.java).also {
+            it.putExtra(BUNDLE_USE_STATE_CONTROLLER, useStateController)
+        }
     }
 }
