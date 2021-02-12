@@ -103,10 +103,10 @@ class CalibrationActivity : AppCompatActivity() {
         val calibrationSettings = this.settings.calibration
         @SuppressLint("SetTextI18n")
         this.views.readout.text = """
-            Configured initial distance: ${calibrationSettings.initialDistance}m
-            Configured target size: ${calibrationSettings.targetSize}m
-            If incorrect, change in settings
-            If correct, place at initial distance and calibrate
+            If the wrong camera is showing or it is warped, fix it in settings.
+            The target is configured to be ${calibrationSettings.targetSize}m square.
+            Place the camera at ${calibrationSettings.initialDistance}m from the target and press calibrate.
+            If any of the values above are wrong, fix them in settings.
         """.trimIndent()
 
         this.views.settingsButton.setOnClickListener {

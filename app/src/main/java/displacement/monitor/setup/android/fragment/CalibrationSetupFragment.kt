@@ -25,66 +25,11 @@ import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 import java.lang.Exception
 
-class CalibrationSetupFragment : AbstractSetupPageFragment("Calibrate") {
+class CalibrationSetupFragment : AbstractSetupPageFragment("Calibration") {
 
     private val views by lazy { Views(requireView()) }
 
     private val settings by lazy { Settings(requireContext()) }
-
-    private var measured: Boolean = false
-
-    private val targetFinder by lazy { TargetFinder(this.settings) }
-
-    /** Camera callback used for just showing the found target */
-    private val targetFinderCamera = CameraFrameCallback { image ->
-        var preview: Mat
-
-        val oriented = fixOrientation(image, this.settings.camera.warp)
-        preview = resizeWithBorder(oriented, image.size())
-
-        try {
-            val target = this.targetFinder.findTarget(oriented)
-            preview = resizeWithBorder(drawTarget(oriented, target), image.size())
-        } catch (e: IllegalStateException) {
-            Log.i(TAG, "Image processing - Failed to find target (${e.message})")
-        }
-
-        preview
-    }
-
-    /** Camera callback used to measure the target */
-    private val focalLengthMeasureCamera = CameraFrameCallback { image ->
-        var preview: Mat
-
-        val oriented = fixOrientation(image, this.settings.camera.warp)
-        preview = resizeWithBorder(oriented, image.size())
-
-        try {
-            val target = this.targetFinder.findTarget(oriented)
-            preview = resizeWithBorder(drawTarget(oriented, target), image.size())
-
-            val focalLength = TargetMeasurement.focalLengthReal(
-                distanceReal = this.settings.calibration.initialDistance,
-                lengthReal = this.settings.calibration.targetSize,
-                lengthPx = target.edgeLength
-            )
-            CoroutineScope(Dispatchers.Main).launch {
-                if (!this@CalibrationSetupFragment.measured) {
-                    onMeasureFocalLength(focalLength)
-                }
-            }
-        } catch (e: IllegalStateException) {
-            Log.i(TAG, "Image processing - Failed to measure focal length (${e.message}")
-            CoroutineScope(Dispatchers.Main).launch {
-                if (!this@CalibrationSetupFragment.measured) {
-                    @SuppressLint("SetTextI18n")
-                    this@CalibrationSetupFragment.views.readout.text = "Looking for target..."
-                }
-            }
-        }
-
-        preview
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -97,8 +42,6 @@ class CalibrationSetupFragment : AbstractSetupPageFragment("Calibrate") {
     override fun onResume() {
         super.onResume()
 
-        initialiseOpenCV(requireContext(), TAG)
-
         checkMeasured()
 
         val calibrationSettings = this.settings.calibration
@@ -108,37 +51,22 @@ class CalibrationSetupFragment : AbstractSetupPageFragment("Calibrate") {
             Configured target size: ${calibrationSettings.targetSize}m
             Calibration value (Focal length): ${
                 calibrationSettings.focalLength.takeUnless { it == 0.0 }?.let {
-                    "Measured (${"%.2f".format(it)})" 
-                } ?: "Not measured"
+                    "Measured (${"%.2f".format(it)}) - Calibration is done" 
+                } ?: "Not measured - Must be calibrated"
             }
         """.trimIndent()
 
-        this.views.cameraView.start(this.settings, this.targetFinderCamera)
         this.views.settingsBtn.setOnClickListener {
             startActivity(SettingsActivity.getIntent(requireContext()))
         }
         this.views.calibrationBtn.setOnClickListener {
-            this.views.cameraView.start(this.settings, this.focalLengthMeasureCamera)
+            startActivity(CalibrationActivity.getIntent(requireContext()))
         }
         this.views.nextBtn.setOnClickListener {
             this.pagerActivity.pageNext()
         }
         this.views.backBtn.setOnClickListener {
             this.pagerActivity.pageBack()
-        }
-    }
-
-    private fun onMeasureFocalLength(focalLength: Double) {
-        this.views.cameraView.stop()
-
-        if (!this.measured) {
-            this.measured = true
-            PreferenceManager.getDefaultSharedPreferences(requireContext()).edit().also { editor ->
-                editor.putString("calibration_focalLength", focalLength.toString())
-                editor.apply()
-            }
-
-            onResume()
         }
     }
 
@@ -154,7 +82,6 @@ class CalibrationSetupFragment : AbstractSetupPageFragment("Calibrate") {
     private inner class Views(
         view: View,
         val readout: TextView = view.findViewById(R.id.calibrationSetupFragmentReadout),
-        val cameraView: CustomCameraView = view.findViewById(R.id.calibrationSetupFragmentCameraView),
         val settingsBtn: Button = view.findViewById(R.id.calibrationSetupFragmentSettingsBtn),
         val calibrationBtn: Button = view.findViewById(R.id.calibrationSetupFragmentCalibrateBtn),
         val backBtn: Button = view.findViewById(R.id.calibrationSetupFragmentBackButton),

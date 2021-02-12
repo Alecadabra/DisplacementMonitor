@@ -1,7 +1,6 @@
 package displacement.monitor.setup.android.activity
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,10 +10,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import displacement.monitor.R
-import displacement.monitor.setup.android.fragment.PermissionsSetupFragment
-import displacement.monitor.setup.android.fragment.AbstractSetupPageFragment
-import displacement.monitor.setup.android.fragment.CalibrationSetupFragment
-import displacement.monitor.setup.android.fragment.SettingsSetupFragment
+import displacement.monitor.scheduling.android.activity.ScheduledMeasurementActivity
+import displacement.monitor.scheduling.controller.SchedulingManager
+import displacement.monitor.settings.model.Settings
+import displacement.monitor.setup.android.fragment.*
 
 class SetupSlidePagerActivity : AppCompatActivity() {
 
@@ -39,13 +38,21 @@ class SetupSlidePagerActivity : AppCompatActivity() {
         AlertDialog.Builder(this).also { builder ->
             builder.setTitle("Leave app")
             builder.setMessage("Do you want to exit the app?")
-            builder.setPositiveButton("Cancel") { dialog, _ ->
+            builder.setNegativeButton("No, Cancel") { dialog, _ ->
                 dialog.dismiss()
             }
-            builder.setNegativeButton("Yes, exit") { _, _ ->
+            builder.setPositiveButton("Yes, exit") { _, _ ->
                 super.onBackPressed()
             }
         }.create().show()
+    }
+
+    override fun finish() {
+        SchedulingManager(
+            this, Settings(this), ScheduledMeasurementActivity.getIntent(this)
+        ).cancel()
+
+        super.finish()
     }
 
     fun pageBack() {
