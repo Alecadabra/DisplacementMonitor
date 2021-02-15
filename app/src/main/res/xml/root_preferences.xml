@@ -61,7 +61,7 @@
             android:key="camera_flashThreshold"
             android:title="Flash brightness threshold"
             android:defaultValue="20"
-            android:summary="Maximum brightness value (0-100) where the flash is turned on to aid in target finding" />
+            android:summary="Maximum brightness percent (0-100) where the flash is turned on to aid in target finding" />
 
     </PreferenceCategory>
 

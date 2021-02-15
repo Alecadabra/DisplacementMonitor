@@ -84,7 +84,8 @@ class Settings(private val preferences: SharedPreferences) {
         val camIdx = getInt("camera_camIdx")
             ?: 0
 
-        val brightnessThreshold = getDouble("camera_flashThreshold") { it in 0f..100f }
+        val brightnessThreshold: Float = getDouble("camera_flashThreshold") { it in 0f..100f }
+            ?.let { it / 100f }?.toFloat()
             ?: error("Flash brightness threshold must be a number between 0 and 100")
     }
 
