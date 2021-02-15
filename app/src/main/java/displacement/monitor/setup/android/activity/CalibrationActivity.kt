@@ -125,7 +125,7 @@ class CalibrationActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        initialiseOpenCV(this, TAG)
+        initialiseOpenCV(this)
         this.views.cameraView.start(this.settings, this.targetFinderCamera)
     }
 

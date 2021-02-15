@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -33,6 +34,8 @@ class RealTimeMeasurementActivity : AppCompatActivity() {
 
     private val cameraFrameCallback = CameraFrameCallback { image ->
         val preview = image.clone()
+
+        Log.d(TAG, "Brightness: ${ImageOperations.measureCentroidBrightness(image)}")
 
         try {
             val measurement = this.calibratedImageProcessor.measure(image, preview)
@@ -65,7 +68,7 @@ class RealTimeMeasurementActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        initialiseOpenCV(this, TAG)
+        initialiseOpenCV(this)
         this.views.cameraView.start(this.settings, this.cameraFrameCallback)
     }
 
@@ -89,7 +92,7 @@ class RealTimeMeasurementActivity : AppCompatActivity() {
     )
 
     companion object {
-        private const val TAG = "RealTimeMeasurementActivity"
+        private const val TAG = "RealTimeMeasurement"
 
         fun getIntent(context: Context) = Intent(context, RealTimeMeasurementActivity::class.java)
     }

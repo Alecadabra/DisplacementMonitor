@@ -7,19 +7,19 @@ import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.imgproc.Imgproc
 
+/**
+ * Contains the logic with which a target [Contour] can be found from a source image [Mat].
+ */
 class TargetFinder(private val settings: Settings) {
 
     /**
-     * Finds all the target from an input of an image run through [UncalibratedImageProcessor.findEdges]
-     * @param image Image Mat ran through [UncalibratedImageProcessor.findEdges]
+     * Finds a target [Contour] from an image matrix.
+     * @param image Image Mat
      * @return Contour most likely to be the target
      * @throws IllegalStateException If target was not found
      */
     fun findTarget(image: Mat): Contour {
-        // Matrix where each element gives info on the contour at that index
-        //val hierarchy = Mat()
-
-        // Apply find edges effect
+        // Apply find edges
         val imageEdges = findEdges(image)
 
         // List of all contours
@@ -28,7 +28,7 @@ class TargetFinder(private val settings: Settings) {
             Imgproc.findContours(
                 imageEdges, // Source image
                 matOfPointList, // Dest list of contours
-                Mat(), // Dest hierarchy matrix
+                Mat(), // Dest hierarchy matrix - unused
                 Imgproc.RETR_LIST, // Hierarchy mode
                 Imgproc.CHAIN_APPROX_SIMPLE // Contour approximation method
             )
@@ -71,6 +71,9 @@ class TargetFinder(private val settings: Settings) {
         return imageEdges
     }
 
+    /**
+     * Determines if a contour is roughly rectangular based on it's number of dimensions.
+     */
     private fun isRoughlyRectangular(contour: Contour): Boolean {
         val acceptableRange = this.settings.targetFinding.let {
             it.targetMinEdges..it.targetMaxEdges
@@ -79,6 +82,9 @@ class TargetFinder(private val settings: Settings) {
         return contour.approxCurve.matOfPoint2f.height() in acceptableRange
     }
 
+    /**
+     * Determines if a contour is square based on it's aspect ratio.
+     */
     private fun isSquareEnough(contour: Contour): Boolean {
         val boundingRec = contour.approxCurve.boundingRect
         val aspectRatio = boundingRec.width.toFloat() / boundingRec.height.toFloat()
@@ -89,6 +95,10 @@ class TargetFinder(private val settings: Settings) {
         return aspectRatio in acceptableRange
     }
 
+    /**
+     * Determines if a contour is sufficiently large based on it's bounding rectangle's length and
+     * width.
+     */
     private fun isLargeEnough(contour: Contour): Boolean {
         val boundingRec = contour.approxCurve.boundingRect
         val minSize = this.settings.targetFinding.minTargetSize
@@ -96,12 +106,20 @@ class TargetFinder(private val settings: Settings) {
         return boundingRec.width >= minSize && boundingRec.height >= minSize
     }
 
+    /**
+     * Determines if a contour is sufficiently solid based on how closely it matches it's convex
+     * hull.
+     */
     private fun isSolidEnough(contour: Contour): Boolean {
         val solidity = contour.area / contour.convexHull.area
 
         return solidity > this.settings.targetFinding.minTargetSolidity
     }
 
+    /**
+     * Helper extension property that leverages on a contour's approx curve epsilon value being
+     * consistent within this class.
+     */
     private val Contour.approxCurve: Contour
         get() {
             val epsilon = this@TargetFinder.settings.targetFinding.curveApproximationEpsilon

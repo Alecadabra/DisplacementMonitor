@@ -10,9 +10,11 @@ import org.opencv.core.CvType
 /** OpenCV data type used */
 val CV_TYPE = CvType.CV_8UC4
 
-fun initialiseOpenCV(context: Context, tag: String) {
-    Log.d(TAG, "Context $tag is initialising OpenCV")
-
+/**
+ * Handles initialisation of OpenCV. Requires a context.
+ * @param context The [Android context][Context] within which to initialise OpenCV.
+ */
+fun initialiseOpenCV(context: Context) {
     val loaderCallback = object : BaseLoaderCallback(context) {
         override fun onManagerConnected(status: Int) {
             when (status) {

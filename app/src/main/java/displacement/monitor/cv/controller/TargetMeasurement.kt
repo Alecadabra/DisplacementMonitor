@@ -3,10 +3,19 @@ package displacement.monitor.cv.controller
 import displacement.monitor.cv.model.Contour
 import displacement.monitor.settings.model.Settings
 
+/**
+ * Contains the mathematical logic used to measure the distance to a target contour.
+ */
 class TargetMeasurement(private val settings: Settings) {
 
     // Public entry points -------------------------------------------------------------------------
 
+    /**
+     * Calculates the distance between the camera and the target. Uses [distanceReal] with
+     * values pulled from this class's [Settings] instance.
+     * @param target Target [Contour] to measure distance to
+     * @return Computed distance (Real)
+     */
     fun measureDistance(target: Contour): Double = distanceReal(
         focalLengthReal = this.settings.calibration.focalLength,
         lengthReal = this.settings.calibration.targetSize,

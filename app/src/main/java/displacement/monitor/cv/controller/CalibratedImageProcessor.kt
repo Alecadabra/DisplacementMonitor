@@ -3,11 +3,14 @@ package displacement.monitor.cv.controller
 import displacement.monitor.cv.controller.ImageOperations.drawTarget
 import displacement.monitor.cv.controller.ImageOperations.fixOrientation
 import displacement.monitor.cv.controller.ImageOperations.resizeWithBorder
-import displacement.monitor.cv.controller.ImageOperations.values
 import displacement.monitor.cv.model.Contour
 import displacement.monitor.settings.model.Settings
 import org.opencv.core.Mat
 
+/**
+ * Encapsulates the logic and parameters required to measure the distance to a target in a given
+ * image.
+ */
 class CalibratedImageProcessor(
     private val settings: Settings,
     private val targetMeasurement: TargetMeasurement,
@@ -37,4 +40,10 @@ class CalibratedImageProcessor(
         // Measure the distance
         return this.targetMeasurement.measureDistance(target)
     }
+
+
+    // Helper extension property
+    private var Mat.values
+        get() = this
+        set(value) = value.assignTo(this)
 }

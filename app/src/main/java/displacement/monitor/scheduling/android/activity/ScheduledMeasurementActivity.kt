@@ -71,7 +71,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        initialiseOpenCV(this, TAG)
+        initialiseOpenCV(this)
         this.views.cameraView.start(this.settings, this.cameraFrameCallback)
     }
 

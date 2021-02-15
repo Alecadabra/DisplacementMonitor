@@ -9,17 +9,20 @@ import org.opencv.android.JavaCameraView
 import java.lang.Exception
 import java.util.*
 
+/**
+ * Subclass of [JavaCameraView] that provides extra functionality like flash.
+ */
 class CustomCameraView(
     context: Context,
     attributeSet: AttributeSet,
 ) : JavaCameraView(context, attributeSet) {
 
-    var cameraIdx: Int by this::mCameraIndex
+    // Members -------------------------------------------------------------------------------------
 
-    @Suppress("DEPRECATION")
     var flashMode = FlashMode.AUTO
         set(value) {
             if (field != value) {
+                @Suppress("DEPRECATION")
                 this.mCamera.parameters = this.mCamera.parameters.also {
                     it.flashMode = value.parameterName
                 }
@@ -28,15 +31,19 @@ class CustomCameraView(
             }
         }
 
+    // Overrides -----------------------------------------------------------------------------------
+
     override fun initializeCamera(width: Int, height: Int): Boolean {
         val result = super.initializeCamera(width, height)
         this.flashMode = FlashMode.AUTO
         return result
     }
 
+    // Public functions ----------------------------------------------------------------------------
+
     fun start(settings: Settings, callback: CvCameraViewListener2) {
         try {
-            cameraIdx = settings.camera.camIdx
+            this.mCameraIndex = settings.camera.camIdx
         } catch (e: Exception) {
             Log.e(TAG, "Could not set camera idx", e)
         }
@@ -52,6 +59,8 @@ class CustomCameraView(
         disableView()
         this.visibility = GONE
     }
+
+    // Local constructs ----------------------------------------------------------------------------
 
     @Suppress("DEPRECATION")
     enum class FlashMode(val parameterName: String) {

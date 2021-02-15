@@ -15,6 +15,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.CancellationException
 
+/**
+ * Handles communication with the InfluxDB remote database.
+ */
 class RemoteDBController {
 
     /**
@@ -39,31 +42,47 @@ class RemoteDBController {
         getClient()
     }
 
+    /**
+     * Sends all pending measurements in the local database to the InfluxDB database, blocking
+     * until sent or an error occurs.
+     * @param lazyContext Way to retrieve the [application context][Context] if required for
+     * local database initialisation.
+     */
     suspend fun send(lazyContext: () -> Context) {
 
+        // Get all pending measurements from local database
         val measurements = MeasurementDatabase(lazyContext).measurementDao().getAll()
 
         Log.d(TAG, "Writing ${measurements.size} measurement(s)")
 
+        // Suspend initialising the InfluxDB client
         val client = getClient()
 
         try {
             withContext(Dispatchers.IO) {
+                // Write data, blocking
                 val points = measurements.map { it.toPoint() }
                 client.writeApiBlocking.writePoints(points)
             }
+
             Log.i(TAG, "Wrote measurement(s) successfully")
+
+            // Delete measurements from the local database
             val dao = MeasurementDatabase(lazyContext).measurementDao()
             dao.delete(*measurements)
+
         } catch (e: InfluxException) {
             Log.e(TAG, "Could not write measurement(s)", e)
         }
     }
 
-    suspend fun close() {
+    /**
+     * Closes the connection to the InfluxDB client.
+     */
+    fun close() {
         this.clientInitJob.cancel(CancellationException("Client is being closed"))
         this.nullableClient?.also { client ->
-            withContext(Dispatchers.IO) {
+            CoroutineScope(Dispatchers.IO).launch {
                 client.close()
             }
         }
@@ -72,14 +91,17 @@ class RemoteDBController {
     companion object {
         private const val TAG = "RemoteDBController"
 
-        private const val URL = "https://intern-am-db.icentralau.com.au/"
-
         /*
-         * The InfluxDB access token and domain must have write access and be stored in a file
-         * called secret.properties in the project root (Same level as gradle.properties) and must
+         * ================================== SETUP BEFORE USE =====================================
+         * The InfluxDB access token must have write access and be stored in a file called
+         * secret.properties in the project root (Same level as gradle.properties) and must
          * contain INFLUX_DB_TOKEN="YOUR TOKEN HERE"
+         * Then, sync gradle and rebuild the project.
+         * ================================== SETUP BEFORE USE =====================================
          */
         private val INFLUX_DB_TOKEN = BuildConfig.INFLUX_DB_TOKEN.toCharArray()
+
+        private const val URL = "https://intern-am-db.icentralau.com.au/"
 
         private val INFLUX_DB_OPTIONS = InfluxDBClientOptions.builder().also {
             it.connectionString(URL)

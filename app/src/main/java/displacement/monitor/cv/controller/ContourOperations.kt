@@ -9,10 +9,19 @@ import org.opencv.imgproc.Imgproc
 import kotlin.math.abs
 import kotlin.math.hypot
 
+/**
+ * Holds commonly used operations done on [Contours][Contour].
+ */
 object ContourOperations {
 
+    /**
+     * Calculates the area of the contour in square pixels.
+     */
     fun area(contour: Contour): Double = Imgproc.contourArea(contour.matOfPoint)
 
+    /**
+     * Calculates the convex hull of a contour - the contour modified to have no concave points.
+     */
     fun convexHull(contour: Contour): Contour {
         // Get MatOfInt from convexHull function
         val hullIntMat = MatOfInt().also { Imgproc.convexHull(contour.matOfPoint, it) }
@@ -25,8 +34,15 @@ object ContourOperations {
         return hullPoints.toContour()
     }
 
+    /**
+     * Calculates the bounding rectangle of a contour.
+     */
     fun boundingRect(contour: Contour): Rect = Imgproc.boundingRect(contour.matOfPoint)
 
+    /**
+     * Calculates the approximate polygonal curve of a contour using the Douglas-Pecker algorithm
+     * with the given accuracy epsilon.
+     */
     fun approxCurve(contour: Contour, epsilon: Double): Contour {
         return MatOfPoint2f().also { mat ->
             val perimeter = Imgproc.arcLength(contour.matOfPoint2f, true)
