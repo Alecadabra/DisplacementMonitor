@@ -11,8 +11,7 @@ import android.widget.CheckBox
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import displacement.monitor.R
-import displacement.monitor.permissions.model.Permission
-import displacement.monitor.setup.android.activity.SetupSlidePagerActivity
+import displacement.monitor.permissions.controller.Permission
 
 class PermissionsSetupFragment : AbstractSetupPageFragment("Obtain Permissions") {
 

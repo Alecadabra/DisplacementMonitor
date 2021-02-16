@@ -12,15 +12,25 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
 import displacement.monitor.R
+import displacement.monitor.scheduling.controller.DeviceStateController
 import displacement.monitor.settings.model.Settings
 
+/**
+ * Activity to show the [SettingsActivity.SettingsFragment][SettingsFragment]
+ * [Preference Fragment][PreferenceFragmentCompat] to allow the user to view and modify the
+ * app settings.
+ */
 class SettingsActivity : AppCompatActivity() {
+
+    // Android entry points ------------------------------------------------------------------------
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
         this.title = "Settings"
 
+        // Place the Settings Fragment in the frame
         supportFragmentManager.beginTransaction().also { transaction ->
             transaction.replace(R.id.settingsActivityFrame, SettingsFragment())
             transaction.commit()
@@ -30,6 +40,7 @@ class SettingsActivity : AppCompatActivity() {
     override fun onBackPressed() {
         // Make sure all settings are valid before leaving
         try {
+            // Constructing a Settings object throws an exception if any preferences are invalid
             Settings(this)
             super.onBackPressed()
         } catch (e: IllegalStateException) {
@@ -50,9 +61,10 @@ class SettingsActivity : AppCompatActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
-            // Set EditText input types
+            // Set EditText input types programmatically, as it doesn't seem to work in xml
             val inputDecimal = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
             val inputInt = InputType.TYPE_CLASS_NUMBER
+            // List preference keys by their input type
             listOf(
                 "calibration_targetSize" to inputDecimal,
                 "calibration_initialDistance" to inputDecimal,
@@ -85,6 +97,7 @@ class SettingsActivity : AppCompatActivity() {
 
                 Toast.makeText(this.context, "Settings reset to defaults", Toast.LENGTH_LONG).show()
 
+                // Put a new instance of this fragment in it's frame
                 activity?.supportFragmentManager?.beginTransaction()?.also { transaction ->
                     transaction.replace(R.id.settingsActivityFrame, SettingsFragment())
                     transaction.commit()
@@ -93,6 +106,7 @@ class SettingsActivity : AppCompatActivity() {
                 return@setOnPreferenceClickListener true
             }
 
+            // Camera index selection logic
             findPreference<ListPreference>("camera_camIdx")?.also { pref ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     val cameraManager = context?.getSystemService(CAMERA_SERVICE) as CameraManager
@@ -106,6 +120,7 @@ class SettingsActivity : AppCompatActivity() {
                         mapOf(
                             CameraCharacteristics.LENS_FACING_BACK to "Back",
                             CameraCharacteristics.LENS_FACING_FRONT to "Front",
+                            // External only exists about API 23
                             CameraCharacteristics.LENS_FACING_EXTERNAL to "External",
                         )
                     } else {
@@ -118,14 +133,15 @@ class SettingsActivity : AppCompatActivity() {
                     // Set human readable values
                     pref.entries = cameras.map { cameraIdx ->
                         val characteristics = cameraManager.getCameraCharacteristics(cameraIdx)
-                        val facing = characteristics.get(CameraCharacteristics.LENS_FACING) ?: -1
-                        val flash = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) ?: false
-                        val flashString = if (flash) "has" else "no"
+                        // Key to the facingMap
+                        val facingKey = characteristics.get(CameraCharacteristics.LENS_FACING) ?: -1
+                        val hasFlash = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) ?: false
+                        val flashString = if (hasFlash) "has" else "no"
 
-                        "ID $cameraIdx - ${facingMap.getValue(facing)} camera, $flashString flash"
+                        "ID $cameraIdx - ${facingMap.getValue(facingKey)} camera, $flashString flash"
                     }.toTypedArray()
 
-                    // Default value
+                    // Set default value
                     if (pref.value == null) {
                         pref.setValueIndex(0)
                     }
@@ -138,6 +154,11 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     companion object {
+        /**
+         * Get an intent to use to start this activity.
+         * @param c Context being called from
+         * @return New intent to start this activity with
+         */
         fun getIntent(c: Context) = Intent(c, SettingsActivity::class.java)
     }
 }

@@ -1,4 +1,4 @@
-package displacement.monitor.permissions.model
+package displacement.monitor.permissions.controller
 
 import android.Manifest
 import android.app.Activity
@@ -11,23 +11,41 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
+/**
+ * Provides Android-specific logic for granting and checking the permissions that the app requires.
+ */
 sealed class Permission {
 
     // Abstract members ----------------------------------------------------------------------------
 
+    /**
+     * The activity/permission request code for the permission to use with `startActivityForResult`
+     * and `requestPermissions`.
+     */
     abstract val requestCode: Int
 
+    /**
+     * Human readable name of the permission.
+     */
     abstract val name: String
 
+    /**
+     * Determines whether or not the permission is granted to the given context.
+     */
     abstract fun isGrantedTo(context: Context): Boolean
 
+    /**
+     * Requests the permission to be granted to the given activity.
+     */
     abstract fun requestWith(activity: Activity)
 
+    /**
+     * Requests the permission to be granted to the given fragment.
+     */
     abstract fun requestWith(fragment: Fragment)
 
     // Overrides -----------------------------------------------------------------------------------
@@ -39,11 +57,20 @@ sealed class Permission {
     companion object {
         val allPerms = listOf(SETTINGS, CAMERA, ADMIN)
 
+        /**
+         * Get a permission from a request code. The reverse of the
+         * [Permission.requestCode][requestCode] property.
+         */
         fun fromRequestCode(requestCode: Int) = allPerms.getOrNull(requestCode)
     }
 
     // Implementations -----------------------------------------------------------------------------
 
+    /**
+     * The permission to write to system settings.
+     * In API 23 and above, this uses [Settings.ACTION_MANAGE_WRITE_SETTINGS], in lower levels,
+     * this is the [Manifest.permission.WRITE_SETTINGS] Android permission.
+     */
     object SETTINGS : Permission() {
         override val name = "Settings"
 
@@ -94,6 +121,9 @@ sealed class Permission {
 
     }
 
+    /**
+     * Permission to use the camera. This is the [Manifest.permission.CAMERA] Android permission.
+     */
     object CAMERA : Permission() {
         override val name = "Camera"
 
@@ -122,6 +152,10 @@ sealed class Permission {
         }
     }
 
+    /**
+     * Corresponds to this app being an administrator as per the [DevicePolicyManager] using
+     * the [AdminReceiver] subclass.
+     */
     object ADMIN : Permission() {
         override val name = "Admin"
 
@@ -153,22 +187,6 @@ sealed class Permission {
             fragment.startActivityForResult(intent, requestCode)
         }
 
-        class AdminReceiver : DeviceAdminReceiver() {
-            override fun onEnabled(context: Context, intent: Intent) {
-                super.onEnabled(context, intent)
-
-                Log.d(TAG, "AdminReceiver - Enabled")
-            }
-
-            override fun onDisabled(context: Context, intent: Intent) {
-                super.onDisabled(context, intent)
-
-                Log.d(TAG, "AdminReceiver - Enabled")
-            }
-
-            companion object {
-                private const val TAG = "Permission\$ADMIN"
-            }
-        }
+        class AdminReceiver : DeviceAdminReceiver()
     }
 }

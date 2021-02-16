@@ -8,13 +8,19 @@ import android.os.Build
 import android.util.Log
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
-import displacement.monitor.permissions.model.Permission
+import displacement.monitor.permissions.controller.Permission
 
+/**
+ * Delegate for an activity to use to wake/lock the screen.
+ */
 class DeviceStateController(private val activity: Activity) {
 
+    /**
+     * Wakes the device, attempts to dismiss the keyguard if the device in unprotected or
+     * otherwise shows the activity over the lock screen.
+     */
     fun start() {
-        // Dim screen
-        /*
+        /* Dim screen - Unused but possible battery optimisation
         Settings.System.putInt(
             this.activity.contentResolver,
             Settings.System.SCREEN_BRIGHTNESS_MODE,
@@ -38,14 +44,19 @@ class DeviceStateController(private val activity: Activity) {
 
             val keyguardKey = Context.KEYGUARD_SERVICE
             val keyguardManager = this.activity.getSystemService(keyguardKey) as KeyguardManager
-            keyguardManager.requestDismissKeyguard(this.activity, KeyguardCallback)
+            keyguardManager.requestDismissKeyguard(this.activity, null)
         } else {
+            @Suppress("DEPRECATION")
             this.activity.window.addFlags(
                 Flag.FLAG_SHOW_WHEN_LOCKED or Flag.FLAG_DISMISS_KEYGUARD or Flag.FLAG_TURN_SCREEN_ON
             )
         }
     }
 
+    /**
+     * Attempts to lock the screen using [DevicePolicyManager.lockNow] if the app is an admin, and
+     * then calls [Activity.finish] on the activity.
+     */
     fun finish() {
         // Allow screen to turn off
         this.activity.window.clearFlags(Flag.FLAG_KEEP_SCREEN_ON)
@@ -67,24 +78,12 @@ class DeviceStateController(private val activity: Activity) {
         this.activity.finish()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    object KeyguardCallback : KeyguardManager.KeyguardDismissCallback() {
-        override fun onDismissCancelled() {
-            Log.d(TAG, "Keyguard - Dismiss cancelled")
-        }
-
-        override fun onDismissError() {
-            Log.d(TAG, "Keyguard - Dismiss cancelled")
-        }
-
-        override fun onDismissSucceeded() {
-            Log.d(TAG, "Keyguard - Dismiss success")
-        }
-    }
-
     companion object {
         private const val TAG = "DeviceStateController"
     }
 }
 
+/**
+ * Alias of [WindowManager.LayoutParams] to manage window flags.
+ */
 private typealias Flag = WindowManager.LayoutParams

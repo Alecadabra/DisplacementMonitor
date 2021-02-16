@@ -6,12 +6,19 @@ import androidx.preference.PreferenceManager
 import org.opencv.core.Size
 
 /**
- * Holds a all settings values.
+ * Gives access to all app settings values through [preferences]. Access the values through the
+ * member class instances corresponding to each preference category; [periodicMeasurement],
+ * [calibration], [camera] & [targetFinding].
+ * @param preferences Instance of [SharedPreferences] that values are pulled from, probably
+ * generated with [PreferenceManager.getDefaultSharedPreferences]
  */
-class Settings(private val preferences: SharedPreferences) {
+class Settings(val preferences: SharedPreferences) {
 
     // Secondary constructor -----------------------------------------------------------------------
 
+    /**
+     * Constructs the [preferences] property with [PreferenceManager.getDefaultSharedPreferences].
+     */
     constructor(context: Context) : this(PreferenceManager.getDefaultSharedPreferences(context))
 
     init {
@@ -36,7 +43,7 @@ class Settings(private val preferences: SharedPreferences) {
     val targetFinding: TargetFinding
         get() = TargetFinding()
 
-    // Helper functions ----------------------------------------------------------------------------
+    // Helper functions to pull values from SharedPreferences --------------------------------------
 
     private fun getDouble(key: String, predicate: (Double) -> Boolean = { true }): Double? {
         return this.preferences.getString(key, null)?.toDoubleOrNull()?.takeIf(predicate)
@@ -90,9 +97,6 @@ class Settings(private val preferences: SharedPreferences) {
     }
 
     inner class TargetFinding {
-        /**
-         * Blur size for Gaussian blur algorithm used to help with find edges algorithm (Canny)
-         */
         val blurSize: Size = this@Settings.preferences.getInt("targetFinding_blurSize", -1)
             .takeIf { it > 0 && it % 2 != 0 }?.toDouble()?.let { Size(it, it) }
             ?: error("Blur amount must be positive and odd")

@@ -9,6 +9,12 @@ import android.os.SystemClock
 import android.util.Log
 import displacement.monitor.settings.model.Settings
 
+/**
+ * Contains the logic for scheduling a repeating intent to be started at some period.
+ * @param context The context to use
+ * @param settings Access to [Settings.PeriodicMeasurement.period] to determine the period
+ * @param scheduledIntent The intent to start periodically
+ */
 class SchedulingManager(
     private val context: Context,
     private val settings: Settings,
@@ -17,6 +23,9 @@ class SchedulingManager(
     private val alarmManager: AlarmManager
         get() = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
+    /**
+     * The intent for the [alarmManager] to start to consequently start the [scheduledIntent].
+     */
     private val alarmIntent: PendingIntent
         get() = PendingIntent.getBroadcast(
             this.context,
@@ -25,6 +34,9 @@ class SchedulingManager(
             0
         )
 
+    /**
+     * Starts the scheduling, cancelling any current scheduling for [scheduledIntent].
+     */
     fun start() {
         val periodMinutes = this.settings.periodicMeasurement.period
         val periodMillis = periodMinutes * 60000L
@@ -41,12 +53,18 @@ class SchedulingManager(
         Log.d(TAG, "Scheduling started at $periodMinutes minutes period")
     }
 
+    /**
+     * Cancels any current scheduling for [scheduledIntent].
+     */
     fun cancel() {
         Log.d(TAG, "Scheduling cancelled")
 
         this.alarmManager.cancel(this.alarmIntent)
     }
 
+    /**
+     * Broadcast receiver to receive the [alarmIntent] and consequently start the [scheduledIntent].
+     */
     class AlarmReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
@@ -61,6 +79,12 @@ class SchedulingManager(
         }
 
         companion object {
+            /**
+             * Gets the intent to send a broadcast to this receiver.
+             * @param c Context being called from
+             * @param intent The activity intent to start when the broadcast is received
+             * @return Intent to use with an [AlarmManager]
+             */
             fun getIntent(c: Context, intent: Intent) = Intent(
                 c, AlarmReceiver::class.java
             ).putExtra(BUNDLE_SCHEDULED_INTENT, intent)

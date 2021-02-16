@@ -57,14 +57,13 @@
             android:turnScreenOn="true"
             tools:ignore="UnusedAttribute" />
         <activity android:name=".settings.android.activity.SettingsActivity" />
-        <activity android:name=".permissions.android.activity.PermissionHandlerActivity" />
 
         <receiver
             android:name=".scheduling.controller.SchedulingManager$AlarmReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name=".permissions.model.Permission$ADMIN$AdminReceiver"
+            android:name=".permissions.controller.Permission$ADMIN$AdminReceiver"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_DEVICE_ADMIN">

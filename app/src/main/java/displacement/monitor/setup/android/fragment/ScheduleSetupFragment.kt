@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import displacement.monitor.R
-import displacement.monitor.permissions.model.Permission
+import displacement.monitor.permissions.controller.Permission
 import displacement.monitor.scheduling.android.activity.ScheduledMeasurementActivity
 import displacement.monitor.scheduling.controller.SchedulingManager
 import displacement.monitor.settings.android.activity.SettingsActivity
