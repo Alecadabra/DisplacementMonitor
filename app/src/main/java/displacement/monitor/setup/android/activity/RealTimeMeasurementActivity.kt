@@ -35,8 +35,6 @@ class RealTimeMeasurementActivity : AppCompatActivity() {
     private val cameraFrameCallback = CameraFrameCallback { image ->
         val preview = image.clone()
 
-        Log.d(TAG, "Brightness: ${ImageOperations.measureCentroidBrightness(image)}")
-
         try {
             val measurement = this.calibratedImageProcessor.measure(image, preview)
             val text = "Measured value: ${"%.4f".format(measurement)}m"
