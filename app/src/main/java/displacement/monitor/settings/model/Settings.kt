@@ -26,6 +26,7 @@ class Settings(val preferences: SharedPreferences) {
         PeriodicMeasurement()
         Calibration()
         Camera()
+        RemoteDB()
         TargetFinding()
     }
 
@@ -39,6 +40,9 @@ class Settings(val preferences: SharedPreferences) {
 
     val camera: Camera
         get() = Camera()
+
+    val remoteDB: RemoteDB
+        get() = RemoteDB()
 
     val targetFinding: TargetFinding
         get() = TargetFinding()
@@ -94,6 +98,30 @@ class Settings(val preferences: SharedPreferences) {
         val brightnessThreshold: Float = getDouble("camera_flashThreshold") { it in 0f..100f }
             ?.let { it / 100f }?.toFloat()
             ?: error("Flash brightness threshold must be a number between 0 and 100")
+    }
+
+    inner class RemoteDB {
+        val enabled = getBoolean("remoteDB_enable")
+            ?: error("Internal error getting remote db enabled flag")
+
+        private val _url: String? = if (this.enabled) {
+            getString("remoteDB_url")?.takeUnless { it.isBlank() }
+                ?: error(
+                    "Remote database URL must be set, or the remote database should be disabled"
+                )
+        } else null
+        val url: String
+            get() = _url ?: error("Cannot get remote URL token if the remote database is disabled")
+
+        private val _token: String? = if (this.enabled) {
+            getString("remoteDB_token")?.takeUnless { it.isBlank() }
+                ?: error(
+                    "Remote database URL must be set, or the remote database should be disabled"
+                )
+        } else null
+        val token: String
+            get() = _token
+                ?: error("Cannot get remote database token if the remote database is disabled")
     }
 
     inner class TargetFinding {

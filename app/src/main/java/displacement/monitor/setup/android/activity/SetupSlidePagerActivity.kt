@@ -107,7 +107,7 @@ class SetupSlidePagerActivity : AppCompatActivity() {
     )
 
     /**
-     * Access to all of the 'pages' of the [Views.viewPager]. A barebones implementation of a
+     * Access to all of the 'pages' of the [Views.viewPager]. A bare bones implementation of a
      * [List&lt;AbstractSetupPageFragment&gt;][List]
      */
     private object Pages {

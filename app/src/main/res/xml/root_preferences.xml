@@ -65,6 +65,30 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="remoteDB"
+        android:title="Remote Database">
+
+        <CheckBoxPreference
+            android:key="remoteDB_enable"
+            android:title="Enable"
+            android:defaultValue="true"
+            android:summary="Enable or disable sending data to a remote database. If enabled, the below settings must be configured" />
+
+        <EditTextPreference
+            android:key="remoteDB_url"
+            android:title="URL"
+            android:defaultValue=""
+            android:summary="The URL where the InfluxDB remote database is located" />
+
+        <EditTextPreference
+            android:key="remoteDB_token"
+            android:title="Authorization Token"
+            android:defaultValue=""
+            android:summary="The authorization token used to communicate with the InfluxDB remote database" />
+
+    </PreferenceCategory>
+
     </PreferenceCategory>
 
     <PreferenceCategory

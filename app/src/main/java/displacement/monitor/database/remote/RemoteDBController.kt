@@ -9,6 +9,7 @@ import com.influxdb.exceptions.InfluxException
 import displacement.monitor.BuildConfig
 import displacement.monitor.database.local.MeasurementDatabase
 import displacement.monitor.database.model.toPoint
+import displacement.monitor.settings.model.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,7 +19,18 @@ import java.util.concurrent.CancellationException
 /**
  * Handles communication with the InfluxDB remote database.
  */
-class RemoteDBController {
+class RemoteDBController(private val settings: Settings) {
+
+    init {
+        check(this.settings.remoteDB.enabled) { "Remote database is not enabled in settings" }
+    }
+
+    private val clientOptions = InfluxDBClientOptions.builder().also {
+        it.connectionString(this.settings.remoteDB.url)
+        it.authenticateToken(this.settings.remoteDB.token.toCharArray())
+        it.org("285149cba97a4105")
+        it.bucket("4fb58502069a630e")
+    }.build()
 
     /**
      * InfluxDB client, or null if not initialised. To suspend until it is initialised, use
@@ -30,7 +42,7 @@ class RemoteDBController {
      * Launches a coroutine at construction time to construct the InfluxDB client.
      */
     private val clientInitJob = CoroutineScope(Dispatchers.IO).launch {
-        val client = InfluxDBClientFactory.create(INFLUX_DB_OPTIONS)
+        val client = InfluxDBClientFactory.create(clientOptions)
         this@RemoteDBController.nullableClient = client
     }
 
@@ -90,24 +102,5 @@ class RemoteDBController {
 
     companion object {
         private const val TAG = "RemoteDBController"
-
-        /*
-         * ================================== SETUP BEFORE USE =====================================
-         * The InfluxDB access token must have write access and be stored in a file called
-         * secret.properties in the project root (Same level as gradle.properties) and must
-         * contain INFLUX_DB_TOKEN="YOUR TOKEN HERE"
-         * Then, sync gradle and rebuild the project.
-         * ================================== SETUP BEFORE USE =====================================
-         */
-        private val INFLUX_DB_TOKEN = BuildConfig.INFLUX_DB_TOKEN.toCharArray()
-
-        private const val URL = "https://intern-am-db.icentralau.com.au/"
-
-        private val INFLUX_DB_OPTIONS = InfluxDBClientOptions.builder().also {
-            it.connectionString(URL)
-            it.authenticateToken(INFLUX_DB_TOKEN)
-            it.org("285149cba97a4105")
-            it.bucket("4fb58502069a630e")
-        }.build()
     }
 }

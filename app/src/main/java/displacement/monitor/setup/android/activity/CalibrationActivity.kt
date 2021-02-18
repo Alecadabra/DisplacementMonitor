@@ -166,7 +166,7 @@ class CalibrationActivity : AppCompatActivity() {
     // Focal length measurement callback -----------------------------------------------------------
 
     private fun onMeasureFocalLength(focalLength: Double) {
-        this.views.cameraView.stop()
+        this.views.cameraView.disableView()
 
         if (!this.measured) {
             this.measured = true

@@ -45,16 +45,20 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
      * Handles all the very specific ways you make android turn on/off the device, or null if
      * the intent was configured to not use it.
      */
-    private val deviceStateController by lazy {
+    private val deviceStateController: DeviceStateController? by lazy {
         if (this.intent.getBooleanExtra(BUNDLE_USE_STATE_CONTROLLER, true)) {
             DeviceStateController(this)
         } else null
     }
 
     /**
-     * Handles communication with the remote database.
+     * Handles communication with the remote database. Null if the app is configured to not use it.
      */
-    private val remoteDBController = RemoteDBController()
+    private val remoteDBController: RemoteDBController? by lazy {
+        if (this.settings.remoteDB.enabled) {
+            RemoteDBController(this.settings)
+        } else null
+    }
 
     /**
      * Takes in all measurements and activates the callback when a full measurement is taken.
@@ -93,6 +97,9 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
         this.deviceStateController?.start()
 
         setContentView(R.layout.activity_scheduled_measurement)
+
+        // Initialise the lazy remote DB controller
+        this.remoteDBController
 
         this.views.cameraView.start(this.settings, this.cameraFrameCallback)
     }
@@ -136,12 +143,12 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
         Log.i(TAG, "Measured value of ${"%.2f".format(measurement.distance)}m")
 
-        // Log measurement to local database and send to remote database
+        // Log measurement to local database and send to remote database if enabled
         CoroutineScope(Dispatchers.IO).launch {
             val db = MeasurementDatabase { applicationContext }
             db.measurementDao().insert(measurement)
-            this@ScheduledMeasurementActivity.remoteDBController.send { applicationContext }
-            this@ScheduledMeasurementActivity.remoteDBController.close()
+            this@ScheduledMeasurementActivity.remoteDBController?.send { applicationContext }
+            this@ScheduledMeasurementActivity.remoteDBController?.close()
         }
 
         // Finish the activity, either through the state controller or directly

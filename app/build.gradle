@@ -4,15 +4,6 @@ plugins {
     id "kotlin-kapt"
 }
 
-/**
- * The InfluxDB access token must have write access and be stored in a file called
- * secret.properties in the project root (Same level as gradle.properties) and must contain
- * INFLUX_DB_TOKEN="YOUR TOKEN HERE"
- */
-def secretPropertiesFile = rootProject.file("secret.properties")
-def secretProperties = new Properties()
-secretProperties.load(new FileInputStream(secretPropertiesFile))
-
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.1"
@@ -26,10 +17,6 @@ android {
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-        // InfluxDB Token
-        buildConfigField("String", "INFLUX_DB_TOKEN", "\"${secretProperties['INFLUX_DB_TOKEN']}\"")
-        resValue("string", "INFLUX_DB_TOKEN", secretProperties['INFLUX_DB_TOKEN'])
     }
 
     buildTypes {
