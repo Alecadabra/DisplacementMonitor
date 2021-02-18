@@ -33,13 +33,13 @@ class CalibrationActivity : AppCompatActivity() {
 
     // Members -------------------------------------------------------------------------------------
 
-    /** References to views */
-    private val views by lazy { Views() }
+    /** References to views. */
+    private val views by lazy(this::Views)
 
-    /** Access to app settings */
+    /** Access to app settings. */
     private val settings by lazy { Settings(this) }
 
-    /** Flag for if a value for focal length has been measured */
+    /** Flag for if a value for focal length has been measured. */
     private var measured: Boolean = false
 
     /**

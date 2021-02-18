@@ -10,7 +10,8 @@ import kotlinx.coroutines.runBlocking
 
 /**
  * [RoomDatabase] that stores calculated [Measurement] instances that are awaiting being sent to
- * the remote database.
+ * the remote database. Insert into the database when a measurement is taken and delete the
+ * measurement when it has been successfully sent to the remote database.
  */
 @Database(entities = [Measurement::class], version = 3)
 abstract class MeasurementDatabase : RoomDatabase() {

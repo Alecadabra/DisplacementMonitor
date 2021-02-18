@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -17,14 +16,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * Activity used to test the measurement algorithms and parameters in real time.
+ */
 class RealTimeMeasurementActivity : AppCompatActivity() {
 
     // Members -------------------------------------------------------------------------------------
 
-    private val views by lazy { Views() }
+    /** References to views. */
+    private val views by lazy(this::Views)
 
+    /** Access to app settings. */
     private val settings by lazy { Settings(this) }
 
+    /**
+     * The calibrated image processor used to do all measurement.
+     */
     private val calibratedImageProcessor by lazy {
         CalibratedImageProcessor(
             settings = this.settings,
@@ -32,6 +39,9 @@ class RealTimeMeasurementActivity : AppCompatActivity() {
         )
     }
 
+    /**
+     * Camera callback used to attempt to measure the image and set the text in the UI accordingly.
+     */
     private val cameraFrameCallback = CameraFrameCallback { image ->
         val preview = image.clone()
 
@@ -84,6 +94,9 @@ class RealTimeMeasurementActivity : AppCompatActivity() {
 
     // Local constructs ----------------------------------------------------------------------------
 
+    /**
+     * Wrapper for view references.
+     */
     private inner class Views(
         val cameraView: CustomCameraView = findViewById(R.id.realTimeActivityCameraView),
         val measurement: TextView = findViewById(R.id.realTimeActivityMeasurement)
@@ -92,6 +105,11 @@ class RealTimeMeasurementActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "RealTimeMeasurement"
 
-        fun getIntent(context: Context) = Intent(context, RealTimeMeasurementActivity::class.java)
+        /**
+         * Get an intent to use to start this activity.
+         * @param c Context being called from
+         * @return New intent to start this activity with
+         */
+        fun getIntent(c: Context) = Intent(c, RealTimeMeasurementActivity::class.java)
     }
 }
