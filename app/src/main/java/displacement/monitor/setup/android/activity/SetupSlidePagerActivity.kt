@@ -15,6 +15,9 @@ import displacement.monitor.scheduling.controller.SchedulingManager
 import displacement.monitor.settings.model.Settings
 import displacement.monitor.setup.android.fragment.*
 
+/**
+ * Activity to hold and manage the view pager that shows all of the setup screen pages.
+ */
 class SetupSlidePagerActivity : AppCompatActivity() {
 
     // Members -------------------------------------------------------------------------------------
@@ -29,12 +32,8 @@ class SetupSlidePagerActivity : AppCompatActivity() {
         AlertDialog.Builder(this).also { builder ->
             builder.setTitle("Leave app")
             builder.setMessage("Do you want to exit the app?")
-            builder.setNegativeButton("No, Cancel") { dialog, _ ->
-                dialog.dismiss()
-            }
-            builder.setPositiveButton("Yes, exit") { _, _ ->
-                super.onBackPressed()
-            }
+            builder.setNegativeButton("No, Cancel") { dialog, _ -> dialog.dismiss() }
+            builder.setPositiveButton("Yes, exit") { _, _ -> super.onBackPressed() }
         }.create()
     }
 
