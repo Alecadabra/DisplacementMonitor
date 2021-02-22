@@ -53,6 +53,9 @@ class ScheduleSetupFragment : AbstractSetupPageFragment("Schedule Measurements")
         this.views.settingsBtn.setOnClickListener {
             startActivity(SettingsActivity.getIntent(requireContext()))
         }
+        this.views.stopBtn.setOnClickListener {
+            this.scheduleManager.cancel()
+        }
         this.views.backBtn.setOnClickListener {
             this.pagerActivity.pageBack()
         }
@@ -80,6 +83,7 @@ class ScheduleSetupFragment : AbstractSetupPageFragment("Schedule Measurements")
         val calibrateBtn: Button = view.findViewById(R.id.scheduleSetupFragmentCalibrateBtn),
         val measurementBtn: Button = view.findViewById(R.id.scheduleSetupFragmentMeasurementBtn),
         val settingsBtn: Button = view.findViewById(R.id.scheduleSetupFragmentSettingsBtn),
+        val stopBtn: Button = view.findViewById(R.id.scheduleSetupFragmentStopBtn),
         val backBtn: Button = view.findViewById(R.id.scheduleSetupFragmentBackButton),
         val scheduleBtn: Button = view.findViewById(R.id.scheduleSetupFragmentScheduleButton),
     )
