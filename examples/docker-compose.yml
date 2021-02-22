@@ -1,0 +1,23 @@
+version: "2.0"
+services:
+  grafana:
+    image: grafana/grafana:latest
+    container_name: dmon_grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - 80:3000 
+
+  influxdb:
+    image: quay.io/influxdb/influxdb:v2.0.3
+    container_name: dmon_influx
+    volumes:
+      - influx_data:/root/.influxdbv2
+    ports:
+      - 8080:8086
+    environment:
+      INFLUXDB_REPORTING_DISABLED: 'true'
+
+volumes:
+  influx_data:
+  grafana_data:
