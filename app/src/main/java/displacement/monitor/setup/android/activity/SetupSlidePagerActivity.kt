@@ -65,23 +65,25 @@ class SetupSlidePagerActivity : AppCompatActivity() {
     // Public entry points -------------------------------------------------------------------------
 
     /**
-     * Go back one page, or presses back if on the first page.
+     * Go back one page.
+     * @throws IllegalStateException If at the first page and cannot go back
      */
     fun pageBack() {
-        if (this.views.viewPager.currentItem > 0) {
-            this.views.viewPager.setCurrentItem(this.views.viewPager.currentItem - 1, true)
-        } else {
-            onBackPressed()
+        check(this.views.viewPager.currentItem > 0) {
+            "Cannot go back any further"
         }
+        this.views.viewPager.setCurrentItem(this.views.viewPager.currentItem - 1, true)
     }
 
     /**
-     * Go forward one page, or do nothing if at the last page.
+     * Go forward one page.
+     * @throws IllegalStateException If at the last page and cannot go to next
      */
     fun pageNext() {
-        if (this.views.viewPager.currentItem < Pages.lastIndex) {
-            this.views.viewPager.setCurrentItem(this.views.viewPager.currentItem + 1, true)
+        check(this.views.viewPager.currentItem < Pages.lastIndex) {
+            "Cannot go forward any further"
         }
+        this.views.viewPager.setCurrentItem(this.views.viewPager.currentItem + 1, true)
     }
 
     // Local constructs ----------------------------------------------------------------------------

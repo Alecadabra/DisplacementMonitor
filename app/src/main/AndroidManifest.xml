@@ -18,7 +18,8 @@
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions" /> <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> -->
+        tools:ignore="ProtectedPermissions" />
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -34,7 +35,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DisplacementMonitor">
-        <activity android:name=".setup.android.activity.SetupSlidePagerActivity">
+        <activity android:name=".setup.android.activity.SetupSlidePagerActivity"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,8 +54,8 @@
         <activity
             android:name=".scheduling.android.activity.ScheduledMeasurementActivity"
             android:screenOrientation="portrait"
-            android:showOnLockScreen="true"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:showOnLockScreen="true"
             android:turnScreenOn="true"
             tools:ignore="UnusedAttribute" />
         <activity android:name=".settings.android.activity.SettingsActivity" />

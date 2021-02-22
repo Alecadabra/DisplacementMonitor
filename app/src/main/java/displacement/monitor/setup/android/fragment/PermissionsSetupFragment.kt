@@ -12,11 +12,23 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import displacement.monitor.R
 import displacement.monitor.permissions.controller.Permission
+import displacement.monitor.settings.model.Settings
 
+/**
+ * An [AbstractSetupPageFragment] used to have all necessary permissions granted to the app as part
+ * of the setup process.
+ */
 class PermissionsSetupFragment : AbstractSetupPageFragment("Obtain Permissions") {
 
+    // Members -------------------------------------------------------------------------------------
+
+    /** References to views. */
     private val views by lazy { Views(requireView()) }
 
+    /**
+     * Convenient access to each required [Permission], it's clickable button
+     * (A [ConstraintLayout]), and it's [CheckBox] of whether or not it's granted.
+     */
     private val permButtons by lazy {
         listOf(
             PermButton(Permission.ADMIN, this.views.adminBtn, this.views.adminCheck),
@@ -24,6 +36,8 @@ class PermissionsSetupFragment : AbstractSetupPageFragment("Obtain Permissions")
             PermButton(Permission.SETTINGS, this.views.settingsBtn, this.views.settingsCheck)
         )
     }
+
+    // Android entry points ------------------------------------------------------------------------
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,16 +48,28 @@ class PermissionsSetupFragment : AbstractSetupPageFragment("Obtain Permissions")
         return inflater.inflate(R.layout.fragment_permissions_setup, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        this.views.nextBtn.setOnClickListener {
+            this.pagerActivity.pageNext()
+        }
+        this.views.nextBtn.setOnClickListener {
+            this.pagerActivity.pageNext()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
+        // Run the check to see if this step is done
         refreshPermList()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        Log.d(TAG, "Received onActivityResult")
+        // If it's a result from a permission request, check the result
         Permission.fromRequestCode(requestCode)?.also { perm ->
             refreshPermList()
             if (!perm.isGrantedTo(requireContext())) {
@@ -61,7 +87,7 @@ class PermissionsSetupFragment : AbstractSetupPageFragment("Obtain Permissions")
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        Log.d(TAG, "Received onRequestPermissionsResult")
+        // If it's a result from a permission request, check the result
         Permission.fromRequestCode(requestCode)?.also { perm ->
             refreshPermList()
             if (!perm.isGrantedTo(requireContext())) {
@@ -71,6 +97,8 @@ class PermissionsSetupFragment : AbstractSetupPageFragment("Obtain Permissions")
             }
         }
     }
+
+    // Local logic ---------------------------------------------------------------------------------
 
     private fun refreshPermList() {
         this.permButtons.forEach { (permission, button, check) ->
@@ -94,24 +122,23 @@ class PermissionsSetupFragment : AbstractSetupPageFragment("Obtain Permissions")
             it.isEnabled = allGranted
             it.isClickable = allGranted
         }
-
-        this.views.backBtn.setOnClickListener {
-            this.pagerActivity.pageBack()
-        }
-        this.views.nextBtn.setOnClickListener {
-            this.pagerActivity.pageNext()
-        }
-        this.views.nextBtn.setOnClickListener {
-            this.pagerActivity.pageNext()
-        }
     }
 
+    // Local constructs ----------------------------------------------------------------------------
+
+    /**
+     * Associates a required [Permission] with it's clickable button
+     * (A [ConstraintLayout]), and it's [CheckBox] of whether or not it's granted.
+     */
     private data class PermButton(
         val permission: Permission,
         val button: ConstraintLayout,
         val checkBox: CheckBox
     )
 
+    /**
+     * Wrapper for view references.
+     */
     private inner class Views(
         view: View,
         val adminBtn: ConstraintLayout = view.findViewById(R.id.permissionsSetupFragmentAdmin),
@@ -120,7 +147,6 @@ class PermissionsSetupFragment : AbstractSetupPageFragment("Obtain Permissions")
         val cameraCheck: CheckBox = view.findViewById(R.id.permissionsSetupFragmentCameraCheck),
         val settingsBtn: ConstraintLayout = view.findViewById(R.id.permissionsSetupFragmentSettings),
         val settingsCheck: CheckBox = view.findViewById(R.id.permissionsSetupFragmentSettingsCheck),
-        val backBtn: Button = view.findViewById(R.id.permissionsSetupFragmentBackButton),
         val nextBtn: Button = view.findViewById(R.id.permissionsSetupFragmentNextButton),
     )
 

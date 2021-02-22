@@ -12,9 +12,18 @@ import displacement.monitor.settings.android.activity.SettingsActivity
 import displacement.monitor.settings.model.Settings
 import java.lang.Exception
 
+/**
+ * An [AbstractSetupPageFragment] used to have the app configuration's set using the
+ * [SettingsActivity] as part of the setup procedure.
+ */
 class SettingsSetupFragment : AbstractSetupPageFragment("Configure Settings") {
 
+    // Members -------------------------------------------------------------------------------------
+
+    /** References to views. */
     private val views by lazy { Views(requireView()) }
+
+    // Android entry points ------------------------------------------------------------------------
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,10 +33,8 @@ class SettingsSetupFragment : AbstractSetupPageFragment("Configure Settings") {
         return inflater.inflate(R.layout.fragment_settings_setup, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        checkSettingsValid()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         this.views.settingsButton.setOnClickListener {
             startActivity(SettingsActivity.getIntent(requireContext()))
@@ -40,11 +47,18 @@ class SettingsSetupFragment : AbstractSetupPageFragment("Configure Settings") {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        // Run the check to see if this step is done
+        checkSettingsValid()
+    }
+
+    // Local logic ---------------------------------------------------------------------------------
+
     private fun checkSettingsValid() {
-        val valid = runCatching {
-            Settings(requireContext())
-            this.views.nextBtn
-        }.isSuccess
+        // Settings are valid if the constructor does not throw an exception
+        val valid = runCatching { Settings(requireContext()) }.isSuccess
 
         this.views.nextBtn.also {
             it.isEnabled = valid
@@ -52,6 +66,11 @@ class SettingsSetupFragment : AbstractSetupPageFragment("Configure Settings") {
         }
     }
 
+    // Local constructs ----------------------------------------------------------------------------
+
+    /**
+     * Wrapper for view references.
+     */
     private inner class Views(
         view: View,
         val settingsButton: Button = view.findViewById(R.id.settingsSetupFragmentSettingsButton),
