@@ -26,10 +26,11 @@ class RemoteDBController(private val settings: Settings) {
     }
 
     private val clientOptions = InfluxDBClientOptions.builder().also {
-        it.connectionString(this.settings.remoteDB.url)
-        it.authenticateToken(this.settings.remoteDB.token.toCharArray())
-        it.org("285149cba97a4105")
-        it.bucket("4fb58502069a630e")
+        val dbSettings = this.settings.remoteDB
+        it.connectionString(dbSettings.url)
+        it.authenticateToken(dbSettings.token.toCharArray())
+        it.org(dbSettings.org)
+        it.bucket(dbSettings.bucket)
     }.build()
 
     /**

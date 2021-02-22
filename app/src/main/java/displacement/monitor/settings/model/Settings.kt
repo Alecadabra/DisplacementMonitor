@@ -122,6 +122,30 @@ class Settings(val preferences: SharedPreferences) {
         val token: String
             get() = _token
                 ?: error("Cannot get remote database token if the remote database is disabled")
+
+        private val _org: String? = if (this.enabled) {
+            getString("remoteDB_org")?.takeUnless { it.isBlank() }
+                ?: error(
+                    "Remote database organisation must be set, or the remote database should be disabled"
+                )
+        } else null
+        val org: String
+            get() = _org
+                ?: error(
+                    "Cannot get remote database organisation if the remote database is disabled"
+                )
+
+        private val _bucket: String? = if (this.enabled) {
+            getString("remoteDB_bucket")?.takeUnless { it.isBlank() }
+                ?: error(
+                    "Remote database bucket must be set, or the remote database should be disabled"
+                )
+        } else null
+        val bucket: String
+            get() = _bucket
+                ?: error(
+                    "Cannot get remote database bucket if the remote database is disabled"
+                )
     }
 
     inner class TargetFinding {

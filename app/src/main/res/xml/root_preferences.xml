@@ -87,6 +87,18 @@
             android:defaultValue=""
             android:summary="The authorization token used to communicate with the InfluxDB remote database" />
 
+        <EditTextPreference
+            android:key="remoteDB_org"
+            android:title="Organisation Name"
+            android:defaultValue=""
+            android:summary="The name or ID of the organisation name of the InfluxDB remote database" />
+
+        <EditTextPreference
+            android:key="remoteDB_bucket"
+            android:title="Bucket"
+            android:defaultValue=""
+            android:summary="The name or ID of the data bucket of the InfluxDB remote database" />
+
     </PreferenceCategory>
 
     </PreferenceCategory>
