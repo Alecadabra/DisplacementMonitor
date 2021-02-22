@@ -11,17 +11,26 @@ import android.widget.Button
 import displacement.monitor.R
 import displacement.monitor.permissions.controller.Permission
 import displacement.monitor.scheduling.android.activity.ScheduledMeasurementActivity
+import displacement.monitor.scheduling.controller.DeviceStateController
 import displacement.monitor.scheduling.controller.SchedulingManager
 import displacement.monitor.settings.android.activity.SettingsActivity
 import displacement.monitor.settings.model.Settings
 import displacement.monitor.setup.android.activity.CalibrationActivity
 import displacement.monitor.setup.android.activity.RealTimeMeasurementActivity
 
+/**
+ * An [AbstractSetupPageFragment] for performing final tests/configuration and starting the
+ * scheduling, as the final part of the setup procedure.
+ */
 class ScheduleSetupFragment : AbstractSetupPageFragment("Schedule Measurements") {
 
+    // Members -------------------------------------------------------------------------------------
+
+    /** References to views. */
     private val views by lazy { Views(requireView()) }
 
-    private val scheduleManager by lazy {
+    /** Handles scheduling the measurements. */
+    private val scheduleManager: SchedulingManager by lazy {
         val localContext = requireContext()
         SchedulingManager(
             context = localContext,
@@ -29,6 +38,13 @@ class ScheduleSetupFragment : AbstractSetupPageFragment("Schedule Measurements")
             scheduledIntent = ScheduledMeasurementActivity.getIntent(localContext)
         )
     }
+
+    /** Handles locking the screen once scheduling starts. */
+    private val deviceStateController: DeviceStateController by lazy {
+        DeviceStateController(requireActivity())
+    }
+
+    // Android entry points ------------------------------------------------------------------------
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,8 +54,8 @@ class ScheduleSetupFragment : AbstractSetupPageFragment("Schedule Measurements")
         return inflater.inflate(R.layout.fragment_schedule_setup, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         this.views.realTimeBtn.setOnClickListener {
             startActivity(RealTimeMeasurementActivity.getIntent(requireContext()))
@@ -61,22 +77,15 @@ class ScheduleSetupFragment : AbstractSetupPageFragment("Schedule Measurements")
         }
         this.views.scheduleBtn.setOnClickListener {
             this.scheduleManager.start()
-            // Lock screen
-            try {
-                val localContext = requireContext()
-                if (Permission.ADMIN.isGrantedTo(localContext)) {
-                    val policyKey = Context.DEVICE_POLICY_SERVICE
-                    val policyManager = localContext.getSystemService(policyKey) as DevicePolicyManager
-                    policyManager.lockNow()
-                } else {
-                    Log.e(TAG, "Cannot lock screen (Not admin)")
-                }
-            } catch (e: SecurityException) {
-                Log.e(TAG, "Could not turn off screen (Security Exception)", e)
-            }
+            this.deviceStateController.lockScreen()
         }
     }
 
+    // Local constructs ----------------------------------------------------------------------------
+
+    /**
+     * Wrapper for view references.
+     */
     private inner class Views(
         view: View,
         val realTimeBtn: Button = view.findViewById(R.id.scheduleSetupFragmentRealTimeBtn),

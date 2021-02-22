@@ -22,6 +22,7 @@ import java.util.concurrent.CancellationException
 class RemoteDBController(private val settings: Settings) {
 
     init {
+        // Throw an exception if the remote database is disabled
         check(this.settings.remoteDB.enabled) { "Remote database is not enabled in settings" }
     }
 

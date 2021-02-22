@@ -25,11 +25,21 @@ import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 import java.lang.Exception
 
+/**
+ * An [AbstractSetupPageFragment] to use that uses [CalibrationActivity] to calibrate the
+ * image processing as part of the setup procedure.
+ */
 class CalibrationSetupFragment : AbstractSetupPageFragment("Calibration") {
 
+    // Members -------------------------------------------------------------------------------------
+
+    /** References to views. */
     private val views by lazy { Views(requireView()) }
 
+    /** Access to app settings. */
     private val settings by lazy { Settings(requireContext()) }
+
+    // Android entry points ------------------------------------------------------------------------
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,21 +49,20 @@ class CalibrationSetupFragment : AbstractSetupPageFragment("Calibration") {
         return inflater.inflate(R.layout.fragment_calibration_setup, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        checkMeasured()
-
+        // Set the readout text
         val calibrationSettings = this.settings.calibration
         @SuppressLint("SetTextI18n")
         this.views.readout.text = """
             Configured initial distance: ${calibrationSettings.initialDistance}m
             Configured target size: ${calibrationSettings.targetSize}m
             Calibration value (Focal length): ${
-                calibrationSettings.focalLength.takeUnless { it == 0.0 }?.let {
-                    "Measured (${"%.2f".format(it)}) - Calibration is done" 
-                } ?: "Not measured - Must be calibrated"
-            }
+            calibrationSettings.focalLength.takeUnless { it == 0.0 }?.let {
+                "Measured (${"%.2f".format(it)}) - Calibration is done"
+            } ?: "Not measured - Must be calibrated"
+        }
         """.trimIndent()
 
         this.views.settingsBtn.setOnClickListener {
@@ -70,7 +79,17 @@ class CalibrationSetupFragment : AbstractSetupPageFragment("Calibration") {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        // Run the check to see if this step is done
+        checkMeasured()
+    }
+
+    // Local logic ---------------------------------------------------------------------------------
+
     private fun checkMeasured() {
+        // Calibration is done if there is a non-zero value for focal length in settings.
         val measured = this.settings.calibration.focalLength != 0.0
 
         this.views.nextBtn.also {
@@ -79,6 +98,11 @@ class CalibrationSetupFragment : AbstractSetupPageFragment("Calibration") {
         }
     }
 
+    // Local constructs ----------------------------------------------------------------------------
+
+    /**
+     * Wrapper for view references.
+     */
     private inner class Views(
         view: View,
         val readout: TextView = view.findViewById(R.id.calibrationSetupFragmentReadout),

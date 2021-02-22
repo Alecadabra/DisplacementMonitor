@@ -54,14 +54,22 @@ class DeviceStateController(private val activity: Activity) {
     }
 
     /**
-     * Attempts to lock the screen using [DevicePolicyManager.lockNow] if the app is an admin, and
-     * then calls [Activity.finish] on the activity.
+     * Locks the screen using [lockScreen], and then calls [Activity.finish] on the activity.
      */
     fun finish() {
         // Allow screen to turn off
         this.activity.window.clearFlags(Flag.FLAG_KEEP_SCREEN_ON)
 
-        // Lock device if possible
+        lockScreen()
+
+        // Finish activity
+        this.activity.finish()
+    }
+
+    /**
+     * Attempts to lock the screen with [DevicePolicyManager.lockNow] if the app is an admin.
+     */
+    fun lockScreen() {
         try {
             if (Permission.ADMIN.isGrantedTo(this.activity)) {
                 val policyKey = Context.DEVICE_POLICY_SERVICE
@@ -73,9 +81,6 @@ class DeviceStateController(private val activity: Activity) {
         } catch (e: SecurityException) {
             Log.e(TAG, "Could not turn off screen (Security Exception)", e)
         }
-
-        // Finish activity
-        this.activity.finish()
     }
 
     companion object {
