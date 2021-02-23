@@ -25,7 +25,7 @@ class SchedulingManager(
         get() = PendingIntent.getBroadcast(
             this.context,
             0,
-            this.scheduledIntent,
+            AlarmReceiver.getIntent(this.context, this.scheduledIntent),
             PendingIntent.FLAG_NO_CREATE
         ) != null
 
@@ -50,7 +50,7 @@ class SchedulingManager(
         val periodMinutes = this.settings.periodicMeasurement.period
         val periodMillis = periodMinutes * 60000L
 
-        this.alarmManager.cancel(this.alarmIntent)
+        cancel()
 
         this.alarmManager.setRepeating(
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
@@ -69,6 +69,7 @@ class SchedulingManager(
         Log.d(TAG, "Scheduling cancelled")
 
         this.alarmManager.cancel(this.alarmIntent)
+        this.alarmIntent.cancel()
     }
 
     /**
