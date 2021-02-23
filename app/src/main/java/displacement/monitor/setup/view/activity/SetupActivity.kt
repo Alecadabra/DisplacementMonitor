@@ -16,9 +16,9 @@ import displacement.monitor.settings.model.Settings
 import displacement.monitor.setup.view.fragment.*
 
 /**
- * Activity to hold and manage the view pager that shows all of the setup screen pages.
+ * SetupActivity to hold and manage the view pager that shows all of the setup screen pages.
  */
-class SetupSlidePagerActivity : AppCompatActivity() {
+class SetupActivity : AppCompatActivity() {
 
     // Members -------------------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ class SetupSlidePagerActivity : AppCompatActivity() {
      * @throws IllegalStateException If at the last page and cannot go to next
      */
     fun pageNext() {
-        check(this.views.viewPager.currentItem < Pages.lastIndex) {
+        check(this.views.viewPager.currentItem < PAGE_CLASSES.lastIndex) {
             "Cannot go forward any further"
         }
         this.views.viewPager.setCurrentItem(this.views.viewPager.currentItem + 1, true)
@@ -95,9 +95,9 @@ class SetupSlidePagerActivity : AppCompatActivity() {
         activity: FragmentActivity
     ) : FragmentStateAdapter(activity) {
 
-        override fun getItemCount(): Int = Pages.size
+        override fun getItemCount(): Int = PAGE_CLASSES.size
 
-        override fun createFragment(position: Int): Fragment = Pages[position]
+        override fun createFragment(position: Int): Fragment = PAGE_CLASSES[position].java.newInstance()
     }
 
     /**
@@ -107,43 +107,22 @@ class SetupSlidePagerActivity : AppCompatActivity() {
         val viewPager: ViewPager2 = findViewById(R.id.setupSlidePagerActivityPager)
     )
 
-    /**
-     * Access to all of the 'pages' of the [Views.viewPager]. A bare bones implementation of a
-     * [List&lt;AbstractSetupPageFragment&gt;][List]
-     */
-    private object Pages {
-
-        // Members ---------------------------------------------------------------------------------
-
-        /**
-         * Backing implementation of classes to construct.
-         */
-        private val classes = listOf(
-            PermissionsSetupFragment::class,
-            SettingsSetupFragment::class,
-            CalibrationSetupFragment::class,
-            ScheduleSetupFragment::class,
-        )
-
-        // List functionality ----------------------------------------------------------------------
-
-        operator fun get(index: Int): AbstractSetupPageFragment {
-            // Construct the fragment at this index in the classes list
-            return this.classes[index].java.newInstance()
-        }
-
-        // Delegate to the classes list
-        val size: Int by this.classes::size
-        val lastIndex: Int
-            get() = this.size - 1
-    }
-
     companion object {
         /**
          * Get an intent to use to start this activity.
          * @param c Context being called from
          * @return New intent to start this activity with
          */
-        fun getIntent(c: Context) = Intent(c, SetupSlidePagerActivity::class.java)
+        fun getIntent(c: Context) = Intent(c, SetupActivity::class.java)
+
+        /**
+         * Access to all of the 'pages' of the [Views.viewPager].
+         */
+        val PAGE_CLASSES = listOf(
+            PermissionsSetupFragment::class,
+            SettingsSetupFragment::class,
+            CalibrationSetupFragment::class,
+            ScheduleSetupFragment::class,
+        )
     }
 }

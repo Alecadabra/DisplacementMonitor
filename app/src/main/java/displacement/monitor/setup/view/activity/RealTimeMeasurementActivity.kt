@@ -17,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
- * Activity used to test the measurement algorithms and parameters in real time.
+ * SetupActivity used to test the measurement algorithms and parameters in real time.
  */
 class RealTimeMeasurementActivity : AppCompatActivity() {
 

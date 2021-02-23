@@ -15,7 +15,7 @@ import displacement.monitor.R
 import displacement.monitor.settings.model.Settings
 
 /**
- * Activity to show the [SettingsActivity.SettingsFragment][SettingsFragment]
+ * SetupActivity to show the [SettingsActivity.SettingsFragment][SettingsFragment]
  * [Preference Fragment][PreferenceFragmentCompat] to allow the user to view and modify the
  * app settings.
  */

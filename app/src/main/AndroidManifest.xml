@@ -35,8 +35,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DisplacementMonitor">
-        <activity android:name=".setup.view.activity.SetupSlidePagerActivity"
-            android:screenOrientation="portrait" >
+        <activity android:name=".setup.view.activity.MainActivity"></activity>
+        <activity
+            android:name=".setup.view.activity.SetupActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -45,17 +47,17 @@
         </activity>
         <activity
             android:name=".setup.view.activity.CalibrationActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
             android:name=".setup.view.activity.RealTimeMeasurementActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
             android:name=".scheduling.view.activity.ScheduledMeasurementActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:showOnLockScreen="true"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:turnScreenOn="true"
             tools:ignore="UnusedAttribute" />
         <activity android:name=".settings.view.activity.SettingsActivity" />

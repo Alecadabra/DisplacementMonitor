@@ -1,5 +1,6 @@
 package displacement.monitor.setup.view.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,6 @@ import android.widget.Button
 import displacement.monitor.R
 import displacement.monitor.settings.view.activity.SettingsActivity
 import displacement.monitor.settings.model.Settings
-import displacement.monitor.setup.view.activity.SetupSlidePagerActivity
 
 /**
  * An [AbstractSetupPageFragment] used to have the app configuration's set using the
@@ -38,10 +38,10 @@ class SettingsSetupFragment : AbstractSetupPageFragment() {
             startActivity(SettingsActivity.getIntent(requireContext()))
         }
         this.views.backBtn.setOnClickListener {
-            this.pagerActivity.pageBack()
+            this.pagerSetupActivity.pageBack()
         }
         this.views.nextBtn.setOnClickListener {
-            this.pagerActivity.pageNext()
+            this.pagerSetupActivity.pageNext()
         }
     }
 
@@ -49,7 +49,7 @@ class SettingsSetupFragment : AbstractSetupPageFragment() {
 
     override val title: String = "Configure Settings"
 
-    override fun canAdvance(activity: SetupSlidePagerActivity): Boolean {
+    override fun canAdvance(activity: Activity): Boolean {
         // Settings are valid if the settings constructor does not throw an exception
         return runCatching { Settings(activity) }.isSuccess
     }

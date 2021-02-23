@@ -1,5 +1,6 @@
 package displacement.monitor.setup.view.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +14,6 @@ import displacement.monitor.settings.view.activity.SettingsActivity
 import displacement.monitor.settings.model.Settings
 import displacement.monitor.setup.view.activity.CalibrationActivity
 import displacement.monitor.setup.view.activity.RealTimeMeasurementActivity
-import displacement.monitor.setup.view.activity.SetupSlidePagerActivity
 
 /**
  * An [AbstractSetupPageFragment] for performing final tests/configuration and starting the
@@ -70,7 +70,7 @@ class ScheduleSetupFragment : AbstractSetupPageFragment() {
             this.scheduleManager.cancel()
         }
         this.views.backBtn.setOnClickListener {
-            this.pagerActivity.pageBack()
+            this.pagerSetupActivity.pageBack()
         }
         this.views.scheduleBtn.setOnClickListener {
             this.scheduleManager.start()
@@ -82,7 +82,7 @@ class ScheduleSetupFragment : AbstractSetupPageFragment() {
 
     override val title: String = "Schedule Measurements"
 
-    override fun canAdvance(activity: SetupSlidePagerActivity): Boolean = true
+    override fun canAdvance(activity: Activity): Boolean = true
 
     override fun updateState(canAdvance: Boolean) = Unit
 

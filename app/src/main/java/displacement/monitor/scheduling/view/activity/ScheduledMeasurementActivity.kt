@@ -19,7 +19,7 @@ import kotlinx.coroutines.*
 import org.opencv.core.Mat
 
 /**
- * Activity that takes a single measurement using a [CalibratedImageProcessor] and sends it
+ * SetupActivity that takes a single measurement using a [CalibratedImageProcessor] and sends it
  * to the remote database using a [RemoteDBController]. By default, uses a [DeviceStateController]
  * to wake the device when starting and lock it when done, to override this behaviour, pass the
  * `useStateController` to [getIntent] function.

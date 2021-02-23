@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import org.opencv.core.Mat
 
 /**
- * Activity used to measure a focal length value to place in [Settings.Calibration.focalLength] for
+ * SetupActivity used to measure a focal length value to place in [Settings.Calibration.focalLength] for
  * a [CalibratedImageProcessor] to then use.
  */
 class CalibrationActivity : AppCompatActivity() {

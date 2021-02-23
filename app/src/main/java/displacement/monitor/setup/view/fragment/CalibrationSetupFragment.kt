@@ -1,6 +1,7 @@
 package displacement.monitor.setup.view.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,6 @@ import displacement.monitor.R
 import displacement.monitor.settings.view.activity.SettingsActivity
 import displacement.monitor.settings.model.Settings
 import displacement.monitor.setup.view.activity.CalibrationActivity
-import displacement.monitor.setup.view.activity.SetupSlidePagerActivity
 
 /**
  * An [AbstractSetupPageFragment] to use that uses [CalibrationActivity] to calibrate the
@@ -57,10 +57,10 @@ class CalibrationSetupFragment : AbstractSetupPageFragment() {
             startActivity(CalibrationActivity.getIntent(requireContext()))
         }
         this.views.nextBtn.setOnClickListener {
-            this.pagerActivity.pageNext()
+            this.pagerSetupActivity.pageNext()
         }
         this.views.backBtn.setOnClickListener {
-            this.pagerActivity.pageBack()
+            this.pagerSetupActivity.pageBack()
         }
     }
 
@@ -68,7 +68,7 @@ class CalibrationSetupFragment : AbstractSetupPageFragment() {
 
     override val title: String = "Calibration"
 
-    override fun canAdvance(activity: SetupSlidePagerActivity): Boolean {
+    override fun canAdvance(activity: Activity): Boolean {
         // Can advance if there is a non-zero value for focal length recorded
         return Settings(activity).calibration.focalLength != 0.0
     }
