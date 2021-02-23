@@ -1,6 +1,7 @@
 package displacement.monitor.database.local.view.fragment
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import displacement.monitor.R
 import displacement.monitor.database.local.controller.MeasurementDatabase
@@ -25,6 +27,22 @@ class DatabaseViewFragment : Fragment() {
 
     /** References to views. */
     private val views by lazy { Views(requireView()) }
+
+    /** Dialog to confirm deletion of all local data. */
+    private val deleteDialog: AlertDialog by lazy {
+        AlertDialog.Builder(requireContext()).also { builder ->
+            builder.setTitle("Delete all measurements?")
+            builder.setMessage(
+                "This is irreversible. It will not effect any data on any remote databases."
+            )
+            builder.setPositiveButton("Yes, delete") { dialog, _ ->
+                val db = MeasurementDatabase { requireContext() }
+                db.measurementDao().clear()
+                dialog.dismiss()
+            }
+            builder.setNegativeButton("No, cancel") { dialog, _ -> dialog.dismiss() }
+        }.create()
+    }
 
     // Android entry points ------------------------------------------------------------------------
 
@@ -46,6 +64,10 @@ class DatabaseViewFragment : Fragment() {
             withContext(Dispatchers.Main) {
                 this@DatabaseViewFragment.views.rv.adapter = MeasurementAdapter(values)
             }
+        }
+
+        this.views.deleteBtn.setOnClickListener {
+            this.deleteDialog.show()
         }
     }
 
@@ -92,7 +114,8 @@ class DatabaseViewFragment : Fragment() {
      */
     private inner class Views(
         view: View,
-        val rv: RecyclerView = view.findViewById(R.id.databaseViewFragmentRV)
+        val rv: RecyclerView = view.findViewById(R.id.databaseViewFragmentRV),
+        val deleteBtn: Button = view.findViewById(R.id.databaseViewFragmentDeleteButton),
     )
 }
 
