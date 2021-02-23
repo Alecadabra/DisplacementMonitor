@@ -105,7 +105,6 @@ class SetupActivity : AppCompatActivity() {
             PermissionsSetupFragment::class,
             SettingsSetupFragment::class,
             CalibrationSetupFragment::class,
-            ScheduleSetupFragment::class,
         )
     }
 }

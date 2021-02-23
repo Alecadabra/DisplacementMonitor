@@ -90,6 +90,12 @@ class MainActivity : AppCompatActivity() {
         this.views.dataBtn.setOnClickListener {
             startActivity(DatabaseViewActivity.getIntent(this))
         }
+        this.views.singleMeasurementBtn.setOnClickListener {
+            startActivity(ScheduledMeasurementActivity.getIntent(this, useStateController = false))
+        }
+        this.views.realTimeButton.setOnClickListener {
+            startActivity(RealTimeMeasurementActivity.getIntent(this))
+        }
     }
 
     override fun onResume() {
@@ -122,7 +128,7 @@ class MainActivity : AppCompatActivity() {
     /** Update the text shown in readout text views to be up to date with new data */
     private fun updateReadouts() {
         @SuppressLint("SetTextI18n")
-        this.views.scheduleReadout.text = "Measurements are ${
+        this.views.scheduleReadout.text = "Handle the periodic measuring here. Measurements are ${
             if (this.schedulingManager.isScheduled) "" else "not"
         } currently scheduled"
 
@@ -149,5 +155,7 @@ class MainActivity : AppCompatActivity() {
         val settingsBtn: Button = findViewById(R.id.mainActivitySettingsButton),
         val settingsReadout: TextView = findViewById(R.id.mainActivitySettingsReadout),
         val dataBtn: Button = findViewById(R.id.mainActivityDataButton),
+        val singleMeasurementBtn: Button = findViewById(R.id.mainActivitySingleMeasurementButton),
+        val realTimeButton: Button = findViewById(R.id.mainActivityRealTimeButton),
     )
 }
