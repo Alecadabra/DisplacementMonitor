@@ -13,12 +13,13 @@ import displacement.monitor.settings.view.activity.SettingsActivity
 import displacement.monitor.settings.model.Settings
 import displacement.monitor.setup.view.activity.CalibrationActivity
 import displacement.monitor.setup.view.activity.RealTimeMeasurementActivity
+import displacement.monitor.setup.view.activity.SetupSlidePagerActivity
 
 /**
  * An [AbstractSetupPageFragment] for performing final tests/configuration and starting the
  * scheduling, as the final part of the setup procedure.
  */
-class ScheduleSetupFragment : AbstractSetupPageFragment("Schedule Measurements") {
+class ScheduleSetupFragment : AbstractSetupPageFragment() {
 
     // Members -------------------------------------------------------------------------------------
 
@@ -76,6 +77,14 @@ class ScheduleSetupFragment : AbstractSetupPageFragment("Schedule Measurements")
             this.deviceStateController.lockScreen()
         }
     }
+
+    // Setup page overrides ------------------------------------------------------------------------
+
+    override val title: String = "Schedule Measurements"
+
+    override fun canAdvance(activity: SetupSlidePagerActivity): Boolean = true
+
+    override fun updateState(canAdvance: Boolean) = Unit
 
     // Local constructs ----------------------------------------------------------------------------
 

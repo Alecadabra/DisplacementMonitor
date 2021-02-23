@@ -8,12 +8,13 @@ import android.widget.Button
 import displacement.monitor.R
 import displacement.monitor.settings.view.activity.SettingsActivity
 import displacement.monitor.settings.model.Settings
+import displacement.monitor.setup.view.activity.SetupSlidePagerActivity
 
 /**
  * An [AbstractSetupPageFragment] used to have the app configuration's set using the
  * [SettingsActivity] as part of the setup procedure.
  */
-class SettingsSetupFragment : AbstractSetupPageFragment("Configure Settings") {
+class SettingsSetupFragment : AbstractSetupPageFragment() {
 
     // Members -------------------------------------------------------------------------------------
 
@@ -44,22 +45,19 @@ class SettingsSetupFragment : AbstractSetupPageFragment("Configure Settings") {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    // Setup page overrides ------------------------------------------------------------------------
 
-        // Run the check to see if this step is done
-        checkSettingsValid()
+    override val title: String = "Configure Settings"
+
+    override fun canAdvance(activity: SetupSlidePagerActivity): Boolean {
+        // Settings are valid if the settings constructor does not throw an exception
+        return runCatching { Settings(activity) }.isSuccess
     }
 
-    // Local logic ---------------------------------------------------------------------------------
-
-    private fun checkSettingsValid() {
-        // Settings are valid if the constructor does not throw an exception
-        val valid = runCatching { Settings(requireContext()) }.isSuccess
-
+    override fun updateState(canAdvance: Boolean) {
         this.views.nextBtn.also {
-            it.isEnabled = valid
-            it.isClickable = valid
+            it.isEnabled = canAdvance
+            it.isClickable = canAdvance
         }
     }
 

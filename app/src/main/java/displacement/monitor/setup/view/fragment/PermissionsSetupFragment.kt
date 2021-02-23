@@ -11,12 +11,13 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import displacement.monitor.R
 import displacement.monitor.permissions.controller.Permission
+import displacement.monitor.setup.view.activity.SetupSlidePagerActivity
 
 /**
  * An [AbstractSetupPageFragment] used to have all necessary permissions granted to the app as part
  * of the setup process.
  */
-class PermissionsSetupFragment : AbstractSetupPageFragment("Obtain Permissions") {
+class PermissionsSetupFragment : AbstractSetupPageFragment() {
 
     // Members -------------------------------------------------------------------------------------
 
@@ -57,19 +58,12 @@ class PermissionsSetupFragment : AbstractSetupPageFragment("Obtain Permissions")
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        // Run the check to see if this step is done
-        refreshPermList()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         // If it's a result from a permission request, check the result
         Permission.fromRequestCode(requestCode)?.also { perm ->
-            refreshPermList()
+            updateState(canAdvance(this.pagerActivity))
             if (!perm.isGrantedTo(requireContext())) {
                 Toast.makeText(
                     requireContext(), "Permission was not granted", Toast.LENGTH_SHORT
@@ -87,7 +81,7 @@ class PermissionsSetupFragment : AbstractSetupPageFragment("Obtain Permissions")
 
         // If it's a result from a permission request, check the result
         Permission.fromRequestCode(requestCode)?.also { perm ->
-            refreshPermList()
+            updateState(canAdvance(this.pagerActivity))
             if (!perm.isGrantedTo(requireContext())) {
                 Toast.makeText(
                     requireContext(), "Permission was not granted", Toast.LENGTH_SHORT
@@ -96,9 +90,17 @@ class PermissionsSetupFragment : AbstractSetupPageFragment("Obtain Permissions")
         }
     }
 
-    // Local logic ---------------------------------------------------------------------------------
+    // Setup page overrides ------------------------------------------------------------------------
 
-    private fun refreshPermList() {
+    override val title: String = "Obtain Permissions"
+
+    override fun canAdvance(activity: SetupSlidePagerActivity): Boolean {
+        // Can advance if all permissions are granted to this
+        return Permission.allPerms.all { it.isGrantedTo(activity) }
+    }
+
+    override fun updateState(canAdvance: Boolean) {
+        // Update the perm buttons
         this.permButtons.forEach { (permission, button, check) ->
             val granted = permission.isGrantedTo(requireContext())
 
@@ -114,11 +116,10 @@ class PermissionsSetupFragment : AbstractSetupPageFragment("Obtain Permissions")
             }
         }
 
-        val allGranted = this.permButtons.all { it.permission.isGrantedTo(requireContext()) }
-
+        // Update the next button
         this.views.nextBtn.also {
-            it.isEnabled = allGranted
-            it.isClickable = allGranted
+            it.isEnabled = canAdvance
+            it.isClickable = canAdvance
         }
     }
 

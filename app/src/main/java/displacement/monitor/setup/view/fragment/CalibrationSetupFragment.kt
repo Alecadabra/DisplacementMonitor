@@ -11,20 +11,18 @@ import displacement.monitor.R
 import displacement.monitor.settings.view.activity.SettingsActivity
 import displacement.monitor.settings.model.Settings
 import displacement.monitor.setup.view.activity.CalibrationActivity
+import displacement.monitor.setup.view.activity.SetupSlidePagerActivity
 
 /**
  * An [AbstractSetupPageFragment] to use that uses [CalibrationActivity] to calibrate the
  * image processing as part of the setup procedure.
  */
-class CalibrationSetupFragment : AbstractSetupPageFragment("Calibration") {
+class CalibrationSetupFragment : AbstractSetupPageFragment() {
 
     // Members -------------------------------------------------------------------------------------
 
     /** References to views. */
     private val views by lazy { Views(requireView()) }
-
-    /** Access to app settings. */
-    private val settings by lazy { Settings(requireContext()) }
 
     // Android entry points ------------------------------------------------------------------------
 
@@ -66,22 +64,19 @@ class CalibrationSetupFragment : AbstractSetupPageFragment("Calibration") {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    // Setup page overrides ------------------------------------------------------------------------
 
-        // Run the check to see if this step is done
-        checkMeasured()
+    override val title: String = "Calibration"
+
+    override fun canAdvance(activity: SetupSlidePagerActivity): Boolean {
+        // Can advance if there is a non-zero value for focal length recorded
+        return Settings(activity).calibration.focalLength != 0.0
     }
 
-    // Local logic ---------------------------------------------------------------------------------
-
-    private fun checkMeasured() {
-        // Calibration is done if there is a non-zero value for focal length in settings.
-        val measured = this.settings.calibration.focalLength != 0.0
-
+    override fun updateState(canAdvance: Boolean) {
         this.views.nextBtn.also {
-            it.isEnabled = measured
-            it.isClickable = measured
+            it.isEnabled = canAdvance
+            it.isClickable = canAdvance
         }
     }
 
