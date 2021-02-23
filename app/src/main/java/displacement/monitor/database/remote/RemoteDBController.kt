@@ -6,8 +6,7 @@ import com.influxdb.client.InfluxDBClient
 import com.influxdb.client.InfluxDBClientFactory
 import com.influxdb.client.InfluxDBClientOptions
 import com.influxdb.exceptions.InfluxException
-import displacement.monitor.BuildConfig
-import displacement.monitor.database.local.controller.MeasurementDatabase
+import displacement.monitor.database.local.controller.LocalMeasurementDatabase
 import displacement.monitor.database.model.toPoint
 import displacement.monitor.settings.model.Settings
 import kotlinx.coroutines.CoroutineScope
@@ -53,7 +52,7 @@ class RemoteDBController(private val settings: Settings) {
      */
     private suspend fun getClient(): InfluxDBClient = this.nullableClient ?: run {
         this.clientInitJob.join()
-        getClient()
+        this.nullableClient ?: error("Could not initialise InfluxDB client")
     }
 
     /**
@@ -65,7 +64,7 @@ class RemoteDBController(private val settings: Settings) {
     suspend fun send(lazyContext: () -> Context) {
 
         // Get all pending measurements from local database
-        val measurements = MeasurementDatabase(lazyContext).measurementDao().getAll()
+        val measurements = LocalMeasurementDatabase(lazyContext).measurementDao().getAll()
 
         Log.d(TAG, "Writing ${measurements.size} measurement(s)")
 
@@ -82,7 +81,7 @@ class RemoteDBController(private val settings: Settings) {
             Log.i(TAG, "Wrote measurement(s) successfully")
 
             // Delete measurements from the local database
-            val dao = MeasurementDatabase(lazyContext).measurementDao()
+            val dao = LocalMeasurementDatabase(lazyContext).measurementDao()
             dao.delete(*measurements)
 
         } catch (e: InfluxException) {

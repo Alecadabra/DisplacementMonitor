@@ -4,7 +4,7 @@ import androidx.room.*
 import displacement.monitor.database.model.Measurement
 
 /**
- * [Dao] to access the [Measurements][Measurement] from the [MeasurementDatabase].
+ * [Dao] to access the [Measurements][Measurement] from the [LocalMeasurementDatabase].
  */
 @Dao
 interface MeasurementDao {

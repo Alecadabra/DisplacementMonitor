@@ -9,7 +9,7 @@ import displacement.monitor.R
 import displacement.monitor.cv.controller.CustomCameraView
 import displacement.monitor.cv.controller.*
 import displacement.monitor.cv.controller.ImageOperations.measureCentroidBrightness
-import displacement.monitor.database.local.controller.MeasurementDatabase
+import displacement.monitor.database.local.controller.LocalMeasurementDatabase
 import displacement.monitor.database.model.Measurement
 import displacement.monitor.database.remote.RemoteDBController
 import displacement.monitor.scheduling.controller.DeviceStateController
@@ -145,7 +145,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
         // Log measurement to local database and send to remote database if enabled
         CoroutineScope(Dispatchers.IO).launch {
-            val db = MeasurementDatabase { applicationContext }
+            val db = LocalMeasurementDatabase { applicationContext }
             db.measurementDao().insert(measurement)
             this@ScheduledMeasurementActivity.remoteDBController?.send { applicationContext }
             this@ScheduledMeasurementActivity.remoteDBController?.close()

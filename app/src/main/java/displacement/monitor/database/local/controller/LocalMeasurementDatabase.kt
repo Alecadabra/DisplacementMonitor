@@ -14,24 +14,24 @@ import kotlinx.coroutines.runBlocking
  * measurement when it has been successfully sent to the remote database.
  */
 @Database(entities = [Measurement::class], version = 3)
-abstract class MeasurementDatabase : RoomDatabase() {
+abstract class LocalMeasurementDatabase : RoomDatabase() {
     abstract fun measurementDao(): MeasurementDao
 
     companion object {
-        private var instance: MeasurementDatabase? = null
+        private var instance: LocalMeasurementDatabase? = null
 
         /**
          * Gets the instance of this database.
          * @param lazyApplicationContext Way to retrieve the application [Context] if required for
          * initialisation
-         * @return The [MeasurementDatabase] instance to perform operations on
+         * @return The [LocalMeasurementDatabase] instance to perform operations on
          */
         operator fun invoke(lazyApplicationContext: () -> Context) = instance ?: runBlocking(
             Dispatchers.IO) {
             val localInstance = Room.databaseBuilder(
                 lazyApplicationContext(),
-                MeasurementDatabase::class.java,
-                "MeasurementDatabase"
+                LocalMeasurementDatabase::class.java,
+                "LocalMeasurementDatabase"
             ).also { builder ->
                 builder.fallbackToDestructiveMigration()
             }.build()

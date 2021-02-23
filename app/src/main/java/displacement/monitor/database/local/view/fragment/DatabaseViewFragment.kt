@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import displacement.monitor.R
-import displacement.monitor.database.local.controller.MeasurementDatabase
+import displacement.monitor.database.local.controller.LocalMeasurementDatabase
 import displacement.monitor.database.model.Measurement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +21,10 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Fragment to display all measurements in the [LocalMeasurementDatabase] and give the option
+ * to clear all data.
+ */
 class DatabaseViewFragment : Fragment() {
 
     // Members -------------------------------------------------------------------------------------
@@ -36,7 +40,7 @@ class DatabaseViewFragment : Fragment() {
                 "This is irreversible. It will not effect any data on any remote databases."
             )
             builder.setPositiveButton("Yes, delete") { dialog, _ ->
-                val db = MeasurementDatabase { requireContext() }
+                val db = LocalMeasurementDatabase { requireContext() }
                 db.measurementDao().clear()
                 dialog.dismiss()
             }
@@ -58,22 +62,32 @@ class DatabaseViewFragment : Fragment() {
 
         this.views.rv.layoutManager = LinearLayoutManager(requireContext())
 
+        // Grab the data out and set the RV adapter
         CoroutineScope(Dispatchers.IO).launch {
-            val db = MeasurementDatabase { this@DatabaseViewFragment.requireContext() }
-            val values = db.measurementDao().getAll()
+            val db = LocalMeasurementDatabase { this@DatabaseViewFragment.requireContext() }
+            val measurements: List<Measurement> = db.measurementDao().getAll().toList()
             withContext(Dispatchers.Main) {
-                this@DatabaseViewFragment.views.rv.adapter = MeasurementAdapter(values)
+                this@DatabaseViewFragment.views.rv.adapter = MeasurementAdapter(measurements)
             }
         }
 
         this.views.deleteBtn.setOnClickListener {
+            // Show an 'are you sure?'
             this.deleteDialog.show()
         }
     }
 
-    class MeasurementAdapter(
-        private val values: Array<Measurement>,
-    ) : RecyclerView.Adapter<MeasurementAdapter.MeasurementViewHolder>() {
+
+    // Local constructs ----------------------------------------------------------------------------
+
+    /**
+     * Adapts the [values] list of [Measurements][Measurement] to a [RecyclerView].
+     */
+    private class MeasurementAdapter(
+        private val values: List<Measurement>,
+    ) : RecyclerView.Adapter<MeasurementViewHolder>() {
+
+        // Adapter overrides -----------------------------------------------------------------------
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MeasurementViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(
@@ -89,24 +103,37 @@ class DatabaseViewFragment : Fragment() {
         }
 
         override fun getItemCount(): Int = values.size
+    }
 
-        inner class MeasurementViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            private val views: Views = Views(view)
+    /** [View holder][RecyclerView.ViewHolder] for a [Measurement]. */
+    private class MeasurementViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-            fun bind(measurement: Measurement) {
-                val date = Date(measurement.time * 1000)
-                this.views.time.text = SimpleDateFormat.getDateTimeInstance().format(date)
+        // Members ---------------------------------------------------------------------------------
 
-                @SuppressLint("SetTextI18n")
-                this.views.distance.text = "${"%.2f".format(measurement.distance)}m"
-            }
+        /** References to views. */
+        private val views: Views = Views(view)
 
-            private inner class Views(
-                view: View,
-                val time: TextView = view.findViewById(R.id.databaseViewFragmentElementTime),
-                val distance: TextView = view.findViewById(R.id.databaseViewFragmentElementDistance),
-            )
+        // Public entry points ---------------------------------------------------------------------
+
+        /** Bind this view holder to a new [Measurement]. */
+        fun bind(measurement: Measurement) {
+            val date = Date(measurement.time * 1000)
+            this.views.time.text = SimpleDateFormat.getDateTimeInstance().format(date)
+
+            @SuppressLint("SetTextI18n")
+            this.views.distance.text = "${"%.2f".format(measurement.distance)}m"
         }
+
+        // Local constructs ------------------------------------------------------------------------
+
+        /**
+         * Wrapper for view references.
+         */
+        private inner class Views(
+            view: View,
+            val time: TextView = view.findViewById(R.id.databaseViewFragmentElementTime),
+            val distance: TextView = view.findViewById(R.id.databaseViewFragmentElementDistance),
+        )
     }
 
     /**
