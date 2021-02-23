@@ -1,9 +1,9 @@
 # Remote logging measurements
 
-The distance measurement app support logging to a remote [InfluxDB](https://www.influxdata.com/) database. The included [Dashboard](./dashboard.json) can be imported into a Grafana server to help visualise the incoming data remotely.
+The distance measurement app support logging to a remote [InfluxDB](https://www.influxdata.com/) database. The included [Dashboard](dashboard.json) can be imported into a Grafana server to help visualise the incoming data remotely.
 
 ## Setting up a remote test environment
-Included in this directory is a [docker-compose.yml](./docker-compose.yml) file that can be used to quickly setup a test deployment of both InfluxDB and Grafana.
+Included in this directory is a [docker-compose.yml](docker-compose.yml) file that can be used to quickly setup a test deployment of both InfluxDB and Grafana.
 
 After installing Docker, navigate to the directory containing the `docker-compose.yml` file and run the following command:
 
@@ -46,10 +46,11 @@ Fill out the organisation/token/default bucket values with the appropriate value
 Hit Save and Test to ensure that the connection works correctly.
 
 ### Import the dashboard
-After creating the Dashboard it should be a straightforward process to import the provided [Dashboard](./dashboard.json). Press the large `+` sign in left menu and choose `Import`. Either upload the dashboard.json file or copy its contents into the `Import via panel json` textbox.
+After creating the Dashboard it should be a straightforward process to import the provided [Dashboard](dashboard.json). Press the large `+` sign in left menu and choose `Import`. Either upload the dashboard.json file or copy its contents into the `Import via panel json` textbox.
 
 To complete the import you will need to select the new Data Source and specify which bucket holds the measurements data (the one you created earlier).
 
 ## Configure the mobile application
 ```bash
 # TODO: Alec fill some stuff out
+```
