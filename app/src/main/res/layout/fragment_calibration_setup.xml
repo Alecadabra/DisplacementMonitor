@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:text="Back"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:textColor="@color/design_default_color_primary"
+            android:textColor="?colorPrimary"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
