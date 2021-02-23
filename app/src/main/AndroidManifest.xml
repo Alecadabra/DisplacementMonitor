@@ -35,7 +35,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DisplacementMonitor">
-        <activity android:name=".setup.android.activity.SetupSlidePagerActivity"
+        <activity android:name=".setup.view.activity.SetupSlidePagerActivity"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,21 +44,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".setup.android.activity.CalibrationActivity"
+            android:name=".setup.view.activity.CalibrationActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".setup.android.activity.RealTimeMeasurementActivity"
+            android:name=".setup.view.activity.RealTimeMeasurementActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".scheduling.android.activity.ScheduledMeasurementActivity"
+            android:name=".scheduling.view.activity.ScheduledMeasurementActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:showOnLockScreen="true"
             android:turnScreenOn="true"
             tools:ignore="UnusedAttribute" />
-        <activity android:name=".settings.android.activity.SettingsActivity" />
+        <activity android:name=".settings.view.activity.SettingsActivity" />
 
         <receiver
             android:name=".scheduling.controller.SchedulingManager$AlarmReceiver"

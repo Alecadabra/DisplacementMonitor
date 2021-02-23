@@ -1,4 +1,4 @@
-package displacement.monitor.setup.android.activity
+package displacement.monitor.setup.view.activity
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,7 +8,7 @@ import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import displacement.monitor.R
-import displacement.monitor.cv.android.view.CustomCameraView
+import displacement.monitor.cv.controller.CustomCameraView
 import displacement.monitor.cv.*
 import displacement.monitor.cv.controller.*
 import displacement.monitor.settings.model.Settings

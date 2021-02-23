@@ -1,8 +1,8 @@
-package displacement.monitor.setup.android.fragment
+package displacement.monitor.setup.view.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import displacement.monitor.setup.android.activity.SetupSlidePagerActivity
+import displacement.monitor.setup.view.activity.SetupSlidePagerActivity
 
 /**
  * An abstract implementation of a page of a view pager that has a custom title text for the

@@ -1,22 +1,18 @@
-package displacement.monitor.setup.android.fragment
+package displacement.monitor.setup.view.fragment
 
-import android.app.admin.DevicePolicyManager
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import displacement.monitor.R
-import displacement.monitor.permissions.controller.Permission
-import displacement.monitor.scheduling.android.activity.ScheduledMeasurementActivity
+import displacement.monitor.scheduling.view.activity.ScheduledMeasurementActivity
 import displacement.monitor.scheduling.controller.DeviceStateController
 import displacement.monitor.scheduling.controller.SchedulingManager
-import displacement.monitor.settings.android.activity.SettingsActivity
+import displacement.monitor.settings.view.activity.SettingsActivity
 import displacement.monitor.settings.model.Settings
-import displacement.monitor.setup.android.activity.CalibrationActivity
-import displacement.monitor.setup.android.activity.RealTimeMeasurementActivity
+import displacement.monitor.setup.view.activity.CalibrationActivity
+import displacement.monitor.setup.view.activity.RealTimeMeasurementActivity
 
 /**
  * An [AbstractSetupPageFragment] for performing final tests/configuration and starting the

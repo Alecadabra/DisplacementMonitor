@@ -1,16 +1,13 @@
-package displacement.monitor.setup.android.fragment
+package displacement.monitor.setup.view.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import displacement.monitor.R
-import displacement.monitor.settings.android.activity.SettingsActivity
+import displacement.monitor.settings.view.activity.SettingsActivity
 import displacement.monitor.settings.model.Settings
-import java.lang.Exception
 
 /**
  * An [AbstractSetupPageFragment] used to have the app configuration's set using the

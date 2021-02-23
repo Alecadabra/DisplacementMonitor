@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".setup.android.activity.CalibrationActivity"
+    tools:context=".setup.view.activity.CalibrationActivity"
     android:background="@color/black">
 
-    <displacement.monitor.cv.android.view.CustomCameraView
+    <displacement.monitor.cv.controller.CustomCameraView
         android:id="@+id/calibrationActivityCameraView"
         android:layout_width="0dp"
         android:layout_height="0dp"

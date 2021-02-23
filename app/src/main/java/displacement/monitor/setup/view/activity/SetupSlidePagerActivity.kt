@@ -1,4 +1,4 @@
-package displacement.monitor.setup.android.activity
+package displacement.monitor.setup.view.activity
 
 import android.content.Context
 import android.content.Intent
@@ -10,10 +10,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import displacement.monitor.R
-import displacement.monitor.scheduling.android.activity.ScheduledMeasurementActivity
+import displacement.monitor.scheduling.view.activity.ScheduledMeasurementActivity
 import displacement.monitor.scheduling.controller.SchedulingManager
 import displacement.monitor.settings.model.Settings
-import displacement.monitor.setup.android.fragment.*
+import displacement.monitor.setup.view.fragment.*
 
 /**
  * Activity to hold and manage the view pager that shows all of the setup screen pages.

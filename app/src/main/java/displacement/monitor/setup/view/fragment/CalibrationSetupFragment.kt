@@ -1,29 +1,16 @@
-package displacement.monitor.setup.android.fragment
+package displacement.monitor.setup.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.preference.PreferenceManager
 import displacement.monitor.R
-import displacement.monitor.cv.android.view.CustomCameraView
-import displacement.monitor.cv.controller.*
-import displacement.monitor.cv.controller.ImageOperations.drawTarget
-import displacement.monitor.cv.controller.ImageOperations.fixOrientation
-import displacement.monitor.cv.controller.ImageOperations.resizeWithBorder
-import displacement.monitor.settings.android.activity.SettingsActivity
+import displacement.monitor.settings.view.activity.SettingsActivity
 import displacement.monitor.settings.model.Settings
-import displacement.monitor.setup.android.activity.CalibrationActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.opencv.core.Mat
-import java.lang.Exception
+import displacement.monitor.setup.view.activity.CalibrationActivity
 
 /**
  * An [AbstractSetupPageFragment] to use that uses [CalibrationActivity] to calibrate the

@@ -1,4 +1,4 @@
-package displacement.monitor.settings.android.activity
+package displacement.monitor.settings.view.activity
 
 import android.content.Context
 import android.content.Intent
@@ -12,7 +12,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
 import displacement.monitor.R
-import displacement.monitor.scheduling.controller.DeviceStateController
 import displacement.monitor.settings.model.Settings
 
 /**

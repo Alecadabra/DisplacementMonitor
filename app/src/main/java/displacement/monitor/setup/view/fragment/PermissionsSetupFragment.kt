@@ -1,8 +1,7 @@
-package displacement.monitor.setup.android.fragment
+package displacement.monitor.setup.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import displacement.monitor.R
 import displacement.monitor.permissions.controller.Permission
-import displacement.monitor.settings.model.Settings
 
 /**
  * An [AbstractSetupPageFragment] used to have all necessary permissions granted to the app as part

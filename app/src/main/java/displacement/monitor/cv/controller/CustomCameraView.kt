@@ -1,4 +1,4 @@
-package displacement.monitor.cv.android.view
+package displacement.monitor.cv.controller
 
 import android.content.Context
 import android.hardware.Camera

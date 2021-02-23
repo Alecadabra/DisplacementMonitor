@@ -1,4 +1,4 @@
-package displacement.monitor.scheduling.android.activity
+package displacement.monitor.scheduling.view.activity
 
 import android.content.Context
 import android.content.Intent
@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import displacement.monitor.R
-import displacement.monitor.cv.android.view.CustomCameraView
+import displacement.monitor.cv.controller.CustomCameraView
 import displacement.monitor.cv.controller.*
 import displacement.monitor.cv.controller.ImageOperations.measureCentroidBrightness
 import displacement.monitor.database.local.MeasurementDatabase
