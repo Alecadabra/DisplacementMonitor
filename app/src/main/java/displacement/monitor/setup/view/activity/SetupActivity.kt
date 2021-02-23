@@ -25,18 +25,6 @@ class SetupActivity : AppCompatActivity() {
     /** References to views. */
     private val views by lazy(this::Views)
 
-    /**
-     * Exit conformation dialog to show when back is pressed.
-     */
-    private val backDialog by lazy {
-        AlertDialog.Builder(this).also { builder ->
-            builder.setTitle("Leave app")
-            builder.setMessage("Do you want to exit the app?")
-            builder.setNegativeButton("No, Cancel") { dialog, _ -> dialog.dismiss() }
-            builder.setPositiveButton("Yes, exit") { _, _ -> super.onBackPressed() }
-        }.create()
-    }
-
     // Android entry points ------------------------------------------------------------------------
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,11 +34,6 @@ class SetupActivity : AppCompatActivity() {
         // Set up view pager
         this.views.viewPager.adapter = ScreenSlidePagerAdapter(this)
         this.views.viewPager.isUserInputEnabled = false
-    }
-
-    override fun onBackPressed() {
-        // Show exit conformation dialog
-        this.backDialog.show()
     }
 
     override fun finish() {

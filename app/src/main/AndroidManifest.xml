@@ -35,24 +35,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DisplacementMonitor">
-        <activity android:name=".setup.view.activity.MainActivity"></activity>
-        <activity
-            android:name=".setup.view.activity.SetupActivity"
-            android:screenOrientation="portrait">
+
+        <activity android:name=".setup.view.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".database.local.view.activity.DatabaseViewActivity" />
+
+        <activity
+            android:name=".setup.view.activity.SetupActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".setup.view.activity.CalibrationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+
         <activity
             android:name=".setup.view.activity.RealTimeMeasurementActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+
         <activity
             android:name=".scheduling.view.activity.ScheduledMeasurementActivity"
             android:screenOrientation="portrait"
@@ -60,12 +67,14 @@
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:turnScreenOn="true"
             tools:ignore="UnusedAttribute" />
+
         <activity android:name=".settings.view.activity.SettingsActivity" />
 
         <receiver
             android:name=".scheduling.controller.SchedulingManager$AlarmReceiver"
             android:enabled="true"
             android:exported="false" />
+
         <receiver
             android:name=".permissions.controller.Permission$ADMIN$AdminReceiver"
             android:enabled="true"
@@ -74,11 +83,11 @@
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/policies" />
-
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>

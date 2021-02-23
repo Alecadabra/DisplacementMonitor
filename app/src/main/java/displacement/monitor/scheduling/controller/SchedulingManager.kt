@@ -20,6 +20,15 @@ class SchedulingManager(
     private val settings: Settings,
     private val scheduledIntent: Intent,
 ) {
+
+    val isScheduled: Boolean
+        get() = PendingIntent.getBroadcast(
+            this.context,
+            0,
+            this.scheduledIntent,
+            PendingIntent.FLAG_NO_CREATE
+        ) != null
+
     private val alarmManager: AlarmManager
         get() = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 

@@ -1,4 +1,4 @@
-package displacement.monitor.database.local
+package displacement.monitor.database.local.controller
 
 import androidx.room.*
 import displacement.monitor.database.model.Measurement

@@ -9,7 +9,7 @@ import displacement.monitor.R
 import displacement.monitor.cv.controller.CustomCameraView
 import displacement.monitor.cv.controller.*
 import displacement.monitor.cv.controller.ImageOperations.measureCentroidBrightness
-import displacement.monitor.database.local.MeasurementDatabase
+import displacement.monitor.database.local.controller.MeasurementDatabase
 import displacement.monitor.database.model.Measurement
 import displacement.monitor.database.remote.RemoteDBController
 import displacement.monitor.scheduling.controller.DeviceStateController

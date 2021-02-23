@@ -1,4 +1,4 @@
-package displacement.monitor.database.local
+package displacement.monitor.database.local.controller
 
 import android.content.Context
 import androidx.room.Database
@@ -26,7 +26,8 @@ abstract class MeasurementDatabase : RoomDatabase() {
          * initialisation
          * @return The [MeasurementDatabase] instance to perform operations on
          */
-        operator fun invoke(lazyApplicationContext: () -> Context) = instance ?: runBlocking(Dispatchers.IO) {
+        operator fun invoke(lazyApplicationContext: () -> Context) = instance ?: runBlocking(
+            Dispatchers.IO) {
             val localInstance = Room.databaseBuilder(
                 lazyApplicationContext(),
                 MeasurementDatabase::class.java,

@@ -29,6 +29,11 @@
                     android:text="Scheduling"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
+                <TextView
+                    android:id="@+id/mainActivitySchedulingReadout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
                 <Button
                     android:id="@+id/mainActivitySchedulingStartButton"
                     android:layout_width="match_parent"
@@ -62,9 +67,14 @@
                     android:text="Setup"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Start the setup utility to handle permissions, settings, and calibration." />
+
                 <Button
                     android:id="@+id/mainActivitySetupLaunchButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Launch setup" />
 
@@ -105,7 +115,7 @@
                     android:id="@+id/mainActivitySettingsButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Start" />
+                    android:text="Edit Settings" />
 
             </LinearLayout>
 
@@ -127,6 +137,11 @@
                     android:layout_height="wrap_content"
                     android:text="Data"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="View the measurements currently stored on the device." />
 
                 <Button
                     android:id="@+id/mainActivityDataButton"

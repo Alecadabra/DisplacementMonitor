@@ -7,7 +7,7 @@ import com.influxdb.client.InfluxDBClientFactory
 import com.influxdb.client.InfluxDBClientOptions
 import com.influxdb.exceptions.InfluxException
 import displacement.monitor.BuildConfig
-import displacement.monitor.database.local.MeasurementDatabase
+import displacement.monitor.database.local.controller.MeasurementDatabase
 import displacement.monitor.database.model.toPoint
 import displacement.monitor.settings.model.Settings
 import kotlinx.coroutines.CoroutineScope
