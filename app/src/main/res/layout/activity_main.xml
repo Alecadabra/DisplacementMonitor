@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:scrollbars="none"
     tools:ignore="HardcodedText"
     tools:context=".setup.view.activity.MainActivity">
 
@@ -34,11 +35,13 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
                         android:text="Scheduling"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
                     <TextView
                         android:id="@+id/mainActivitySchedulingReadout"
+                        android:paddingVertical="8dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
@@ -78,6 +81,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
                         android:text="Start the setup utility to handle permissions, settings, and calibration." />
 
                     <Button
@@ -110,6 +114,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
                         android:text="Take a single measurement as if the configured period had elapsed."/>
 
                     <Button
@@ -152,8 +157,9 @@
 
                     <TextView
                         android:id="@+id/mainActivitySettingsReadout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="8dp" />
 
                     <Button
                         android:id="@+id/mainActivitySettingsButton"
@@ -185,6 +191,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
                         android:text="View the measurements currently stored on the device." />
 
                     <Button
@@ -217,6 +224,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingVertical="8dp"
                         android:text="Test the measurement system in real-time." />
 
                     <Button

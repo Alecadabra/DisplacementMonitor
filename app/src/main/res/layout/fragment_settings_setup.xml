@@ -68,7 +68,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="• URL\n• Authorization Token"
+            android:text="• Enabled\n• URL\n• Authorization Token\n• Organisation\n• Bucket"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <Space
@@ -79,10 +79,9 @@
             android:id="@+id/settingsSetupFragmentSettingsButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Go to Settings" />
+            android:text="Edit Settings" />
 
     </LinearLayout>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/settingsSetupFragmentButtonBar"

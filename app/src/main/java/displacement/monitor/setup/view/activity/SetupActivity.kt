@@ -14,6 +14,7 @@ import displacement.monitor.scheduling.view.activity.ScheduledMeasurementActivit
 import displacement.monitor.scheduling.controller.SchedulingManager
 import displacement.monitor.settings.model.Settings
 import displacement.monitor.setup.view.fragment.*
+import kotlin.reflect.KClass
 
 /**
  * SetupActivity to hold and manage the view pager that shows all of the setup screen pages.
@@ -45,28 +46,33 @@ class SetupActivity : AppCompatActivity() {
         super.finish()
     }
 
+    override fun onBackPressed() {
+        pageBack()
+    }
+
     // Public entry points -------------------------------------------------------------------------
 
     /**
-     * Go back one page.
-     * @throws IllegalStateException If at the first page and cannot go back
+     * Go back one page. If at the first page and setup is complete, calls
+     * [super.onBackPressed][AppCompatActivity.onBackPressed].
      */
     fun pageBack() {
-        check(this.views.viewPager.currentItem > 0) {
-            "Cannot go back any further"
+        if (this.views.viewPager.currentItem > 0) {
+            this.views.viewPager.setCurrentItem(this.views.viewPager.currentItem - 1, true)
+        } else if (PAGE_CLASSES.all { it.construct().canAdvance(this) }) {
+            super.onBackPressed()
         }
-        this.views.viewPager.setCurrentItem(this.views.viewPager.currentItem - 1, true)
     }
 
     /**
-     * Go forward one page.
-     * @throws IllegalStateException If at the last page and cannot go to next
+     * Go forward one page. If at the last page, finishes the activity.
      */
     fun pageNext() {
-        check(this.views.viewPager.currentItem < PAGE_CLASSES.lastIndex) {
-            "Cannot go forward any further"
+        if (this.views.viewPager.currentItem < PAGE_CLASSES.lastIndex) {
+            this.views.viewPager.setCurrentItem(this.views.viewPager.currentItem + 1, true)
+        } else {
+            finish()
         }
-        this.views.viewPager.setCurrentItem(this.views.viewPager.currentItem + 1, true)
     }
 
     // Local constructs ----------------------------------------------------------------------------
@@ -80,7 +86,7 @@ class SetupActivity : AppCompatActivity() {
 
         override fun getItemCount(): Int = PAGE_CLASSES.size
 
-        override fun createFragment(position: Int): Fragment = PAGE_CLASSES[position].java.newInstance()
+        override fun createFragment(position: Int): Fragment = PAGE_CLASSES[position].construct()
     }
 
     /**
@@ -101,10 +107,15 @@ class SetupActivity : AppCompatActivity() {
         /**
          * Access to all of the 'pages' of the [Views.viewPager].
          */
-        val PAGE_CLASSES = listOf(
+        val PAGE_CLASSES: List<KClass<out AbstractSetupPageFragment>> = listOf(
             PermissionsSetupFragment::class,
             SettingsSetupFragment::class,
             CalibrationSetupFragment::class,
         )
+
+        /** Shortcut to initialise a subclass of [AbstractSetupPageFragment] from it's [KClass]. */
+        fun KClass<out AbstractSetupPageFragment>.construct(): AbstractSetupPageFragment {
+            return this.java.newInstance()
+        }
     }
 }

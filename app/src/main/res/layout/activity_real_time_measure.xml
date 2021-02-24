@@ -18,13 +18,14 @@
 
     <TextView
         android:id="@+id/realTimeActivityMeasurement"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         style="@style/Widget.AppCompat.Button.Small"
         android:clickable="false"
         android:paddingVertical="16dp"
         android:paddingHorizontal="16dp"
+        android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

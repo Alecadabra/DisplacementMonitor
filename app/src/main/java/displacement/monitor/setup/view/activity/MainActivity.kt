@@ -13,6 +13,7 @@ import displacement.monitor.scheduling.controller.SchedulingManager
 import displacement.monitor.scheduling.view.activity.ScheduledMeasurementActivity
 import displacement.monitor.settings.model.Settings
 import displacement.monitor.settings.view.activity.SettingsActivity
+import displacement.monitor.setup.view.activity.SetupActivity.Companion.construct
 
 class MainActivity : AppCompatActivity() {
 
@@ -117,7 +118,7 @@ class MainActivity : AppCompatActivity() {
     private fun startSetup() {
         // Setup is complete if all pages return true on canAdvance
         val setupComplete = SetupActivity.PAGE_CLASSES.all { pageClass ->
-            pageClass.java.newInstance().canAdvance(this)
+            pageClass.construct().canAdvance(this)
         }
 
         if (!setupComplete) {

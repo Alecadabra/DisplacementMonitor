@@ -3,6 +3,7 @@ package displacement.monitor.setup.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,19 +38,6 @@ class CalibrationSetupFragment : AbstractSetupPageFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Set the readout text
-        val calibrationSettings = this.settings.calibration
-        @SuppressLint("SetTextI18n")
-        this.views.readout.text = """
-            Configured initial distance: ${calibrationSettings.initialDistance}m
-            Configured target size: ${calibrationSettings.targetSize}m
-            Calibration value (Focal length): ${
-            calibrationSettings.focalLength.takeUnless { it == 0.0 }?.let {
-                "Measured (${"%.2f".format(it)}) - Calibration is done"
-            } ?: "Not measured - Must be calibrated"
-        }
-        """.trimIndent()
-
         this.views.settingsBtn.setOnClickListener {
             startActivity(SettingsActivity.getIntent(requireContext()))
         }
@@ -78,6 +66,18 @@ class CalibrationSetupFragment : AbstractSetupPageFragment() {
             it.isEnabled = canAdvance
             it.isClickable = canAdvance
         }
+
+        val calibrationSettings = this.settings.calibration
+        @SuppressLint("SetTextI18n")
+        this.views.readout.text = """
+            Configured initial distance: ${calibrationSettings.initialDistance}m
+            Configured target size: ${calibrationSettings.targetSize}m
+            Calibration value (Focal length): ${
+            calibrationSettings.focalLength.takeUnless { it == 0.0 }?.let {
+                "Measured (${"%.2f".format(it)}) - Calibration is done"
+            } ?: "Not measured - Must be calibrated"
+        }
+        """.trimIndent()
     }
 
     // Local constructs ----------------------------------------------------------------------------

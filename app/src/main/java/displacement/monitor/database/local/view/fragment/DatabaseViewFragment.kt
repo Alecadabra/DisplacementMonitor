@@ -14,10 +14,7 @@ import android.widget.TextView
 import displacement.monitor.R
 import displacement.monitor.database.local.controller.LocalMeasurementDatabase
 import displacement.monitor.database.model.Measurement
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -39,10 +36,14 @@ class DatabaseViewFragment : Fragment() {
             builder.setMessage(
                 "This is irreversible. It will not effect any data on any remote databases."
             )
-            builder.setPositiveButton("Yes, delete") { dialog, _ ->
-                val db = LocalMeasurementDatabase { requireContext() }
-                db.measurementDao().clear()
-                dialog.dismiss()
+            builder.setPositiveButton("Yes, delete") { _, _ ->
+                val lazyContext = { requireContext() }
+                CoroutineScope(Dispatchers.IO).launch {
+                    val db = LocalMeasurementDatabase(lazyContext)
+                    db.measurementDao().clear()
+                }
+
+                activity?.onBackPressed()
             }
             builder.setNegativeButton("No, cancel") { dialog, _ -> dialog.dismiss() }
         }.create()
