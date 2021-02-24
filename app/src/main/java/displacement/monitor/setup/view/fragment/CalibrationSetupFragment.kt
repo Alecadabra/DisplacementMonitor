@@ -70,13 +70,18 @@ class CalibrationSetupFragment : AbstractSetupPageFragment() {
         val calibrationSettings = this.settings.calibration
         @SuppressLint("SetTextI18n")
         this.views.readout.text = """
-            Configured initial distance: ${calibrationSettings.initialDistance}m
-            Configured target size: ${calibrationSettings.targetSize}m
-            Calibration value (Focal length): ${
-            calibrationSettings.focalLength.takeUnless { it == 0.0 }?.let {
-                "Measured (${"%.2f".format(it)}) - Calibration is done"
-            } ?: "Not measured - Must be calibrated"
-        }
+            Configured initial distance:
+            ${calibrationSettings.initialDistance}m
+            
+            Configured target size:
+            ${calibrationSettings.targetSize}m
+            
+            Calibration value (Focal length):
+            ${
+                calibrationSettings.focalLength.takeUnless { it == 0.0 }?.let {
+                    "Measured (${"%.2f".format(it)}) - Calibration is done"
+                } ?: "Not measured - Must be calibrated"
+            }
         """.trimIndent()
     }
 
