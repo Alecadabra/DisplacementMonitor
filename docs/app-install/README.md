@@ -15,8 +15,8 @@ You first need to opt-in to allowing the app to be downloaded as it is not comin
 first-party Google Play Store.
 
 If your device is running Android 8 ('Oreo', Released 2017) or above, navigate to 
-'Install unknown apps' in Settings. Select the web browser you will use to download the app and
-allow app installs from it. 
+'Install unknown apps' in Settings (Most settings apps have a search bar to aid in finding this).
+Select the web browser you will use to download the app and allow app installs from it.
 
 Otherwise, if your device is running Android 7.1 ('Nougat', Released 2016) or below, navigate to
 'Unknown Sources' in Settings > Security and switch the setting on.
@@ -28,3 +28,5 @@ The app is packaged into an APK (Android application package) located at **TODO*
 Navigate here on the phone and download directly. Once the APK is downloaded, use the web browser's 
 open/view option, or go to the phone's 'Downloads' app to locate and open it. The installation
 process from here is automatic and the app should appear on the phone's app list.
+
+See [App usage](../app-usage/README.md) to continue.
