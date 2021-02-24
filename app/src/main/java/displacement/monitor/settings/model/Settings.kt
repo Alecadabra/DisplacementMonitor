@@ -82,10 +82,10 @@ class Settings(val preferences: SharedPreferences) {
             ?: error("Target size must be a number greater than 0")
 
         val initialDistance = getDouble("calibration_initialDistance") { it > 0 }
-            ?: error("Target size must be a number greater than 0")
+            ?: error("Initial distance must be a number greater than 0")
 
         val focalLength: Double = getDouble("calibration_focalLength") { it >= 0 }
-            ?: error("Focal length must be a number greater than or equal to zero")
+            ?: error("Focal length must be a number greater than zero, or zero to signify that it is not yet measured")
     }
 
     inner class Camera {
