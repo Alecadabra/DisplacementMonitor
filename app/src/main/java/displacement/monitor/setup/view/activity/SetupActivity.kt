@@ -37,15 +37,6 @@ class SetupActivity : AppCompatActivity() {
         this.views.viewPager.isUserInputEnabled = false
     }
 
-    override fun finish() {
-        // Cancel any scheduling
-        SchedulingManager(
-            this, Settings(this), ScheduledMeasurementActivity.getIntent(this)
-        ).cancel()
-
-        super.finish()
-    }
-
     override fun onBackPressed() {
         pageBack()
     }

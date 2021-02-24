@@ -1,7 +1,10 @@
 package displacement.monitor.setup.view.activity
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -14,6 +17,7 @@ import displacement.monitor.scheduling.view.activity.ScheduledMeasurementActivit
 import displacement.monitor.settings.model.Settings
 import displacement.monitor.settings.view.activity.SettingsActivity
 import displacement.monitor.setup.view.activity.SetupActivity.Companion.construct
+import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
@@ -105,6 +109,17 @@ class MainActivity : AppCompatActivity() {
         updateReadouts()
     }
 
+    override fun finish() {
+        // Cancel any scheduling
+        try {
+            this.schedulingManager.cancel()
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to cancel scheduling", e)
+        }
+
+        super.finish()
+    }
+
     override fun onBackPressed() {
         // Show exit conformation dialog
         this.backDialog.show()
@@ -117,30 +132,34 @@ class MainActivity : AppCompatActivity() {
      */
     private fun startSetup() {
         // Setup is complete if all pages return true on canAdvance
-        val setupComplete = SetupActivity.PAGE_CLASSES.all { pageClass ->
-            pageClass.construct().canAdvance(this)
+        val needSetup = SetupActivity.PAGE_CLASSES.any { pageClass ->
+            !pageClass.construct().canAdvance(this)
         }
 
-        if (!setupComplete) {
+        if (needSetup) {
             startActivity(SetupActivity.getIntent(this))
         }
     }
 
     /** Update the text shown in readout text views to be up to date with new data */
     private fun updateReadouts() {
-        @SuppressLint("SetTextI18n")
-        this.views.scheduleReadout.text = "Handle the periodic measuring here. Measurements are ${
-            if (this.schedulingManager.isScheduled) "" else "not"
-        } currently scheduled"
+        try {
+            @SuppressLint("SetTextI18n")
+            this.views.scheduleReadout.text = "Handle the periodic measuring here. Measurements are ${
+                if (this.schedulingManager.isScheduled) "" else "not"
+            } currently scheduled"
 
-        @SuppressLint("SetTextI18n")
-        this.views.settingsReadout.text = """
+            @SuppressLint("SetTextI18n")
+            this.views.settingsReadout.text = """
             Current Settings
             Device ID: ${this.settings.periodicMeasurement.id}
             Measurement Period: ${this.settings.periodicMeasurement.period} minute(s)
             Target size: ${this.settings.calibration.targetSize}m
             Remote Database: ${if (this.settings.remoteDB.enabled) "Enabled" else "Disabled"}
         """.trimIndent()
+        } catch (e: Exception) {
+            Log.e(TAG, "Could not update readouts", e)
+        }
     }
 
     // Local constructs ----------------------------------------------------------------------------
@@ -159,4 +178,15 @@ class MainActivity : AppCompatActivity() {
         val singleMeasurementBtn: Button = findViewById(R.id.mainActivitySingleMeasurementButton),
         val realTimeButton: Button = findViewById(R.id.mainActivityRealTimeButton),
     )
+
+    companion object {
+        private const val TAG = "MainActivity"
+
+        /**
+         * Get an intent to use to start this activity.
+         * @param c Context being called from
+         * @return New intent to start this activity with
+         */
+        fun getIntent(c: Context) = Intent(c, MainActivity::class.java)
+    }
 }
