@@ -1,16 +1,12 @@
-# Remote logging measurements
+# Remote logging measurements *(Off-site)*
 
 The app supports logging to a remote [InfluxDB](https://www.influxdata.com/) database. The
 included [Dashboard](dashboard.json) can be imported into a [Grafana](https://grafana.com/) server 
 to help visualise the incoming data remotely.
 
 This setup can be skipped if remote logging is not required.
- 
-This process will generate values that are needed for the setup of the phone app. It is recommended
-that you set up a way to get these values to the phone so that you can copy & paste them into the
-app during app setup, eg. Texting to the phone.
 
-> **Configuration Value**: Notes like this will show where there is a value that needs to be
+> **📝 Configuration Value**: Notes like this will show where there is a value that needs to be
 > recorded for setup of the phone app. 
 
 ## Setting up a remote test environment
@@ -36,8 +32,7 @@ You will be prompted to fill out a username/password, an Organisation and a Buck
 values are arbitrary and can be set to whatever you like. Naming the bucket something descriptive 
 is always useful (i.e. `measurements`).
 
-> **Configuration Value**: Record the exact names or IDs of the Organisation and Bucket so that they
->can be used when setting up the phone app. 
+> **📝 Configuration Value**: Record the exact names or IDs of the Organisation and Bucket.
 
 After setting up the initial account details, skip the rest of the configuration (Configure Later).
 
@@ -55,8 +50,7 @@ permissions to 'All Buckets'. Leave the `Write` permissions alone and create the
 Repeat the process for the mobile app token, but instead leave the `Read` permissions alone and
 select your measurements bucket in the `Write` permissions.
 
-> **Configuration Value**: Record this mobile app token so it can be used when setting up the phone
->app.
+> **📝 Configuration Value**: Record this mobile app token.
 
 ## Configure Grafana
 
@@ -76,8 +70,7 @@ You can also use the host machine's IP address and publicly mapped port (8080) i
 http://dmon_influx:8086/
 ```
 
-> **Configuration Value**: Record the URL you choose to use so it can be used when setting up the
->phone app.
+> **📝 Configuration Value**: Record the URL you choose to use.
 
 Leave the rest of the options as default (ensure that `Basic Auth` is turned OFF). 
 Fill out the organisation/token/default bucket values with the appropriate values used when 

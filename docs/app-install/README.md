@@ -1,4 +1,6 @@
-# App installation
+# App installation *(Off-site)*
+
+This goes through the process of putting the app onto the phone.
 
 ## Compatibility
 
@@ -29,4 +31,4 @@ Navigate here on the phone and download directly. Once the APK is downloaded, us
 open/view option, or go to the phone's 'Downloads' app to locate and open it. The installation
 process from here is automatic and the app should appear on the phone's app list.
 
-See [App usage](../app-usage/README.md) to continue.
+See [App usage](../physical-setup/README.md) to continue.
