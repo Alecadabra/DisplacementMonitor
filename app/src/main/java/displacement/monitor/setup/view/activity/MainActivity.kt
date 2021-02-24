@@ -70,10 +70,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Start setup if needed
-        startSetup()
-
         setContentView(R.layout.activity_main)
 
         // Set up views
@@ -98,13 +94,19 @@ class MainActivity : AppCompatActivity() {
         this.views.singleMeasurementBtn.setOnClickListener {
             startActivity(ScheduledMeasurementActivity.getIntent(this, useStateController = false))
         }
-        this.views.realTimeButton.setOnClickListener {
+        this.views.realTimeBtn.setOnClickListener {
             startActivity(RealTimeMeasurementActivity.getIntent(this))
+        }
+        this.views.calibrateBtn.setOnClickListener {
+            startActivity(CalibrationActivity.getIntent(this))
         }
     }
 
     override fun onResume() {
         super.onResume()
+
+        // Start setup if needed
+        startSetup()
 
         updateReadouts()
     }
@@ -176,7 +178,8 @@ class MainActivity : AppCompatActivity() {
         val settingsReadout: TextView = findViewById(R.id.mainActivitySettingsReadout),
         val dataBtn: Button = findViewById(R.id.mainActivityDataButton),
         val singleMeasurementBtn: Button = findViewById(R.id.mainActivitySingleMeasurementButton),
-        val realTimeButton: Button = findViewById(R.id.mainActivityRealTimeButton),
+        val realTimeBtn: Button = findViewById(R.id.mainActivityRealTimeButton),
+        val calibrateBtn: Button = findViewById(R.id.mainActivityCalibrateButton),
     )
 
     companion object {
