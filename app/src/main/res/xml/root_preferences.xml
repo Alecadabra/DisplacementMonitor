@@ -1,0 +1,187 @@
+<PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:key="periodicMeasurement"
+        android:title="Periodic Measurement">
+
+        <EditTextPreference
+            android:key="periodicMeasurement_id"
+            android:title="Device ID"
+            android:defaultValue=""
+            android:summary="Unique identifier for this device" />
+
+        <EditTextPreference
+            android:key="periodicMeasurement_period"
+            android:title="Period (minutes)"
+            android:defaultValue="1"
+            android:summary="Period between measurements. Minimum of 1 minute." />
+
+    <PreferenceCategory
+        android:key="calibration"
+        android:title="Calibration">
+
+        <EditTextPreference
+            android:key="calibration_targetSize"
+            android:title="Target size"
+            android:defaultValue="0"
+            app:summary="The size (edge length) of the square target in metres" />
+
+        <EditTextPreference
+            android:key="calibration_initialDistance"
+            android:title="Initial distance"
+            android:defaultValue="0"
+            android:summary="The initial distance (at calibration) between the phone and the target in metres" />
+
+        <EditTextPreference
+            android:key="calibration_focalLength"
+            android:title="Manual focal length value"
+            android:defaultValue="0"
+            android:summary="Value for focal length generated at calibration. You shouldn't need to adjust this" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="camera"
+        android:title="Camera">
+
+        <CheckBoxPreference
+            android:key="camera_warp"
+            android:title="Warp Camera"
+            android:defaultValue="true"
+            android:summary="Change this if the camera view is warped" />
+
+        <ListPreference
+            android:key="camera_camIdx"
+            android:title="Select Camera"
+            android:summary="Select the camera device to use" />
+
+        <EditTextPreference
+            android:key="camera_flashThreshold"
+            android:title="Flash brightness threshold"
+            android:defaultValue="20"
+            android:summary="Maximum brightness percent (0-100) where the flash is turned on to aid in target finding" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="remoteDB"
+        android:title="Remote Database">
+
+        <CheckBoxPreference
+            android:key="remoteDB_enable"
+            android:title="Enable"
+            android:defaultValue="true"
+            android:summary="Enable or disable sending data to a remote database. If enabled, the below settings must be configured" />
+
+        <EditTextPreference
+            android:key="remoteDB_url"
+            android:title="URL"
+            android:defaultValue=""
+            android:summary="The URL where the InfluxDB remote database is located" />
+
+        <EditTextPreference
+            android:key="remoteDB_token"
+            android:title="Authorization Token"
+            android:defaultValue=""
+            android:summary="The authorization token used to communicate with the InfluxDB remote database" />
+
+    </PreferenceCategory>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="targetFinding"
+        android:title="Target Finding">
+
+        <SeekBarPreference
+            android:key="targetFinding_blurSize"
+            android:title="Gaussian blur size"
+            app:showSeekBarValue="true"
+            app:min="1"
+            android:max="9"
+            app:seekBarIncrement="2"
+            android:defaultValue="5"
+            android:summary="Higher values blur more when looking for target edges, odd numbers only" />
+
+        <EditTextPreference
+            android:key="targetFinding_cannyThreshold1"
+            android:title="Canny first threshold"
+            android:defaultValue="35.0"
+            android:summary="First threshold used in the Canny find edges algorithm. Recommended value 35.0" />
+
+        <EditTextPreference
+            android:key="targetFinding_cannyThreshold2"
+            android:title="Canny second threshold"
+            android:defaultValue="125.0"
+            android:summary="Second threshold used in the Canny find edges algorithm. Recommended value 125.0" />
+
+        <EditTextPreference
+            android:key="targetFinding_curveApproximationEpsilon"
+            android:title="Curve approximation epsilon"
+            android:defaultValue="0.1"
+            android:summary="Accuracy of Douglas–Peucker algorithm used to approximate a contour's curve. Values closer to 0 are more exact. Recommended value 0.1" />
+
+        <EditTextPreference
+            android:key="targetFinding_targetMinEdges"
+            android:title="Minimum number of edges for target"
+            android:defaultValue="4"
+            android:summary="Minimum number of edges a target can have to be considered a rectangle. Recommended value 4" />
+
+        <EditTextPreference
+            android:key="targetFinding_targetMaxEdges"
+            android:title="Maximum number of edges for target"
+            android:defaultValue="6"
+            android:summary="Maximum number of edges a target can have to be considered a rectangle. Recommended value 6" />
+
+        <EditTextPreference
+            android:key="targetFinding_minAspectRatio"
+            android:title="Minimum target aspect ratio"
+            android:defaultValue="0.8"
+            android:summary="Minimum acceptable target aspect ratio (width divided by height). Recommended value 0.8" />
+
+        <EditTextPreference
+            android:key="targetFinding_maxAspectRatio"
+            android:title="Maximum target aspect ratio"
+            android:defaultValue="1.2"
+            android:summary="Maximum acceptable target aspect ratio (width divided by height). Recommended value 1.2" />
+
+        <EditTextPreference
+            android:key="targetFinding_minTargetSize"
+            android:title="Minimum perceived target size"
+            android:defaultValue="24"
+            android:summary="The smallest acceptable perceived size (edge length) of the target in pixels. Recommended value 24" />
+
+        <EditTextPreference
+            android:key="targetFinding_minSolidity"
+            android:title="Minimum target solidity"
+            android:defaultValue="0.9"
+            android:summary="The smallest acceptable value for solidity of the target (target area divided by convex hull area). Recommended value 0.9" />
+
+    </PreferenceCategory>
+
+    <!--
+    <PreferenceCategory
+        android:key="targetMeasurement"
+        android:title="Target Measurement">
+
+        <ListPreference
+            android:key="targetMeasurement_measurementTechnique"
+            android:title="Measurement Technique"
+            android:summary="Set the algorithm used to measure the size of the target"/>
+
+    </PreferenceCategory>
+    -->
+
+    <PreferenceCategory
+        android:key="reset"
+        android:title="Reset">
+
+        <Preference
+            android:key="reset_resetToDefault"
+            android:title="Reset settings to defaults" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

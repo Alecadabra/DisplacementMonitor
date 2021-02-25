@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".setup.android.fragment.SettingsSetupFragment">
+
+    <TextView
+        android:id="@+id/settingsSetupFragmentText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="There are multiple settings that need to be configured before the app can be used. Be sure to configure the following settings appropriately."
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/settingsSetupFragmentButtonBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingsSetupFragmentText">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Periodic Measurement"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• Device ID\n• Period"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calibration"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• Target size\n• Initial Distance"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remote Database"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• URL\n• Authorization Token"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="16dp" />
+
+        <Button
+            android:id="@+id/settingsSetupFragmentSettingsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Go to Settings" />
+
+    </LinearLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/settingsSetupFragmentButtonBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/settingsSetupFragmentBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:textColor="@color/design_default_color_primary"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/settingsSetupFragmentNextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
