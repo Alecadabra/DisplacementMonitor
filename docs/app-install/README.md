@@ -25,7 +25,7 @@ Otherwise, if your device is running Android 7.1 ('Nougat', Released 2016) or be
 
 ## Download & Install
 
-The app is packaged into an APK (Android application package) located at **TODO**.
+The app is packaged into an APK (Android application package) located in the [Releases Page](../../../../releases).
 
 Navigate here on the phone and download directly. Once the APK is downloaded, use the web browser's 
 open/view option, or go to the phone's 'Downloads' app to locate and open it. The installation
