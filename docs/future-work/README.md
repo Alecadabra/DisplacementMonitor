@@ -13,4 +13,4 @@ Long term there is a requirement to build (or repurpose) a User Interface that a
 
 * Need to implement pull-based configuration on the device at specific intervals (could the frequency also be controlled remotely?). Theoretically any and all of the current on-device settings menu could be overwritten remotely (not just frequency) which could lead to so fairly powerful remote management.
 
-* Grafana does provides a mechanism for embedding interactive dashboards into external pages so it can still be used as the primary plotting application; only the administration of new/existing dashboards would need to be conducted in the Grafana application itself.
+* Grafana provides a mechanism for embedding interactive dashboards into external pages so it can still be used as the primary plotting application; only the administration of new/existing dashboards would need to be conducted in the Grafana application itself.
