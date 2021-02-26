@@ -71,7 +71,9 @@ dependencies {
     //testImplementation "androidx.room:room-testing:$room_version"
 
     // InfluxDB
-    implementation "com.influxdb:influxdb-client-java:1.15.0"
+    implementation ("com.influxdb:influxdb-client-java:1.15.0", {
+        exclude group: 'org.json', module:'json'
+    })
 
     // Multidex
     implementation "androidx.multidex:multidex:2.0.1"
