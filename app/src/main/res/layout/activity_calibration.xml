@@ -16,66 +16,69 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/calibrationActivityConstraintLayout"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        android:clickable="false"
-        style="@style/Widget.AppCompat.Button.Small">
+        app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:id="@+id/calibrationActivityReadout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="16dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            app:layout_constraintBottom_toTopOf="@+id/calibrationActivityLinearLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/calibrationActivityLinearLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            style="?attr/buttonBarButtonStyle"
-            android:clickable="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/calibrationActivitySettingsButton"
+            <TextView
+                android:id="@+id/calibrationActivityReadout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="?android:attr/buttonBarButtonStyle"
-                android:text="Settings" />
+                android:gravity="start"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="16dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintBottom_toTopOf="@+id/calibrationActivityLinearLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/calibrationActivityCalibrateButton"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/calibrationActivityLinearLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="?android:attr/buttonBarButtonStyle"
-                android:text="Calibrate" />
+                android:orientation="horizontal"
+                android:gravity="center"
+                style="?attr/buttonBarButtonStyle"
+                android:clickable="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
-            <Button
-                android:id="@+id/calibrationActivityReturnButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="?android:attr/buttonBarButtonStyle"
-                android:visibility="gone"
-                android:text="Return" />
+                <Button
+                    android:id="@+id/calibrationActivitySettingsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:text="Settings" />
 
-        </LinearLayout>
+                <Button
+                    android:id="@+id/calibrationActivityCalibrateButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:text="Calibrate" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <Button
+                    android:id="@+id/calibrationActivityReturnButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:visibility="gone"
+                    android:text="Return" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

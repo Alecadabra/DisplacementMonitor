@@ -102,12 +102,13 @@ class DeviceStateController(private val activity: Activity) {
     }
 
     fun goFullscreen() {
+        val window = this.activity.window
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            this.activity.window.decorView.windowInsetsController?.hide(WindowInsets.Type.systemBars())
+            window.decorView.windowInsetsController?.hide(WindowInsets.Type.systemBars())
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            this.activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         } else {
-            this.activity.window.addFlags(Flag.FLAG_FULLSCREEN)
+            window.addFlags(Flag.FLAG_FULLSCREEN)
         }
     }
 

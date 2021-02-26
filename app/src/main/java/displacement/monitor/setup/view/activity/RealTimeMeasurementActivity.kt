@@ -11,6 +11,7 @@ import displacement.monitor.R
 import displacement.monitor.cv.controller.CustomCameraView
 import displacement.monitor.cv.*
 import displacement.monitor.cv.controller.*
+import displacement.monitor.scheduling.controller.DeviceStateController
 import displacement.monitor.settings.model.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +45,9 @@ class RealTimeMeasurementActivity : AppCompatActivity() {
 
     /** Access to app settings. */
     private val settings by lazy { Settings(this) }
+
+    /** Handles going to fullscreen mode. */
+    private val deviceStateController by lazy { DeviceStateController(this) }
 
     /**
      * The calibrated image processor used to do all measurement.
@@ -81,6 +85,9 @@ class RealTimeMeasurementActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        this.deviceStateController.goFullscreen()
+
         setContentView(R.layout.activity_real_time_measure)
 
         this.title = "Real-Time Measurement"

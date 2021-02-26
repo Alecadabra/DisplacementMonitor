@@ -52,13 +52,11 @@
 
         <activity
             android:name=".setup.view.activity.CalibrationActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".setup.view.activity.RealTimeMeasurementActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".scheduling.view.activity.ScheduledMeasurementActivity"

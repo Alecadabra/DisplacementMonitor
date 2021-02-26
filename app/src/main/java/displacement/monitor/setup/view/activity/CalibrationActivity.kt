@@ -17,6 +17,7 @@ import displacement.monitor.cv.controller.*
 import displacement.monitor.cv.controller.ImageOperations.drawTarget
 import displacement.monitor.cv.controller.ImageOperations.fixOrientation
 import displacement.monitor.cv.controller.ImageOperations.resizeWithBorder
+import displacement.monitor.scheduling.controller.DeviceStateController
 import displacement.monitor.settings.view.activity.SettingsActivity
 import displacement.monitor.settings.model.Settings
 import kotlinx.coroutines.CoroutineScope
@@ -61,6 +62,9 @@ class CalibrationActivity : AppCompatActivity() {
      * Used to find the target so it can be measured.
      */
     private val targetFinder by lazy { TargetFinder(this.settings) }
+
+    /** Handles going to fullscreen mode. */
+    private val deviceStateController by lazy { DeviceStateController(this) }
 
     /** Camera callback used for just showing the found target. */
     private val targetFinderCamera = CameraFrameCallback { image ->
@@ -123,6 +127,9 @@ class CalibrationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        this.deviceStateController.goFullscreen()
+
         setContentView(R.layout.activity_calibration)
 
         this.title = "Calibration"
