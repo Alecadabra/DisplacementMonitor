@@ -25,8 +25,10 @@ Otherwise, if your device is running Android 7.1 ('Nougat', Released 2016) or be
 
 ## Download & Install
 
-The app is packaged into an APK (Android application package) located in the [Releases Page](../../../../releases).
+The app is packaged into an APK (Android application package) located in the
+[Releases Page](../../../../releases).
 
 Navigate here on the phone and download directly. Once the APK is downloaded, use the web browser's 
-open/view option, or go to the phone's 'Downloads' app to locate and open it. The installation
-process from here is automatic and the app should appear on the phone's app list.
+open/view option, or the download notification to open it. You will be prompted to confirm that you
+want to install the app. You may get a popup saying 'Blocked by Play Protect', just press install
+anyway. Then, the app should be installed.
