@@ -30,5 +30,3 @@ The app is packaged into an APK (Android application package) located in the [Re
 Navigate here on the phone and download directly. Once the APK is downloaded, use the web browser's 
 open/view option, or go to the phone's 'Downloads' app to locate and open it. The installation
 process from here is automatic and the app should appear on the phone's app list.
-
-See [App usage](../physical-setup/README.md) to continue.
