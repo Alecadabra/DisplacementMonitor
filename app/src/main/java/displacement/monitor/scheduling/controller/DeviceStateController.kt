@@ -6,6 +6,8 @@ import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import android.view.View
+import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import displacement.monitor.permissions.controller.Permission
@@ -96,6 +98,16 @@ class DeviceStateController(private val activity: Activity) {
             }
         } catch (e: SecurityException) {
             Log.e(TAG, "Could not turn off screen (Security Exception)", e)
+        }
+    }
+
+    fun goFullscreen() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            this.activity.window.decorView.windowInsetsController?.hide(WindowInsets.Type.systemBars())
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            this.activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        } else {
+            this.activity.window.addFlags(Flag.FLAG_FULLSCREEN)
         }
     }
 

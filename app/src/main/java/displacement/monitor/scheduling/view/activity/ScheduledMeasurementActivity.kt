@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import displacement.monitor.R
 import displacement.monitor.cv.controller.CustomCameraView
@@ -111,6 +112,7 @@ class ScheduledMeasurementActivity : AppCompatActivity() {
 
         // Wake screen etc.
         this.deviceStateController?.start()
+        this.deviceStateController?.goFullscreen()
 
         setContentView(R.layout.activity_scheduled_measurement)
 
